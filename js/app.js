@@ -95,7 +95,7 @@ function renderHudAuth() {
         <button type="button" class="btn btn--primary btn--sm hud__cta" data-action="create-partie">${icon("plus")} Organiser</button>
         <a href="#/profil" class="sigil-link" aria-label="Ma fiche (${me.full_name})">${sigil(me, "sm")}</a>`
     : html`
-        <a class="btn btn--ghost btn--sm" href="#/connexion">Se connecter</a>
+        <a class="btn btn--ghost btn--sm hud__login" href="#/connexion">Se connecter</a>
         <a class="btn btn--primary btn--sm" href="#/inscription">S'inscrire</a>`);
 }
 

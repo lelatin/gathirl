@@ -10,7 +10,7 @@ Ce dépôt est la **réécriture complète** de l'app Base44 (`gathirl.base44.ap
 
 | Fonction | Base44 | Ici |
 | --- | --- | --- |
-| Fil des parties à venir (format, niveau, ville, lieu, joueurs, inscrits) | ✅ | ✅ cartes façon carte à collectionner |
+| Fil des parties à venir (format, niveau, ville, lieu, joueurs, inscrits) | ✅ | ✅ jaquettes de cassettes VHS années 80 |
 | Organiser une partie (titre, format, niveau, date, ville, lieu avec recherche d'adresse, joueurs max, description) | ✅ | ✅ |
 | Rejoindre une partie (complet / déjà inscrit) | ✅ | ✅ + **se désister**, **annuler** (hôte) |
 | Section « Près de chez vous » (10 km) | ✅ | ✅ + filtre de distance |
@@ -121,14 +121,13 @@ Le fichier `.nojekyll` évite que GitHub retraite les fichiers.
 - **Typographies** : *Grenze Gotisch* (titres, gothique lisible de pochette d'album), *Spectral* (texte, serif de livre), *Space Mono* (interface, esprit terminal).
 - **Signatures** :
   - Titre « Magic » en **chrome coucher de soleil** années 80 ; soleil rayé et sol en grille synthwave derrière le héros.
-  - Chaque partie est une **carte à collectionner** : cadre aux couleurs néon selon le format (avec halo lumineux), **coût de mana = niveau** (1 vert = Débutant, 2 bleus = Casual, 3 rouges = Compétitif), boîte F/E = joueurs/places, reflet *foil* qui suit la souris.
-  - L'accueil se lit comme un **livre dont vous êtes le héros** (« Choisissez votre voie, § 1 à 4 »).
+  - Chaque partie est une **jaquette de cassette VHS des années 80** : tranche verticale avec logo VHS, case de classification = niveau (DÉB · CAS · CMP), autocollant de vidéoclub (compte à rebours ou « Complet »), bandes rétro et titre chromé aux couleurs néon du format, **compteur de magnétoscope** vert = joueurs inscrits / places.
+  - Sous le héros, **4 cartes de jeu** façon carte à collectionner servent de raccourcis (Rejoindre une table, Dresser votre table, Envoyer une missive, Forger votre fiche) ; la case F/E affiche la touche clavier.
   - Le profil est une **fiche de personnage** avec cases de caractéristiques.
   - Les places d'une partie sont des **jetons autour de la table**.
   - En-tête façon **terminal** (horloge, statut en ligne, raccourcis numérotés) et léger **grain + lignes de balayage CRT**.
   - D'après le tableau Pinterest *gathirl inspiration* (couvertures de poche 70s-80s, sérigraphie, palettes réduites) :
     - **trame d'impression** et grain sur toutes les illustrations (classe `.print`) ;
-    - **« L'arcane de la semaine »** : affiche façon tarot / roman de poche, image en **bichromie vermillon** dans une **arche gothique**, numéro romain ;
   - Palette étendue : `--vermilion`, `--teal`, `--moon`, `--cream`.
 
 Tous les jetons sont dans `css/base.css` (`:root`) : changez une couleur à un seul endroit.

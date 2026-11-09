@@ -20,7 +20,7 @@ export async function render(el, ctx) {
   mount(el, html`
     <section class="hero">
       <div class="wrap hero__grid">
-        <div>
+        <div class="hero__text">
           <h1 class="hero__title">Trouvez votre prochaine partie de <span class="chrome">Magic</span></h1>
           <p class="hero__lede">Gathirl, l'application pour trouver des joueurs et des parties près de chez vous, rejoignez une table ou organisez la vôtre. <em>Commander, Modern, Draft</em> et plus encore.</p>
           <div class="hero__ctas">
@@ -28,11 +28,13 @@ export async function render(el, ctx) {
             <a class="btn" href="#/parties">${icon("swords")} Voir les parties</a>
             <button type="button" class="btn btn--ghost" data-roll title="Le dé choisit une partie au hasard">${icon("d20", "d20")} Lancer le d20</button>
           </div>
-          <div class="hero__stats" data-stats aria-live="polite">
-            <span><strong class="tnum">–</strong><span data-label>parties à venir</span></span>
-            <span><strong class="tnum">–</strong><span data-label>villes</span></span>
-            <span><strong class="tnum">–</strong><span data-label>aventurier·es inscrit·es</span></span>
-          </div>
+        </div>
+
+        <!-- Les chiffres sont hors du bloc texte : l'Oracle se centre sur « Trouvez votre… » → boutons -->
+        <div class="hero__stats" data-stats aria-live="polite">
+          <span><strong class="tnum">–</strong><span data-label>parties à venir</span></span>
+          <span><strong class="tnum">–</strong><span data-label>villes</span></span>
+          <span><strong class="tnum">–</strong><span data-label>aventurier·es inscrit·es</span></span>
         </div>
 
         <div class="oracle-wrap">
@@ -55,40 +57,9 @@ export async function render(el, ctx) {
       </div>
     </section>
 
-    <section class="section wrap" aria-labelledby="voies-title">
-      <div class="section-head">
-        <div><h2 id="voies-title">Choisissez votre voie</h2></div>
-        <span class="mono muted" style="font-size:12px;letter-spacing:.08em">CLAVIER : 1 – 4 · N</span>
-      </div>
-      <div class="paths">
-        <a class="path" href="#/parties">
-          <span class="path__no">§ 1 <kbd class="path__key">2</kbd></span>
-          <h3>Rejoindre une table</h3>
-          <p>Parcourez le tableau des quêtes et prenez place à une partie ouverte.</p>
-          <span class="path__go">Consulter les quêtes ${icon("arrow")}</span>
-        </a>
-        <button type="button" class="path" data-action="create-partie" style="text-align:left">
-          <span class="path__no">§ 2 <kbd class="path__key">N</kbd></span>
-          <h3>Dresser votre table</h3>
-          <p>Choisissez un format, un lieu, une date : les joueurs viendront à vous.</p>
-          <span class="path__go">Organiser une partie ${icon("arrow")}</span>
-        </button>
-        <a class="path" href="#/messages">
-          <span class="path__no">§ 3 <kbd class="path__key">3</kbd></span>
-          <h3>Envoyer une missive</h3>
-          <p>Discutez avec les autres joueurs pour caler la partie ou échanger des cartes.</p>
-          <span class="path__go">Ouvrir la messagerie ${icon("arrow")}</span>
-        </a>
-        <a class="path" href="#/profil">
-          <span class="path__no">§ 4 <kbd class="path__key">4</kbd></span>
-          <h3>Forger votre fiche</h3>
-          <p>Niveau, formats préférés, ville : laissez les autres vous trouver.</p>
-          <span class="path__go">Voir ma fiche ${icon("arrow")}</span>
-        </a>
-      </div>
+    <section class="section wrap" aria-label="Que voulez-vous faire ?">
+      <div class="action-cards">${ACTIONS.map(actionCard)}</div>
     </section>
-
-    <section class="section wrap" data-poster hidden aria-label="L'arcane de la semaine"></section>
 
     <section class="section wrap" data-near hidden aria-labelledby="near-title"></section>
     <section class="section wrap" data-friends hidden aria-labelledby="friends-title"></section>
@@ -119,7 +90,6 @@ export async function render(el, ctx) {
   renderStats(el, parties);
   renderFilters(el, me);
   renderGrid(el, parties, byPartie, me);
-  renderPoster(el, parties);
   renderNear(el, parties, byPartie, me);
   renderFriends(el, me);
 
@@ -235,34 +205,40 @@ async function renderFriends(el, me) {
   } catch { /* section facultative */ }
 }
 
-/* ---------- L'arcane de la semaine : affiche façon tarot / roman de poche ---------- */
-const ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI"];
+/* ---------- Les 4 cartes d'action (remplacent « Choisissez votre voie ») ----------
+   Cartes à jouer façon carte à collectionner : chacune est un raccourci.
+   La case F/E affiche la touche clavier correspondante. */
+const ACTIONS = [
+  { title: "Rejoindre une table", href: "#/parties", art: "assets/img/art-14.webp", frame: "#ff3d4f", pip: "r", pipIcon: "flame",
+    type: "Rituel — Quête", text: "Parcourez le tableau des quêtes et prenez place à une partie ouverte.", flavor: "« Une chaise libre est une invitation. »", key: "2" },
+  { title: "Dresser votre table", action: "create-partie", art: "assets/img/art-13.webp", frame: "#ffb62e", pip: "w", pipIcon: "sun",
+    type: "Enchantement — Rassemblement", text: "Choisissez un format, un lieu, une date : les joueurs viendront à vous.", flavor: "« Qui plante l'étendard réunit la guilde. »", key: "N" },
+  { title: "Envoyer une missive", href: "#/messages", art: "assets/img/art-03.webp", frame: "#2fa8ff", pip: "u", pipIcon: "drop",
+    type: "Éphémère — Parchemin", text: "Discutez avec les autres joueurs pour caler la partie ou échanger des cartes.", flavor: "« Les corbeaux ne se perdent jamais. »", key: "3" },
+  { title: "Forger votre fiche", href: "#/profil", art: "assets/img/art-10.webp", frame: "#2fd47a", pip: "g", pipIcon: "leaf",
+    type: "Artefact — Grimoire", text: "Niveau, formats préférés, ville : laissez les autres vous trouver.", flavor: "« Chaque légende commence par un nom. »", key: "4" },
+];
 
-function renderPoster(el, parties) {
-  const p = parties.find((x) => x.current_players < x.max_players);
-  if (!p) return;
-  const sec = $("[data-poster]", el);
-  const left = p.max_players - p.current_players;
-  const arcana = ROMAN[new Date(p.date).getDate() % ROMAN.length];
-  sec.hidden = false;
-  mount(sec, html`
-    <article class="poster">
-      <a class="poster__arch" href="#/partie/${p.id}" tabindex="-1" aria-hidden="true">
-        <img src="${artFor(p.id)}" alt="" loading="lazy" width="720" height="540" />
-        <span class="poster__num">${arcana}</span>
-      </a>
-      <div class="poster__body">
-        <h2 class="poster__title"><a href="#/partie/${p.id}">${p.title}</a></h2>
-        <p class="poster__blurb">${p.description ? p.description.split("\n")[0] : "Une table vous attend. Les dés sont prêts, les decks mélangés ; il ne manque que vous."}</p>
-        <dl class="poster__facts">
-          <div><dt>Format</dt><dd>${p.format}</dd></div>
-          <div><dt>Quand</dt><dd class="tnum">${fmtDate(p.date)} · ${fmtTime(p.date)}</dd></div>
-          <div><dt>Où</dt><dd title="${p.city}${p.location ? ` · ${p.location}` : ""}">${p.city}${p.location ? ` · ${p.location}` : ""}</dd></div>
-          <div><dt>Places</dt><dd class="tnum">${plural(left, "siège libre", "sièges libres")}</dd></div>
-        </dl>
-        <a class="btn btn--primary" href="#/partie/${p.id}">${icon("swords")} Prendre place</a>
+function actionCard(a) {
+  const inner = html`
+    <div class="tcard__inner">
+      <header class="tcard__name"><h3>${a.title}</h3><span class="pips"><span class="pip pip--${a.pip}">${icon(a.pipIcon)}</span></span></header>
+      <div class="tcard__art print"><img src="${a.art}" alt="" loading="lazy" decoding="async" width="720" height="540" /></div>
+      <div class="tcard__type"><span>${a.type}</span>${icon("crown", "tcard__set")}</div>
+      <div class="tcard__text">
+        <p>${a.text}</p>
+        <p class="tcard__flavor">${a.flavor}</p>
       </div>
-    </article>`);
+    </div>`;
+  const body = a.href
+    ? html`<a class="tcard__link" href="${a.href}">${inner}</a>`
+    : html`<button type="button" class="tcard__link" data-action="${a.action}">${inner}</button>`;
+  return html`
+    <article class="tcard action-card" style="--frame:${a.frame}">
+      ${body}
+      <span class="tcard__pt" title="Raccourci clavier : ${a.key}" aria-hidden="true">${a.key}</span>
+      <span class="tcard__foil" aria-hidden="true"></span>
+    </article>`;
 }
 
 /* ---------- Le d20 : le hasard choisit une table ---------- */

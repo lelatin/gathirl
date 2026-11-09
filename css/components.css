@@ -48,6 +48,8 @@
 .hud__nav .dot { position: static; margin-left: 2px; }
 .hud__right { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); }
 .hud__right .hud__cta { display: none; }
+/* Petits écrans : « Se connecter » masqué (accessible via l'onglet Fiche et la page d'inscription) */
+@media (max-width: 479px) { .hud__right .hud__login { display: none; } }
 @media (min-width: 900px) { .hud__right .hud__cta { display: inline-flex; } }
 
 .hud__ticker {
@@ -402,6 +404,200 @@
 .frame--draft { --frame: #ff3d4f; }
 .frame--sealed { --frame: #22e0b4; }
 .frame--cube { --frame: #9b5cff; }
+
+/* =====================================================================
+   Jaquette VHS des années 80 — cartes du tableau des quêtes
+   (tranche verticale + jaquette : logo VHS, classification, autocollant
+   de vidéoclub, bandes rétro, titre chromé, compteur de magnétoscope)
+   ===================================================================== */
+/* Teinte par défaut (spécificité nulle : la classe frame--format l'emporte toujours) */
+:where(.vhs) { --frame: var(--mana-c); }
+.vhs {
+  position: relative;
+  border-radius: 4px;
+  background: #0b0910;
+  box-shadow:
+    0 0 0 1px #000,
+    inset 0 0 0 1px rgb(255 255 255 / 0.06),
+    0 0 26px -8px color-mix(in oklab, var(--frame), transparent 35%),
+    var(--shadow-card);
+  transition: transform 200ms var(--ease-out);
+  isolation: isolate;
+}
+.vhs__link {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+/* --- Tranche --- */
+.vhs__spine {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 10px 0;
+  min-height: 0;
+  background: linear-gradient(90deg, #050407, #19141f 55%, #050407);
+  border-right: 1px solid #000;
+  box-shadow: inset -1px 0 0 rgb(255 255 255 / 0.05);
+}
+.vhs__spine > * { writing-mode: vertical-rl; transform: rotate(180deg); }
+.vhs__spine-logo {
+  padding: 6px 3px;
+  border-radius: 2px;
+  background: var(--frame);
+  color: #0b0910;
+  font: italic 700 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+}
+.vhs__spine-title {
+  flex: 1; min-height: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--cream);
+}
+.vhs__spine-no { font: 10px/1 var(--font-mono); letter-spacing: 0.1em; color: var(--muted); }
+
+/* --- Jaquette --- */
+.vhs__cover {
+  display: flex; flex-direction: column;
+  min-width: 0;
+  background:
+    radial-gradient(120% 55% at 50% 105%, color-mix(in oklab, var(--frame), transparent 80%), transparent 70%),
+    #0d0a12;
+}
+.vhs__art { position: relative; aspect-ratio: 4 / 3.1; overflow: hidden; background: var(--ink-3); }
+.vhs__art img { width: 100%; height: 100%; object-fit: cover; }
+.vhs .print img { filter: saturate(1.35) contrast(1.12) brightness(1.06); }
+.vhs .print::before { opacity: 0.3; }
+.vhs .print::after { background: linear-gradient(180deg, transparent 55%, rgb(13 10 18 / 0.85) 100%); }
+
+.vhs__logo {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  padding: 2px 7px 3px;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  background: rgb(0 0 0 / 0.45);
+  color: #fff;
+  font: italic 700 14px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 0 #000;
+}
+/* Case de classification (= niveau), comme un visa d'exploitation */
+.vhs__rating {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  display: grid; place-items: center;
+  width: 40px; height: 40px;
+  background: var(--cream);
+  color: #0b0910;
+  border: 2px solid #0b0910;
+  outline: 1px solid var(--cream);
+  font: 700 11.5px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+}
+/* Autocollant de vidéoclub */
+.vhs__sticker {
+  position: absolute; left: 10px; bottom: 12px; z-index: 2;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: #ffd23f;
+  color: #0b0910;
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: rotate(-6deg);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 0.55);
+}
+.vhs__sticker--full { background: #ff3d4f; color: #fff; }
+
+/* Bandes rétro aux couleurs du format */
+.vhs__stripes { display: grid; gap: 3px; padding-top: 8px; }
+.vhs__stripes i { display: block; }
+.vhs__stripes i:nth-child(1) { height: 7px; background: var(--frame); box-shadow: 0 0 10px color-mix(in oklab, var(--frame), transparent 40%); }
+.vhs__stripes i:nth-child(2) { height: 5px; background: color-mix(in oklab, var(--frame), #ff3d4f 45%); }
+.vhs__stripes i:nth-child(3) { height: 3px; background: color-mix(in oklab, var(--frame), #ffb62e 50%); }
+.vhs__stripes i:nth-child(4) { height: 2px; background: color-mix(in oklab, var(--frame), #fff 55%); }
+
+.vhs__body { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 12px 14px 12px; min-width: 0; }
+.vhs__format {
+  font: 700 10.5px/1.2 var(--font-mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--frame);
+}
+.vhs__title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 25px;
+  line-height: 1;
+  background: linear-gradient(180deg, #fff 0%, #fff 38%, color-mix(in oklab, var(--frame), #fff 15%) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 0 #000) drop-shadow(0 0 12px color-mix(in oklab, var(--frame), transparent 55%));
+  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  padding-bottom: 2px;
+}
+.vhs__meta { list-style: none; padding: 0; margin-top: 4px; display: grid; gap: 4px; }
+.vhs__meta li { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; color: #ddd2bb; }
+.vhs__meta span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vhs__meta svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--frame); }
+.vhs__cast {
+  font-size: 13px; font-style: italic; color: var(--muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.vhs__footer {
+  margin-top: auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgb(255 255 255 / 0.12);
+}
+.vhs__fine { font: 9.5px/1 var(--font-mono); letter-spacing: 0.14em; color: var(--faint); white-space: nowrap; }
+/* Compteur de magnétoscope : joueurs inscrits / places */
+.vhs__counter {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 9px;
+  border-radius: 3px;
+  background: #040806;
+  border: 1px solid #1c2c23;
+  color: #7dffb2;
+  font: 700 15px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 8px rgb(125 255 178 / 0.7);
+  white-space: nowrap;
+}
+.vhs__play { font-size: 10px; }
+.vhs.is-full .vhs__counter { color: #ff6b78; text-shadow: 0 0 8px rgb(255 61 79 / 0.7); }
+.vhs.is-full .vhs__art img { filter: grayscale(0.7) brightness(0.7); }
+
+/* Halo du survol : calque fixe dont seule l'opacité change */
+.vhs::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 28px 50px -20px rgb(0 0 0 / 0.9), 0 0 34px -8px color-mix(in oklab, var(--frame), transparent 30%);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .vhs:hover { transform: translateY(-4px); }
+  .vhs:hover::before, .vhs:hover .tcard__foil { opacity: 1; }
+}
+.vhs:active { transform: scale(0.985); }
+
+/* =====================================================================
+   Cartes d'action (accueil) — 4 cartes de jeu sur toute la largeur
+   ===================================================================== */
+.action-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(16px, 2.2vw, 28px);
+}
+@media (max-width: 1023px) { .action-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 559px) { .action-cards { grid-template-columns: minmax(0, 1fr); } }
+/* Carte-bouton (Organiser) : même rendu qu'une carte-lien */
+button.tcard__link { width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.action-card .tcard__text p:first-child { font-size: 14.5px; }
+.action-card .tcard__pt { min-width: 44px; font-family: var(--font-mono); font-size: 16px; }
 
 /* Grille de cartes */
 .card-grid {
