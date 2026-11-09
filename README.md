@@ -121,7 +121,7 @@ Le fichier `.nojekyll` évite que GitHub retraite les fichiers.
 - **Typographies** : *Grenze Gotisch* (titres, gothique lisible de pochette d'album), *Spectral* (texte, serif de livre), *Space Mono* (interface, esprit terminal).
 - **Signatures** :
   - Titre « Magic » en **chrome coucher de soleil** années 80 ; soleil rayé et sol en grille synthwave derrière le héros.
-  - Chaque partie est une **carte à collectionner** : cadre coloré selon le format, **coût de mana = niveau** (1 vert = Débutant, 2 bleus = Casual, 3 rouges = Compétitif), boîte F/E = joueurs/places, reflet *foil* qui suit la souris.
+  - Chaque partie est une **carte à collectionner** : cadre aux couleurs néon selon le format (avec halo lumineux), **coût de mana = niveau** (1 vert = Débutant, 2 bleus = Casual, 3 rouges = Compétitif), boîte F/E = joueurs/places, reflet *foil* qui suit la souris.
   - L'accueil se lit comme un **livre dont vous êtes le héros** (« Choisissez votre voie, § 1 à 4 »).
   - Le profil est une **fiche de personnage** avec cases de caractéristiques.
   - Les places d'une partie sont des **jetons autour de la table**.
@@ -129,7 +129,6 @@ Le fichier `.nojekyll` évite que GitHub retraite les fichiers.
   - D'après le tableau Pinterest *gathirl inspiration* (couvertures de poche 70s-80s, sérigraphie, palettes réduites) :
     - **trame d'impression** et grain sur toutes les illustrations (classe `.print`) ;
     - **« L'arcane de la semaine »** : affiche façon tarot / roman de poche, image en **bichromie vermillon** dans une **arche gothique**, numéro romain ;
-    - **interlude « Chapitre II »** : ciel nocturne étoilé avec nébuleuse pourpre et lune, et un **triptyque de fenêtres gothiques** (clé de voûte, croisée de vitrail) contenant des scènes peintes — I. Trouvez votre table, II. Lancez les dés, III. Écrivez votre légende. Carrousel au doigt sur mobile.
   - Palette étendue : `--vermilion`, `--teal`, `--moon`, `--cream`.
 
 Tous les jetons sont dans `css/base.css` (`:root`) : changez une couleur à un seul endroit.

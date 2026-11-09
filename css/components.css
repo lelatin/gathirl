@@ -250,8 +250,9 @@
   border-radius: 14px;
   padding: 8px;
   background:
-    linear-gradient(160deg, color-mix(in oklab, var(--frame), black 25%), color-mix(in oklab, var(--frame), black 65%));
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.9), var(--shadow-card);
+    linear-gradient(160deg, color-mix(in oklab, var(--frame), white 14%) 0%, var(--frame) 38%, color-mix(in oklab, var(--frame), black 42%) 100%);
+  /* halo néon de la couleur du format (statique), dans l'esprit du titre « Chaque joueur, un allié » */
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.9), 0 0 26px -6px color-mix(in oklab, var(--frame), transparent 30%), var(--shadow-card);
   /* seul transform s'anime (GPU) ; l'ombre portée du survol est un calque en opacité */
   transition: transform 200ms var(--ease-out);
   isolation: isolate;
@@ -270,9 +271,9 @@
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
   padding: 6px 10px;
   border-radius: 6px / 10px;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--frame), #efe3c8 55%), color-mix(in oklab, var(--frame), #efe3c8 25%));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--frame), #fff6e0 40%), color-mix(in oklab, var(--frame), #fff6e0 10%));
   color: #1a1216;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 1px 0 rgb(0 0 0 / 0.7);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), 0 1px 0 rgb(0 0 0 / 0.7);
 }
 .tcard__name h3 {
   font-family: var(--font-display);
@@ -315,6 +316,10 @@
   box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.4);
 }
 .print img { filter: saturate(1.08) contrast(1.06) sepia(0.12); }
+/* Sur les cartes : couleurs franches, sans voile sépia, trame plus discrète */
+.tcard .print img { filter: saturate(1.35) contrast(1.12) brightness(1.06); }
+.tcard .print::before { opacity: 0.3; }
+.tcard .print::after { background: radial-gradient(ellipse at center, transparent 65%, rgb(10 4 8 / 0.35) 100%); }
 .print > :not(img) { z-index: 2; }
 .tcard__badge { position: absolute; top: 8px; left: 8px; }
 
@@ -353,8 +358,8 @@
   font-weight: 900;
   font-size: 19px;
   color: #1a1216;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--frame), #efe3c8 55%), color-mix(in oklab, var(--frame), #efe3c8 20%));
-  box-shadow: 0 0 0 2px rgb(0 0 0 / 0.8), inset 0 1px 0 rgb(255 255 255 / 0.5);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--frame), #fff6e0 30%), var(--frame));
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 0.85), inset 0 1px 0 rgb(255 255 255 / 0.55), 0 0 16px -2px color-mix(in oklab, var(--frame), transparent 30%);
 }
 
 /* Reflet "foil" qui suit le pointeur (décoratif, souris uniquement).
@@ -386,17 +391,17 @@
 
 .tcard.is-full .tcard__art img { filter: grayscale(0.7) brightness(0.7); }
 
-/* Couleur du cadre selon le format (= identité de couleur) */
-.frame--commander { --frame: var(--gold); }
-.frame--standard { --frame: var(--mana-w); }
-.frame--modern { --frame: var(--mana-u); }
-.frame--pioneer { --frame: var(--mana-g); }
-.frame--legacy { --frame: var(--mana-b); }
-.frame--vintage { --frame: #c58b4c; }
-.frame--pauper { --frame: var(--mana-c); }
-.frame--draft { --frame: var(--mana-r); }
-.frame--sealed { --frame: #6fae8c; }
-.frame--cube { --frame: var(--violet); }
+/* Couleur du cadre selon le format : teintes néon 80s, plus vives que les pastilles de mana */
+.frame--commander { --frame: #ffb62e; }
+.frame--standard { --frame: #fff0a8; }
+.frame--modern { --frame: #2fa8ff; }
+.frame--pioneer { --frame: #2fd47a; }
+.frame--legacy { --frame: #c46bff; }
+.frame--vintage { --frame: #ff7a2f; }
+.frame--pauper { --frame: #cfc7bd; }
+.frame--draft { --frame: #ff3d4f; }
+.frame--sealed { --frame: #22e0b4; }
+.frame--cube { --frame: #9b5cff; }
 
 /* Grille de cartes */
 .card-grid {

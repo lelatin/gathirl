@@ -23,7 +23,7 @@ export async function render(el, ctx) {
         <div>
           <p class="kicker hero__kicker">Chapitre I · La Taverne</p>
           <h1 class="hero__title">Trouvez votre prochaine partie de <span class="chrome">Magic</span></h1>
-          <p class="hero__lede">Découvrez des joueurs près de chez vous, rejoignez une table ou organisez la vôtre — <em>Commander, Modern, Draft</em> et plus encore.</p>
+          <p class="hero__lede">Découvrez des joueurs et des parties près de chez vous, rejoignez une table ou organisez la vôtre. <em>Commander, Modern, Draft</em> et plus encore.</p>
           <div class="hero__ctas">
             <button type="button" class="btn btn--primary" data-action="create-partie">${icon("plus")} Organiser une partie</button>
             <a class="btn" href="#/parties">${icon("swords")} Voir les parties</a>
@@ -93,8 +93,6 @@ export async function render(el, ctx) {
 
     <section class="section wrap" data-near hidden aria-labelledby="near-title"></section>
     <section class="section wrap" data-friends hidden aria-labelledby="friends-title"></section>
-
-    ${interlude()}
 
     <section class="section wrap" id="quetes" aria-labelledby="quetes-title">
       <div class="section-head">
@@ -269,37 +267,6 @@ function renderPoster(el, parties) {
     </article>`);
 }
 
-/* ---------- Interlude : triptyque de fenêtres gothiques sous un ciel étoilé ---------- */
-const TRIPTYCH = [
-  { n: "I", art: "assets/img/art-07.webp", title: "Trouvez votre table", text: "Une boutique, un bar, un salon : quelque part près de chez vous, une place vous attend.", alt: "Une citadelle enneigée sous une aurore pourpre." },
-  { n: "II", art: "assets/img/art-05.webp", title: "Lancez les dés", text: "Mélangez, piochez sept cartes. Pour le reste, c'est le destin qui décide.", alt: "Une tour noire dressée sous une lune rouge." },
-  { n: "III", art: "assets/img/art-16.webp", title: "Écrivez votre légende", text: "Chaque partie jouée s'inscrit sur votre fiche. Les compagnons d'armes restent.", alt: "Des ruines gothiques au milieu d'un cimetière brumeux." },
-];
-
-function interlude() {
-  return html`
-    <section class="nightfall" aria-labelledby="nightfall-title">
-      <span class="nightfall__moon" aria-hidden="true"></span>
-      <div class="wrap nightfall__inner">
-        <p class="nightfall__vertical" aria-hidden="true">Chapitre II · Les terres du crépuscule</p>
-        <header class="nightfall__head">
-          <p class="kicker">Chapitre II · Les terres du crépuscule</p>
-          <h2 id="nightfall-title" class="nightfall__quote">Chaque table est un donjon. <em>Chaque joueur, un allié.</em></h2>
-        </header>
-        <ol class="triptych" role="list">
-          ${TRIPTYCH.map((w) => html`
-            <li class="window">
-              <div class="window__frame">
-                <div class="window__glass print"><img src="${w.art}" alt="${w.alt}" loading="lazy" width="720" height="540" /></div>
-                <span class="window__num">${w.n}</span>
-              </div>
-              <h3>${w.title}</h3>
-              <p>${w.text}</p>
-            </li>`)}
-        </ol>
-      </div>
-    </section>`;
-}
 /* ---------- Le d20 : le hasard choisit une table ---------- */
 function rollD20(btn, parties) {
   const open = parties.filter((p) => p.current_players < p.max_players);
