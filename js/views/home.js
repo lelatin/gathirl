@@ -190,29 +190,35 @@ async function renderFriends(el, me) {
 /* ---------- Les 4 cartes d'action (remplacent « Choisissez votre voie ») ----------
    Cartes à jouer façon carte à collectionner : chacune est un raccourci.
    La case F/E affiche la touche clavier correspondante. */
+/* Teintes tirées du dégradé du mot « Magic » (titre principal) */
 const ACTIONS = [
-  { title: "Rejoindre une table", href: "#/parties", art: "assets/img/art-14.webp",
+  { title: "Rejoindre une table", href: "#/parties", art: "assets/img/art-14.webp", accent: "#ff6a3d", ic: "swords",
     text: "Parcourez le tableau des quêtes et prenez place à une partie ouverte.", go: "Voir les quêtes", key: "2" },
-  { title: "Dresser votre table", action: "create-partie", art: "assets/img/art-13.webp",
+  { title: "Dresser votre table", action: "create-partie", art: "assets/img/art-13.webp", accent: "#ffb35c", ic: "plus",
     text: "Choisissez un format, un lieu, une date : les joueurs viendront à vous.", go: "Organiser", key: "N" },
-  { title: "Envoyer une missive", href: "#/messages", art: "assets/img/art-03.webp",
+  { title: "Envoyer une missive", href: "#/messages", art: "assets/img/art-03.webp", accent: "#e3283a", ic: "scroll",
     text: "Discutez avec les autres joueurs pour caler la partie ou échanger des cartes.", go: "Ouvrir les missives", key: "3" },
-  { title: "Forger votre fiche", href: "#/profil", art: "assets/img/art-10.webp",
+  { title: "Forger votre fiche", href: "#/profil", art: "assets/img/art-10.webp", accent: "#a865e0", ic: "user",
     text: "Niveau, formats préférés, ville : laissez les autres vous trouver.", go: "Voir ma fiche", key: "4" },
 ];
 
-/* Cartouche façon jaquette VHS 80s (d'après « Scream », Vestron Video) :
-   fond noir mat usé, une seule image dans une fenêtre ronde en bichromie
-   violet → rose, titre rose peint, ligne de « crédits » + touche clavier. */
+/* Cartouche dans la direction artistique du site : panneau d'encre (comme les
+   panneaux des pages), équerres d'angle, liseré au dégradé de « Magic »,
+   illustration imprimée, titre gothique crème, libellé mono + touche clavier. */
 function actionCard(a) {
   const inner = html`
-    <span class="tile__window" aria-hidden="true"><img src="${a.art}" alt="" loading="lazy" decoding="async" width="720" height="540" /></span>
-    <h3 class="tile__title">${a.title}</h3>
-    <span class="tile__text">${a.text}</span>
-    <span class="tile__credits">${a.go} <kbd class="tile__key" title="Raccourci clavier : ${a.key}">${a.key}</kbd></span>`;
+    <span class="tile__art print"><img src="${a.art}" alt="" loading="lazy" decoding="async" width="720" height="540" /></span>
+    <span class="tile__body">
+      <span class="tile__head">
+        <span class="tile__icon" aria-hidden="true">${icon(a.ic)}</span>
+        <h3 class="tile__title">${a.title}</h3>
+      </span>
+      <span class="tile__text">${a.text}</span>
+      <span class="tile__go">${a.go} ${icon("arrow")}<kbd class="tile__key" title="Raccourci clavier : ${a.key}">${a.key}</kbd></span>
+    </span>`;
   return a.href
-    ? html`<a class="tile" href="${a.href}">${inner}</a>`
-    : html`<button type="button" class="tile" data-action="${a.action}">${inner}</button>`;
+    ? html`<a class="tile" href="${a.href}" style="--accent:${a.accent}">${inner}</a>`
+    : html`<button type="button" class="tile" data-action="${a.action}" style="--accent:${a.accent}">${inner}</button>`;
 }
 
 /* ---------- Le d20 : le hasard choisit une table ---------- */
