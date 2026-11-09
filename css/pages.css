@@ -8,7 +8,8 @@
    ===================================================================== */
 .hero {
   position: relative;
-  padding-block: clamp(40px, 8vw, 96px) clamp(48px, 8vw, 104px);
+  /* pas de marge basse : la section suivante apporte le rythme commun (--section-y) */
+  padding-block: clamp(40px, 8vw, 96px) 0;
   overflow: clip;
 }
 /* Soleil couchant rétro derrière le héros */
@@ -49,7 +50,7 @@
 .hero__text { grid-area: text; }
 .hero__stats { grid-area: stats; }
 .oracle-wrap { grid-area: oracle; }
-@media (min-width: 900px) {
+@media (min-width: 720px) {   /* 2 colonnes dès la tablette */
   .hero__grid {
     grid-template-columns: 1.15fr 0.85fr;
     grid-template-areas: "text oracle" "stats .";
@@ -80,6 +81,11 @@
 .hero__lede em { color: var(--parch); }
 
 .hero__ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); }
+/* Téléphone : l'action principale en pleine largeur, les deux autres côte à côte */
+@media (max-width: 559px) {
+  .hero__ctas > * { flex: 1 1 calc(50% - var(--space-3)); }
+  .hero__ctas > .btn--primary { flex-basis: 100%; }
+}
 
 .hero__stats {
   display: flex; flex-wrap: wrap; gap: var(--space-5) var(--space-6);
@@ -108,7 +114,7 @@
   perspective: 1000px;
 }
 /* Téléphone / tablette : même largeur que les cartes de la grille (pleine colonne) */
-@media (max-width: 899px) {
+@media (max-width: 719px) {
   .oracle-wrap { width: min(100%, 420px); }
 }
 .oracle {
@@ -435,17 +441,25 @@
    ===================================================================== */
 .site-footer {
   border-top: 1px solid var(--line);
-  margin-top: var(--space-7);
+  margin-top: 0;
 }
 .site-footer__inner {
   max-width: var(--maxw); margin-inline: auto;
-  padding: 28px var(--gutter);
+  padding: 28px var(--gutter-r) 28px var(--gutter-l);
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px;
   font-size: 14px; color: var(--muted);
 }
 .site-footer__brand { display: flex; align-items: center; gap: 10px; }
-.site-footer__meta { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.04em; }
+.site-footer__meta { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; }
 
 /* Page 404 */
 .lost { text-align: center; padding-block: var(--space-8); display: grid; justify-items: center; gap: var(--space-4); }
 .lost h1 { font-family: var(--font-display); font-size: var(--step-4); line-height: 1; }
+
+/* Zones tactiles des pages secondaires (44 px au doigt) */
+@media (pointer: coarse) {
+  .back { min-height: 44px; }
+  .roster a, .roster li { min-height: 44px; }
+  .thread__back { width: 44px; height: 44px; }
+  .friend-chip { min-height: 44px; }
+}

@@ -179,6 +179,19 @@ Tous les jetons sont dans `css/base.css` (`:root`) : changez une couleur à un s
 | Textes tronqués illisibles | Attribut `title` sur chaque texte tronqué | break-ui |
 
 Gardé volontairement : appui des boutons (retour immédiat), toasts (évitent un changement brutal), tiroir mobile et modale (entrée/sortie occasionnelle), lancer du d20 (moment rare de plaisir), reflet foil (décoratif, souris uniquement, désactivé si mouvement réduit).
+### Audit n°3 : design, espaces de sécurité, responsive (320 → 1920 px)
+
+| Avant | Après | Pourquoi |
+| --- | --- | --- |
+| Écarts entre sections : 192 / 88 / 136 px | Un seul rythme `--section-y` : 96 px (desktop), 72 px (1024), 54 px (768), 48 px (mobile) | Rythme vertical régulier |
+| Marge du héros + marge de section qui s'additionnent | Le héros n'a plus de marge basse, la section suivante porte le rythme | Pas de double espacement |
+| Marges latérales : bord gauche de l'encoche seulement | `--gutter-l` / `--gutter-r` avec `env(safe-area-inset-left/right)` | iPhone en paysage : contenu jamais sous l'encoche |
+| Cartouches d'action en 4 colonnes dès 1024 px (212 px, titres coupés) | 4 colonnes à partir de 1180 px, sinon 2, puis 1 | Chaque cartouche garde ≥ 260 px |
+| Héros empilé jusqu'à 900 px | 2 colonnes dès 720 px (tablette) | Mieux utiliser la largeur |
+| Boutons du héros de largeurs inégales sur téléphone | Action principale en pleine largeur | Cible principale évidente au pouce |
+| Filtres 34 px, petits boutons 36 px, retour 19 px, inscrits 32 px | 44 px minimum sur écran tactile (`pointer: coarse`) | Recommandation Apple / WCAG 2.5.8 |
+| Textes de 8,5 à 10,5 px | Plancher à 10–11 px (étiquettes), 12 px pied de page | Lisibilité |
+
 **Accessibilité** : lien d'évitement, focus visible doré, `<dialog>` natif (focus piégé, Échap), combobox ARIA au clavier (↑ ↓ Entrée), `aria-current` sur la navigation, `aria-live` pour les toasts et messages, textes alternatifs.
 
 **Performance** : aucune dépendance en mode démo, Supabase chargé seulement s'il est configuré, illustrations WebP ~50 Ko en `loading="lazy"`, image principale préchargée, effet CRT statique (aucun calcul continu).

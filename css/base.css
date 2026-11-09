@@ -75,6 +75,11 @@
   --space-7: 48px;
   --space-8: 72px;
   --gutter: clamp(20px, 4.5vw, 64px);
+  /* marges latérales qui respectent aussi l'encoche et les bords arrondis (iPhone en paysage) */
+  --gutter-l: max(var(--gutter), env(safe-area-inset-left, 0px));
+  --gutter-r: max(var(--gutter), env(safe-area-inset-right, 0px));
+  /* rythme vertical unique entre les grandes sections */
+  --section-y: clamp(48px, 7vw, 96px);
   --maxw: 1440px;
 
   /* --- Rayons : petits, "imprimés", rétro --- */
@@ -220,10 +225,11 @@ button, [role="button"], .chip, .btn, .tabbar a {
   width: 100%;
   max-width: var(--maxw);
   margin-inline: auto;
-  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-left: var(--gutter-l);
+  padding-right: var(--gutter-r);
 }
 
-.section { padding-block: clamp(40px, 7vw, 88px); }
+.section { padding-block: var(--section-y); }
 .section + .section { padding-top: 0; }
 
 .section-head {
