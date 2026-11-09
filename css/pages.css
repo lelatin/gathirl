@@ -92,7 +92,7 @@
 /* --- Carte de l'Oracle (illustration principale, inclinable) --- */
 .oracle-wrap {
   justify-self: center;
-  width: min(100%, 380px);
+  width: min(100%, 420px);
   perspective: 1000px;
 }
 .oracle {

@@ -74,8 +74,8 @@
   --space-6: 32px;
   --space-7: 48px;
   --space-8: 72px;
-  --gutter: clamp(16px, 4vw, 40px);
-  --maxw: 1180px;
+  --gutter: clamp(20px, 4.5vw, 64px);
+  --maxw: 1440px;
 
   /* --- Rayons : petits, "imprimés", rétro --- */
   --r-1: 3px;
