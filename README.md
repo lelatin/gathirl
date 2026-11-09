@@ -122,7 +122,7 @@ Le fichier `.nojekyll` évite que GitHub retraite les fichiers.
 - **Signatures** :
   - Titre « Magic » en **chrome coucher de soleil** années 80 ; soleil rayé et sol en grille synthwave derrière le héros.
   - Chaque partie est une **couverture de module d'aventure JDR des années 80** (d'après le tableau Pinterest « 1er de couverture JDR » : comics pulp, boîtes de JDR, livres-jeux) : parchemin clair à peine teinté par le format, encre sombre (lisibilité), filet et cartouche de code aux couleurs du format assourdies, cartouche de code (« C4 »), mention « Module d'aventure », titre à l'encre sombre, « par » l'organisateur·rice, ruban « Une partie dont VOUS êtes le héros ! » sur l'illustration encadrée, « Pour 4 aventuriers… », case des places et tampon « Complet ».
-  - Sous le héros, **4 cartouches façon interface de JDR 80s-90s** (panneau sombre, double filet doré, losanges aux coins, médaillon d'icône) servent de raccourcis, avec leur touche clavier.
+  - Sous le héros, **4 cartouches façon jaquette VHS 80s épurée** (d'après « Scream », Vestron Video) : noir mat, fenêtre ronde en bichromie violet → rose, titre rose peint, ligne de crédits + touche clavier encadrée ; disposition horizontale compacte sur téléphone.
   - Le profil est une **fiche de personnage** avec cases de caractéristiques.
   - Les places d'une partie sont des **jetons autour de la table**.
   - En-tête façon **terminal** (horloge, statut en ligne, raccourcis numérotés) et léger **grain + lignes de balayage CRT**.
