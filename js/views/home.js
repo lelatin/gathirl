@@ -22,7 +22,7 @@ export async function render(el, ctx) {
       <div class="wrap hero__grid">
         <div>
           <h1 class="hero__title">Trouvez votre prochaine partie de <span class="chrome">Magic</span></h1>
-          <p class="hero__lede">Découvrez des joueurs et des parties près de chez vous, rejoignez une table ou organisez la vôtre. <em>Commander, Modern, Draft</em> et plus encore.</p>
+          <p class="hero__lede">Gathirl, l'application pour trouver des joueurs et des parties près de chez vous, rejoignez une table ou organisez la vôtre. <em>Commander, Modern, Draft</em> et plus encore.</p>
           <div class="hero__ctas">
             <button type="button" class="btn btn--primary" data-action="create-partie">${icon("plus")} Organiser une partie</button>
             <a class="btn" href="#/parties">${icon("swords")} Voir les parties</a>
