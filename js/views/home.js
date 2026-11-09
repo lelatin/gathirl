@@ -261,47 +261,37 @@ function renderPoster(el, parties) {
     </article>`);
 }
 
-/* ---------- Interlude : château sur son piton, dragon, soleil couchant ---------- */
+/* ---------- Interlude : triptyque de fenêtres gothiques sous un ciel étoilé ---------- */
+const TRIPTYCH = [
+  { n: "I", art: "assets/img/art-07.webp", title: "Trouvez votre table", text: "Une boutique, un bar, un salon : quelque part près de chez vous, une place vous attend.", alt: "Une citadelle enneigée sous une aurore pourpre." },
+  { n: "II", art: "assets/img/art-05.webp", title: "Lancez les dés", text: "Mélangez, piochez sept cartes. Pour le reste, c'est le destin qui décide.", alt: "Une tour noire dressée sous une lune rouge." },
+  { n: "III", art: "assets/img/art-16.webp", title: "Écrivez votre légende", text: "Chaque partie jouée s'inscrit sur votre fiche. Les compagnons d'armes restent.", alt: "Des ruines gothiques au milieu d'un cimetière brumeux." },
+];
+
 function interlude() {
   return html`
-    <section class="interlude" aria-label="Interlude">
-      <svg class="interlude__scene" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#3a0f12"/><stop offset=".35" stop-color="#9e2f17"/><stop offset=".7" stop-color="#e2552c"/><stop offset="1" stop-color="#f39a4a"/>
-          </linearGradient>
-          <pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.1" fill="#000" opacity=".35"/></pattern>
-        </defs>
-        <rect width="1200" height="420" fill="url(#sky)"/>
-        <circle cx="830" cy="250" r="150" fill="#f3e6c9" opacity=".92"/>
-        <circle cx="830" cy="250" r="150" fill="url(#dots)"/>
-        <rect width="1200" height="420" fill="url(#dots)" opacity=".45"/>
-        <!-- montagnes lointaines -->
-        <path d="M0 330 L120 280 L210 305 L330 240 L430 290 L520 260 L600 300 L700 270 L780 310 L900 280 L1010 320 L1100 290 L1200 310 V420 H0Z" fill="#5a1a10" opacity=".85"/>
-        <!-- piton rocheux + château -->
-        <g fill="#0e0a13">
-          <path d="M560 420 L600 360 L640 330 L690 300 L720 250 L760 240 L800 250 L840 300 L880 330 L930 380 L960 420Z"/>
-          <path d="M0 420 V370 Q160 340 300 360 Q420 330 520 380 L560 420Z M960 420 L1040 370 Q1120 350 1200 360 V420Z"/>
-          <rect x="722" y="190" width="96" height="60"/>
-          <path d="M722 190 h10 v-10 h10 v10 h12 v-10 h10 v10 h12 v-10 h10 v10 h12 v-10 h10 v10 h10 v6 h-96z"/>
-          <rect x="730" y="140" width="22" height="60"/><path d="M726 140 L741 96 L756 140Z"/>
-          <rect x="758" y="100" width="28" height="100"/><path d="M753 100 L772 40 L791 100Z"/>
-          <rect x="792" y="150" width="20" height="50"/><path d="M788 150 L802 112 L816 150Z"/>
-          <path d="M772 40 v-14 l14 5 -14 5" />
-          <!-- dragon -->
-          <path d="M300 150 C318 138 334 134 350 138 L366 104 L376 132 L404 96 L410 134 L446 126 C428 144 404 152 380 154 L368 168 L356 158 C336 162 314 162 300 150Z M300 150 C284 146 268 150 252 166 C270 156 284 156 300 156Z"/>
-          <!-- oiseaux -->
-          <path d="M540 120 q8 -6 14 0 q6 -6 14 0 q-7 -3 -14 3 q-7 -6 -14 -3Z M590 150 q6 -5 11 0 q5 -5 11 0 q-6 -2 -11 2 q-5 -4 -11 -2Z"/>
-        </g>
-        <g fill="#f3c46b"><rect x="767" y="130" width="5" height="9"/><rect x="738" y="160" width="4" height="8"/><rect x="798" y="168" width="4" height="7"/></g>
-      </svg>
-      <div class="interlude__text wrap">
-        <p class="kicker" style="color:var(--cream)">Chapitre II · Les terres du crépuscule</p>
-        <p class="interlude__quote">Chaque table est un donjon.<br/>Chaque joueur, un allié.</p>
+    <section class="nightfall" aria-labelledby="nightfall-title">
+      <span class="nightfall__moon" aria-hidden="true"></span>
+      <div class="wrap nightfall__inner">
+        <p class="nightfall__vertical" aria-hidden="true">Chapitre II · Les terres du crépuscule</p>
+        <header class="nightfall__head">
+          <p class="kicker">Chapitre II · Les terres du crépuscule</p>
+          <h2 id="nightfall-title" class="nightfall__quote">Chaque table est un donjon. <em>Chaque joueur, un allié.</em></h2>
+        </header>
+        <ol class="triptych" role="list">
+          ${TRIPTYCH.map((w) => html`
+            <li class="window">
+              <div class="window__frame">
+                <div class="window__glass print"><img src="${w.art}" alt="${w.alt}" loading="lazy" width="720" height="540" /></div>
+                <span class="window__num">${w.n}</span>
+              </div>
+              <h3>${w.title}</h3>
+              <p>${w.text}</p>
+            </li>`)}
+        </ol>
       </div>
     </section>`;
 }
-
 /* ---------- Le d20 : le hasard choisit une table ---------- */
 function rollD20(btn, parties) {
   const open = parties.filter((p) => p.current_players < p.max_players);

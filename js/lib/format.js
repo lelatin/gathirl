@@ -40,8 +40,8 @@ export function hash(str) {
   return String(str).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
 }
 
-/* Illustration déterministe pour une partie (22 illustrations) */
-export const ART_COUNT = 22;
+/* Illustration déterministe pour une partie (21 illustrations) */
+export const ART_COUNT = 21;
 export function artFor(id) {
   const n = (hash(id) % ART_COUNT) + 1;
   return `assets/img/art-${String(n).padStart(2, "0")}.webp`;

@@ -129,7 +129,7 @@ Le fichier `.nojekyll` évite que GitHub retraite les fichiers.
   - D'après le tableau Pinterest *gathirl inspiration* (couvertures de poche 70s-80s, sérigraphie, palettes réduites) :
     - **trame d'impression** et grain sur toutes les illustrations (classe `.print`) ;
     - **« L'arcane de la semaine »** : affiche façon tarot / roman de poche, image en **bichromie vermillon** dans une **arche gothique**, numéro romain ;
-    - **interlude** sérigraphié : château sur son piton et dragon en silhouette devant un soleil géant, ciel crépusculaire (SVG dessiné à la main, 0 image).
+    - **interlude « Chapitre II »** : ciel nocturne étoilé avec nébuleuse pourpre et lune, et un **triptyque de fenêtres gothiques** (clé de voûte, croisée de vitrail) contenant des scènes peintes — I. Trouvez votre table, II. Lancez les dés, III. Écrivez votre légende. Carrousel au doigt sur mobile.
   - Palette étendue : `--vermilion`, `--teal`, `--moon`, `--cream`.
 
 Tous les jetons sont dans `css/base.css` (`:root`) : changez une couleur à un seul endroit.
