@@ -64,7 +64,6 @@ async function router() {
     mount(view, html`
       <div class="wrap lost">
         <svg class="empty__icon" style="width:72px;height:72px"><use href="#i-d20"/></svg>
-        <p class="kicker">Échec critique · 404</p>
         <h1>Vous vous êtes égaré·e</h1>
         <p class="muted">Ce chemin ne mène nulle part. Même l'Oracle ne le connaît pas.</p>
         <a class="btn btn--primary" href="#/">${icon("home")} Retour à la taverne</a>

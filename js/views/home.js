@@ -21,7 +21,6 @@ export async function render(el, ctx) {
     <section class="hero">
       <div class="wrap hero__grid">
         <div>
-          <p class="kicker hero__kicker">Chapitre I · La Taverne</p>
           <h1 class="hero__title">Trouvez votre prochaine partie de <span class="chrome">Magic</span></h1>
           <p class="hero__lede">Découvrez des joueurs et des parties près de chez vous, rejoignez une table ou organisez la vôtre. <em>Commander, Modern, Draft</em> et plus encore.</p>
           <div class="hero__ctas">
@@ -58,7 +57,7 @@ export async function render(el, ctx) {
 
     <section class="section wrap" aria-labelledby="voies-title">
       <div class="section-head">
-        <div><span class="kicker">Rendez-vous au paragraphe de votre choix</span><h2 id="voies-title">Choisissez votre voie</h2></div>
+        <div><h2 id="voies-title">Choisissez votre voie</h2></div>
         <span class="mono muted" style="font-size:12px;letter-spacing:.08em">CLAVIER : 1 – 4 · N</span>
       </div>
       <div class="paths">
@@ -96,7 +95,7 @@ export async function render(el, ctx) {
 
     <section class="section wrap" id="quetes" aria-labelledby="quetes-title">
       <div class="section-head">
-        <div><span class="kicker">Fil d'actualité</span><h2 id="quetes-title">Le tableau des quêtes</h2></div>
+        <div><h2 id="quetes-title">Le tableau des quêtes</h2></div>
         <span class="filters__count" data-count></span>
       </div>
       <div class="filters" data-filters></div>
@@ -214,7 +213,7 @@ function renderNear(el, parties, byPartie, me) {
   sec.hidden = false;
   mount(sec, html`
     <div class="section-head">
-      <div><span class="kicker">${icon("pin")} Autour de ${me.city}</span><h2 id="near-title">Près de chez vous</h2></div>
+      <div><h2 id="near-title">Près de chez vous</h2></div>
     </div>
     <div class="card-grid stagger">${near.map(({ p, d }, i) => partieCard(p, { participants: byPartie[p.id] || [], index: i, distance: d }))}</div>`);
 }
@@ -229,7 +228,7 @@ async function renderFriends(el, me) {
     const sec = $("[data-friends]", el);
     sec.hidden = false;
     mount(sec, html`
-      <div class="section-head"><div><span class="kicker">Votre groupe</span><h2 id="friends-title">Compagnons d'armes</h2></div></div>
+      <div class="section-head"><div><h2 id="friends-title">Compagnons d'armes</h2></div></div>
       <div class="friends-strip">
         ${profiles.map((u) => html`<a class="friend-chip" href="#/profil/${u.id}" title="${u.full_name}">${sigil(u, "lg")}<span>${u.full_name}</span></a>`)}
       </div>`);
@@ -253,7 +252,6 @@ function renderPoster(el, parties) {
         <span class="poster__num">${arcana}</span>
       </a>
       <div class="poster__body">
-        <p class="kicker">Arcane ${arcana} · La quête à ne pas manquer</p>
         <h2 class="poster__title"><a href="#/partie/${p.id}">${p.title}</a></h2>
         <p class="poster__blurb">${p.description ? p.description.split("\n")[0] : "Une table vous attend. Les dés sont prêts, les decks mélangés ; il ne manque que vous."}</p>
         <dl class="poster__facts">

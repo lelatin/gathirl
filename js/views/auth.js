@@ -21,7 +21,6 @@ export async function render(el, ctx) {
   mount(el, html`
     <div class="wrap pact">
       <div class="panel panel--corners pact__card">
-        <p class="kicker">${isSignup ? "Nouveau chapitre" : "Bon retour"}</p>
         <h1>${isSignup ? "Signer le pacte" : "Franchir la porte"}</h1>
         <p>${isSignup ? "Créez votre compte pour rejoindre et organiser des parties." : "Connectez-vous pour rejoindre vos tables."}</p>
 

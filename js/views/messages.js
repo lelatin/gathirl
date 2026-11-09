@@ -40,7 +40,6 @@ export async function renderInbox(el) {
 
     mount(el, html`
       <div class="wrap inbox">
-        <p class="kicker">Messagerie</p>
         <h1>Missives</h1>
         ${list.length ? html`
           <div class="inbox__list ${firstDraw ? "stagger" : ""}">

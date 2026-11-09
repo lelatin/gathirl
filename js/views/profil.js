@@ -69,7 +69,6 @@ export async function render(el, ctx) {
         <section class="panel panel--corners sheet__head">
           ${sigil(user, "lg")}
           <div class="sheet__id">
-            <p class="kicker">Fiche de personnage</p>
             <h1>${user.full_name || "Joueur"}</h1>
             <div class="sheet__meta">
               ${user.city ? html`<span>${icon("pin")} ${user.city}</span>` : ""}

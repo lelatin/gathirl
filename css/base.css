@@ -193,14 +193,6 @@ button, [role="button"], .chip, .btn, .tabbar a {
   letter-spacing: -0.01em;
   line-height: 0.95;
 }
-.kicker {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.kicker svg { display: inline-block; width: 1.1em; height: 1.1em; vertical-align: -0.2em; }
 .mono { font-family: var(--font-mono); }
 .muted { color: var(--muted); }
 .measure { max-width: 62ch; }
@@ -248,7 +240,6 @@ button, [role="button"], .chip, .btn, .tabbar a {
   line-height: 1;
   letter-spacing: -0.01em;
 }
-.section-head .kicker { display: block; margin-bottom: 6px; }
 
 /* =====================================================================
    Ambiance : écran cathodique (grain statique + lignes de balayage)
