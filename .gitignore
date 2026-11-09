@@ -1,0 +1,4 @@
+# Réglages locaux de l'éditeur / de Claude
+.claude/
+.DS_Store
+Thumbs.db
