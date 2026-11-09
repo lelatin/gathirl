@@ -190,15 +190,15 @@ async function renderFriends(el, me) {
 /* ---------- Les 4 cartes d'action (remplacent « Choisissez votre voie ») ----------
    Cartes à jouer façon carte à collectionner : chacune est un raccourci.
    La case F/E affiche la touche clavier correspondante. */
-/* Teintes tirées du dégradé du mot « Magic » (titre principal) */
+/* Toutes les cartouches partagent la teinte « or » du dégradé « Magic » */
 const ACTIONS = [
-  { title: "Rejoindre une table", href: "#/parties", art: "assets/img/art-14.webp", accent: "#ff6a3d", ic: "swords",
+  { title: "Rejoindre une table", href: "#/parties", art: "assets/img/art-14.webp", ic: "swords",
     text: "Parcourez le tableau des quêtes et prenez place à une partie ouverte.", go: "Voir les quêtes", key: "2" },
-  { title: "Dresser votre table", action: "create-partie", art: "assets/img/art-13.webp", accent: "#ffb35c", ic: "plus",
+  { title: "Dresser votre table", action: "create-partie", art: "assets/img/art-13.webp", ic: "plus",
     text: "Choisissez un format, un lieu, une date : les joueurs viendront à vous.", go: "Organiser", key: "N" },
-  { title: "Envoyer une missive", href: "#/messages", art: "assets/img/art-03.webp", accent: "#e3283a", ic: "scroll",
+  { title: "Envoyer une missive", href: "#/messages", art: "assets/img/art-03.webp", ic: "scroll",
     text: "Discutez avec les autres joueurs pour caler la partie ou échanger des cartes.", go: "Ouvrir les missives", key: "3" },
-  { title: "Forger votre fiche", href: "#/profil", art: "assets/img/art-10.webp", accent: "#a865e0", ic: "user",
+  { title: "Forger votre fiche", href: "#/profil", art: "assets/img/art-10.webp", ic: "user",
     text: "Niveau, formats préférés, ville : laissez les autres vous trouver.", go: "Voir ma fiche", key: "4" },
 ];
 
@@ -217,8 +217,8 @@ function actionCard(a) {
       <span class="tile__go">${a.go} ${icon("arrow")}<kbd class="tile__key" title="Raccourci clavier : ${a.key}">${a.key}</kbd></span>
     </span>`;
   return a.href
-    ? html`<a class="tile" href="${a.href}" style="--accent:${a.accent}">${inner}</a>`
-    : html`<button type="button" class="tile" data-action="${a.action}" style="--accent:${a.accent}">${inner}</button>`;
+    ? html`<a class="tile" href="${a.href}">${inner}</a>`
+    : html`<button type="button" class="tile" data-action="${a.action}">${inner}</button>`;
 }
 
 /* ---------- Le d20 : le hasard choisit une table ---------- */

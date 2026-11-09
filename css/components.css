@@ -418,7 +418,10 @@
 .module {
   --ink: #140c0e;
   --paper: color-mix(in oklab, var(--frame) 10%, #ebdfc6);          /* parchemin à peine teinté */
-  --tint: color-mix(in oklab, var(--frame) 62%, #2b1e1b);           /* couleur du format, assourdie */
+  /* Teinte vive tirée du dégradé « Magic » (braise, or, rouge, violet) selon le format ;
+     le fond parchemin, lui, reste piloté par --frame */
+  --tint: var(--magic, #ffb35c);
+  --on-tint: var(--magic-ink, #1a0e0a);
   position: relative;
   border-radius: 6px;
   color: var(--ink);
@@ -451,7 +454,7 @@
   display: grid; place-items: center;
   min-width: 40px; padding: 0 6px;
   background: var(--tint);
-  color: #f6ecd6;
+  color: var(--on-tint);
   border-radius: 3px;
   font: 700 15px/1 var(--font-mono);
 }
@@ -550,13 +553,21 @@
   display: grid; justify-items: center;
   min-width: 58px; padding: 5px 6px 4px;
   background: var(--tint);
-  color: #f6ecd6;
+  color: var(--on-tint);
   border-radius: 3px;
 }
 .module__seats b { font: 900 20px/1 var(--font-display); }
 .module__seats small { font: 700 10px/1.3 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8; }
 
 /* Halo du survol : calque fixe dont seule l'opacité change */
+/* Une teinte « Magic » par carte, choisie selon le format */
+.module.frame--commander, .module.frame--standard { --magic: #ffb35c; --magic-ink: #1a0e0a; }   /* or */
+.module.frame--draft, .module.frame--pauper       { --magic: #e3283a; --magic-ink: #fff4ea; }   /* rouge */
+.module.frame--pioneer, .module.frame--vintage,
+.module.frame--sealed                             { --magic: #ff6a3d; --magic-ink: #1a0e0a; }   /* orange braise */
+.module.frame--modern, .module.frame--legacy,
+.module.frame--cube                               { --magic: #a865e0; --magic-ink: #140a1c; }   /* violet */
+
 .module::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
   border-radius: inherit;
@@ -574,9 +585,9 @@
 /* =====================================================================
    Cartouches d'action (accueil) — dans la direction artistique du site :
    panneau d'encre (comme .panel), équerres d'angle (comme .panel--corners),
-   liseré au dégradé du mot « Magic », illustration imprimée (.print),
+   illustration imprimée (.print),
    titre gothique crème, libellé mono, touche clavier façon HUD.
-   Couleurs ajoutées : uniquement celles du dégradé « Magic » (--accent).
+   Teinte unique : l'or du dégradé « Magic » (--accent).
    ===================================================================== */
 .tiles {
   display: grid;
@@ -600,11 +611,6 @@
   overflow: hidden;
   isolation: isolate;
   transition: transform 160ms var(--ease-out);
-}
-/* Liseré coucher de soleil : le dégradé de « Magic », à l'horizontale */
-.tile::before {
-  content: ""; position: absolute; z-index: 3; left: 0; right: 0; top: 0; height: 3px;
-  background: linear-gradient(90deg, #fff7dc, #ffe39a 20%, #ffb35c 40%, #ff6a3d 58%, #e3283a 76%, #7a3fb0);
 }
 /* Équerre d'angle (bas gauche, loin de la touche clavier), à la teinte de la cartouche */
 .tile::after {
