@@ -42,8 +42,8 @@ export async function render(el, ctx) {
               <header class="tcard__name"><h3>L'Oracle du Gathirl</h3>
                 <span class="pips"><span class="pip pip--b">${icon("skull")}</span><span class="pip pip--r">${icon("flame")}</span></span>
               </header>
-              <div class="tcard__art print"><img src="assets/img/oracle.webp" alt="Une silhouette encapuchonnée tenant un bâton, sur un pont de pierre face à un portail runique et un vortex écarlate." width="720" height="960" fetchpriority="high" /></div>
-              <div class="tcard__type"><span>Créature légendaire — Gardien·ne</span>${icon("crown", "tcard__set")}</div>
+              <div class="tcard__art print"><img src="assets/img/oracle-moine.jpg" alt="Un moine encapuchonné tenant une torche, dans la fenêtre en arche gothique d'une tour crénelée, sous une lune rouge, en bichromie rouge et noire." width="720" height="891" fetchpriority="high" /></div>
+              <div class="tcard__type"><span>Créature légendaire — Moine écarlate</span>${icon("crown", "tcard__set")}</div>
               <div class="tcard__text">
                 <p style="font-size:14.5px">Au début de chaque semaine, révélez les tables ouvertes près de chez vous.</p>
                 <p class="tcard__flavor">« Vous n'êtes pas seul. Aventurez-vous. »</p>
