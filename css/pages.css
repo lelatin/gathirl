@@ -90,27 +90,23 @@
 }
 
 /* --- Carte de l'Oracle (illustration principale, inclinable) --- */
+/* Même gabarit que les cartes de partie (même largeur que la colonne de la grille,
+   même proportion d'illustration 4:3, mêmes tailles de texte) */
 .oracle-wrap {
   justify-self: center;
-  width: min(100%, 420px);
+  width: min(100%, 304px);
   perspective: 1000px;
+}
+/* Téléphone / tablette : même largeur que les cartes de la grille (pleine colonne) */
+@media (max-width: 899px) {
+  .oracle-wrap { width: min(100%, 420px); }
 }
 .oracle {
   --frame: var(--blood);
-  border-radius: 18px;
-  padding: 10px;
-  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
   transform-style: preserve-3d;
-  box-shadow: 0 0 0 1px #000, 0 40px 80px -30px rgb(0 0 0 / 0.95), 0 0 60px -20px rgb(227 40 58 / 0.55);
 }
-.oracle .tcard__name h3 { font-size: 22px; }
-.oracle .tcard__art { aspect-ratio: 3 / 3.4; }
-.oracle .tcard__text { padding-bottom: 34px; }
-.oracle .tcard__flavor { -webkit-line-clamp: unset; border: 0; margin: 0; padding: 0; font-size: 16px; color: #2e2224; }
-.oracle .tcard__pt { font-size: 22px; }
-@media (hover: hover) and (pointer: fine) {
-  .oracle:hover { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
-}
+/* Cadrage de l'illustration portrait sur le moine et sa fenêtre */
+.oracle .tcard__art img { object-position: 50% 42%; }
 
 /* =====================================================================
    TAVERNE — "Choisissez votre voie" (livre-jeu)

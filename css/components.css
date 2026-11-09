@@ -325,7 +325,7 @@
 
 .tcard__text {
   flex: 1;
-  padding: 10px 12px 26px;
+  padding: 10px 12px 36px;   /* réserve la place de la case joueurs (F/E) : aucun chevauchement */
   border-radius: 3px;
   background: linear-gradient(180deg, #efe3c8, #e1d1ad);
   color: #22191c;
