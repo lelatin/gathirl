@@ -122,7 +122,7 @@
   white-space: nowrap;
   border: 1px solid var(--line-2);
   box-shadow: 0 4px 0 var(--btn-edge);
-  transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out), background-color 150ms ease, color 150ms ease;
+  transition: transform 140ms var(--ease-out), background-color 150ms ease, color 150ms ease;
 }
 .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 /* Appui : le bouton "s'enfonce" (feedback immédiat au pointerdown) */
@@ -252,7 +252,8 @@
   background:
     linear-gradient(160deg, color-mix(in oklab, var(--frame), black 25%), color-mix(in oklab, var(--frame), black 65%));
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.9), var(--shadow-card);
-  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+  /* seul transform s'anime (GPU) ; l'ombre portée du survol est un calque en opacité */
+  transition: transform 200ms var(--ease-out);
   isolation: isolate;
 }
 .tcard__link { display: flex; flex-direction: column; height: 100%; border-radius: 9px; }
@@ -356,20 +357,30 @@
   box-shadow: 0 0 0 2px rgb(0 0 0 / 0.8), inset 0 1px 0 rgb(255 255 255 / 0.5);
 }
 
-/* Reflet "foil" qui suit le pointeur (décoratif, souris uniquement) */
-.tcard::after {
-  content: "";
+/* Reflet "foil" qui suit le pointeur (décoratif, souris uniquement).
+   Les variables --mx/--my sont posées sur cet élément SANS enfant : aucune
+   recalculation de style en cascade à chaque mouvement (animation-performance). */
+.tcard__foil {
   position: absolute; inset: 0; z-index: 2;
   border-radius: inherit;
   pointer-events: none;
   background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgb(255 240 210 / 0.22), transparent 45%),
               linear-gradient(115deg, transparent 30%, rgb(255 110 120 / 0.10) 45%, rgb(120 180 255 / 0.10) 55%, transparent 70%);
   opacity: 0;
-  transition: opacity 200ms ease;
+  transition: opacity 150ms ease;
+}
+/* Halo du survol : calque fixe dont seule l'opacité change (pas de box-shadow animé) */
+.tcard::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 28px 50px -20px rgb(0 0 0 / 0.9), 0 0 30px -10px color-mix(in oklab, var(--frame), transparent 40%);
+  opacity: 0;
+  transition: opacity 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .tcard:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px rgb(0 0 0 / 0.9), 0 28px 50px -20px rgb(0 0 0 / 0.9), 0 0 30px -10px color-mix(in oklab, var(--frame), transparent 40%); }
-  .tcard:hover::after { opacity: 1; }
+  .tcard:hover { transform: translateY(-4px); }
+  .tcard:hover::before, .tcard:hover .tcard__foil { opacity: 1; }
 }
 .tcard:active { transform: scale(0.985); }
 
@@ -529,6 +540,8 @@
 .modal[open] { display: flex; flex-direction: column; }
 @starting-style { .modal[open] { opacity: 0; transform: translateY(8px) scale(0.97); } }
 .modal.is-closing { opacity: 0; transform: scale(0.98); transition-duration: 140ms; }
+/* Ouverte par un raccourci clavier : instantanée (règle Raycast) */
+.modal--instant, .modal--instant::backdrop { transition: none !important; }
 
 .modal::backdrop {
   background: rgb(5 3 8 / 0.72);
@@ -638,7 +651,7 @@
   color: #fff6ea;
   box-shadow: 0 4px 0 var(--blood-deep), 0 0 24px rgb(227 40 58 / 0.5);
   border: 1px solid rgb(255 180 170 / 0.4);
-  transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+  transition: transform 140ms var(--ease-out);
 }
 .tabbar__cta svg { rotate: -45deg; width: 24px; height: 24px; }
 .tabbar__cta:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--blood-deep); }
@@ -669,12 +682,10 @@
 }
 @keyframes shimmer { to { background-position: -150% 0; } }
 
-/* Apparition au défilement (une seule fois, discrète) */
-.reveal { opacity: 0; transform: translateY(12px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
-.reveal.is-in { opacity: 1; transform: none; }
 
-/* Liste échelonnée (30–60 ms entre éléments) */
-.stagger > * { animation: rise 420ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 45ms); }
+/* Liste échelonnée : uniquement au premier affichage (jamais sur un filtre ni un rafraîchissement),
+   30 ms entre éléments, 240 ms au total maximum */
+.stagger > * { animation: rise 260ms var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 8) * 30ms); }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
 
 /* =====================================================================

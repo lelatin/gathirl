@@ -160,6 +160,27 @@ Tous les jetons sont dans `css/base.css` (`:root`) : changez une couleur à un s
 | Chiffres tabulaires, pluriels via `Intl.PluralRules`, dates absolues après une semaine | `lib/format.js` |
 | Avatars qui ne s'écrasent jamais (`flex-shrink: 0`), textes longs tronqués proprement | `.sigil`, cartes |
 
+### Audit n°2 (skills remove-animations, animation-performance, break-ui)
+
+| Avant | Après | Pourquoi |
+| --- | --- | --- |
+| Cartes ré-animées (cascade) à chaque clic de filtre | Cascade uniquement au premier affichage | Action fréquente : l'animation se lit comme un délai |
+| Cascade 45 ms/élément, 420 ms | 30 ms/élément, 260 ms, 240 ms max au total | Budget de cascade ≤ 300 ms |
+| Messagerie : toute la liste se ré-anime à chaque nouveau message | Uniquement au premier affichage | Mise à jour fréquente |
+| Bulle de message : glissement 220 ms | Fondu 150 ms | Réduction sur surface fréquente |
+| Section « Choisissez votre voie » révélée au défilement (500 ms) | Supprimé | Retient le contenu, aucune fonction |
+| Modale « Organiser » animée même ouverte avec **N** | Instantanée au clavier | Jamais d'animation sur une action clavier |
+| Survol des cartes : `box-shadow` animé (repeint à chaque image) | Calque d'ombre animé en `opacity` uniquement | Propriétés GPU seulement |
+| Boutons : `box-shadow` animé à l'appui | Seul `transform` s'anime | Idem |
+| Reflet *foil* : variable CSS écrite sur la carte à chaque mouvement de souris | Écrite sur un calque sans enfant, 1 fois par image max | Une variable sur un parent recalcule tous ses descendants |
+| Zoom au survol des illustrations (500–600 ms) | Supprimé | Décoration, au-delà du budget |
+| `will-change` permanent sur l'Oracle | Supprimé | À n'ajouter qu'en cas de saccade mesurée |
+| « 1 parties à venir », « 1 villes » | Pluriels via `Intl.PluralRules` | break-ui |
+| Initiale d'un nom commençant par un emoji = caractère cassé | Découpage par graphème (`Intl.Segmenter`) | break-ui |
+| Titre de 120 caractères sur l'affiche = 6 lignes géantes | 3 lignes max ; lieu 2 lignes max, valeur complète au survol | break-ui |
+| Textes tronqués illisibles | Attribut `title` sur chaque texte tronqué | break-ui |
+
+Gardé volontairement : appui des boutons (retour immédiat), toasts (évitent un changement brutal), tiroir mobile et modale (entrée/sortie occasionnelle), lancer du d20 (moment rare de plaisir), reflet foil (décoratif, souris uniquement, désactivé si mouvement réduit).
 **Accessibilité** : lien d'évitement, focus visible doré, `<dialog>` natif (focus piégé, Échap), combobox ARIA au clavier (↑ ↓ Entrée), `aria-current` sur la navigation, `aria-live` pour les toasts et messages, textes alternatifs.
 
 **Performance** : aucune dépendance en mode démo, Supabase chargé seulement s'il est configuré, illustrations WebP ~50 Ko en `loading="lazy"`, image principale préchargée, effet CRT statique (aucun calcul continu).

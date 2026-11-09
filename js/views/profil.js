@@ -109,7 +109,7 @@ export async function render(el, ctx) {
         ${mates.length ? html`
           <section class="sheet__section">
             <h2>${icon("users")} Compagnons (${mates.length})</h2>
-            <div class="friends-strip">${mates.map((u) => html`<a class="friend-chip" href="#/profil/${u.id}">${sigil(u)}<span>${u.full_name}</span></a>`)}</div>
+            <div class="friends-strip">${mates.map((u) => html`<a class="friend-chip" href="#/profil/${u.id}" title="${u.full_name}">${sigil(u)}<span>${u.full_name}</span></a>`)}</div>
           </section>` : ""}
 
         ${listSection("calendar", "Parties à venir", upcoming)}
@@ -149,7 +149,7 @@ function listSection(ic, title, items) {
       <div class="mini-list">${items.map((p) => html`
         <a class="mini" href="#/partie/${p.id}">
           <span class="mini__date"><strong class="tnum">${fmtDay(p.date)}</strong>${fmtMonth(p.date)}</span>
-          <span class="mini__body"><p>${p.title}</p><p>${p.format} · ${p.city} · ${fmtTime(p.date)}</p></span>
+          <span class="mini__body"><p title="${p.title}">${p.title}</p><p>${p.format} · ${p.city} · ${fmtTime(p.date)}</p></span>
           <span class="mini__count tnum">${p.current_players}/${p.max_players}</span>
         </a>`)}</div>
     </section>`;

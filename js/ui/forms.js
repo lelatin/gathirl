@@ -83,7 +83,7 @@ export function attachPlaceCombo(input, { cityOnly = false, onPick } = {}) {
 /* ---------------------------------------------------------------------
    Organiser une partie
    --------------------------------------------------------------------- */
-export function openCreatePartie({ onCreated } = {}) {
+export function openCreatePartie({ onCreated, instant = false } = {}) {
   const me = db.auth.user();
   if (!me) {
     toast("Connexion requise", "Signez le pacte pour organiser une partie.");
@@ -144,6 +144,7 @@ export function openCreatePartie({ onCreated } = {}) {
 
   openModal({
     title: "Organiser une partie",
+    instant,
     body,
     onMount(dlg, close) {
       const form = $("form", dlg);

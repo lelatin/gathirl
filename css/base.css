@@ -290,5 +290,4 @@ button, [role="button"], .chip, .btn, .tabbar a {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
   }
-  .reveal { transform: none !important; }
 }

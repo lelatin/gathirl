@@ -69,19 +69,3 @@ export const prefersReducedMotion = () =>
 
 export const canHover = () =>
   window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
-/** Révèle les éléments .reveal une seule fois quand ils entrent à l'écran */
-export function revealOnScroll(root = document) {
-  const els = $$(".reveal:not(.is-in)", root);
-  if (!("IntersectionObserver" in window) || prefersReducedMotion()) {
-    els.forEach((el) => el.classList.add("is-in"));
-    return () => {};
-  }
-  const io = new IntersectionObserver((entries) => {
-    for (const en of entries) {
-      if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); }
-    }
-  }, { rootMargin: "0px 0px -60px 0px" });
-  els.forEach((el) => io.observe(el));
-  return () => io.disconnect();
-}

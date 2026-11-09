@@ -4,12 +4,12 @@
    ===================================================================== */
 import { create, html, icon } from "../lib/dom.js";
 
-export function openModal({ title, body, onMount, label }) {
+export function openModal({ title, body, onMount, label, instant = false }) {
   const root = document.getElementById("modal-root");
   const opener = document.activeElement;
 
   const dlg = create(html`
-    <dialog class="modal" aria-label="${label || title}">
+    <dialog class="modal ${instant ? "modal--instant" : ""}" aria-label="${label || title}">
       <header class="modal__head">
         <h2>${title}</h2>
         <button type="button" class="btn btn--ghost btn--sm btn--icon" data-close aria-label="Fermer">${icon("x")}</button>
@@ -25,7 +25,7 @@ export function openModal({ title, body, onMount, label }) {
     dlg.classList.add("is-closing");
     const done = () => { dlg.close(); dlg.remove(); opener?.focus?.({ preventScroll: true }); };
     // Mouvement réduit : pas d'attente
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) done();
+    if (instant || window.matchMedia("(prefers-reduced-motion: reduce)").matches) done();
     else setTimeout(done, 220);
   };
 

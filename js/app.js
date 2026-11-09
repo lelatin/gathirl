@@ -130,7 +130,8 @@ document.addEventListener("keydown", (e) => {
   if (t.closest?.("input, textarea, select, [contenteditable], dialog")) return;
   const map = { "1": "#/", "2": "#/parties", "3": "#/messages", "4": "#/profil" };
   if (map[e.key]) { location.hash = map[e.key]; }
-  else if (e.key === "n" || e.key === "N") { e.preventDefault(); openCreatePartie(); }
+  // Ouverte au clavier = instantanée : on n'anime jamais une action clavier
+  else if (e.key === "n" || e.key === "N") { e.preventDefault(); openCreatePartie({ instant: true }); }
 });
 
 /* ---------------- Démarrage ---------------- */

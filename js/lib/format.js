@@ -32,8 +32,17 @@ export function sigil(user, size = "") {
   const c = SIGIL_COLORS[hash(user?.id || name) % SIGIL_COLORS.length];
   const inner = user?.avatar_url
     ? html`<img src="${user.avatar_url}" alt="" loading="lazy" />`
-    : name.trim().charAt(0).toUpperCase() || "?";
+    : initial(name);
   return html`<span class="sigil ${size ? "sigil--" + size : ""}" style="--c:${c}" aria-hidden="true">${inner}</span>`;
+}
+
+/** Première lettre affichable d'un nom (gère emojis et accents composés) */
+const seg = typeof Intl !== "undefined" && Intl.Segmenter ? new Intl.Segmenter("fr", { granularity: "grapheme" }) : null;
+export function initial(name) {
+  const s = String(name || "").trim();
+  if (!s) return "?";
+  const first = seg ? seg.segment(s)[Symbol.iterator]().next().value.segment : Array.from(s)[0];
+  return first.toLocaleUpperCase("fr");
 }
 
 export function hash(str) {

@@ -18,6 +18,7 @@ function guard() {
 export async function renderInbox(el) {
   if (!guard()) return;
 
+  let firstDraw = true;
   const draw = async () => {
     const me = db.auth.user();
     const msgs = await db.messages.mine().catch(() => []);
@@ -42,12 +43,12 @@ export async function renderInbox(el) {
         <p class="kicker">Messagerie</p>
         <h1>Missives</h1>
         ${list.length ? html`
-          <div class="inbox__list stagger">
+          <div class="inbox__list ${firstDraw ? "stagger" : ""}">
             ${list.map((c, i) => html`
               <a class="convo ${c.unread ? "is-unread" : ""}" href="#/messages/${c.pid}" style="--i:${Math.min(i, 8)}">
                 ${sigil({ id: c.pid, full_name: c.name })}
                 <span class="convo__body">
-                  <span class="convo__top"><p>${c.name}</p><time datetime="${c.last.created_at}">${fmtRelative(c.last.created_at)}</time></span>
+                  <span class="convo__top"><p title="${c.name}">${c.name}</p><time datetime="${c.last.created_at}">${fmtRelative(c.last.created_at)}</time></span>
                   <p class="convo__last">${c.last.sender_id === me.id ? "Vous : " : ""}${c.last.content}</p>
                 </span>
                 ${c.unread ? html`<span class="dot" aria-label="${c.unread} non lu(s)"></span>` : ""}
@@ -60,6 +61,7 @@ export async function renderInbox(el) {
             <a class="btn" href="#/parties">${icon("swords")} Parcourir les quêtes</a>
           </div>`}
       </div>`);
+    firstDraw = false;   // un nouveau message ne rejoue pas l'animation de toute la liste
   };
 
   await draw();
@@ -85,7 +87,7 @@ export async function renderThread(el, ctx) {
         <a class="thread__back" href="#/messages" aria-label="Retour aux missives">${icon("back")}</a>
         ${sigil(other || { id: otherId, full_name: "?" })}
         <div style="min-width:0">
-          <h1><a href="#/profil/${otherId}">${other?.full_name || "Joueur"}</a></h1>
+          <h1 title="${other?.full_name || ""}"><a href="#/profil/${otherId}">${other?.full_name || "Joueur"}</a></h1>
           ${other?.city ? html`<p>${other.city}</p>` : ""}
         </div>
       </header>

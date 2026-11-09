@@ -3,7 +3,7 @@
    Héros + carte de l'Oracle · Choisissez votre voie · Près de chez vous
    · Compagnons · Tableau des quêtes (filtres)
    ===================================================================== */
-import { $, $$, html, icon, mount, canHover, prefersReducedMotion, revealOnScroll } from "../lib/dom.js";
+import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js";
 import { FORMATS, LEVELS, artFor, fmtDate, fmtTime, levelPip, plural, sigil } from "../lib/format.js";
 import { distanceKm } from "../lib/geo.js";
 import { db } from "../data/index.js";
@@ -30,9 +30,9 @@ export async function render(el, ctx) {
             <button type="button" class="btn btn--ghost" data-roll title="Le dé choisit une partie au hasard">${icon("d20", "d20")} Lancer le d20</button>
           </div>
           <div class="hero__stats" data-stats aria-live="polite">
-            <span><strong class="tnum">–</strong>parties à venir</span>
-            <span><strong class="tnum">–</strong>villes</span>
-            <span><strong class="tnum">–</strong>aventurier·es inscrit·es</span>
+            <span><strong class="tnum">–</strong><span data-label>parties à venir</span></span>
+            <span><strong class="tnum">–</strong><span data-label>villes</span></span>
+            <span><strong class="tnum">–</strong><span data-label>aventurier·es inscrit·es</span></span>
           </div>
         </div>
 
@@ -50,12 +50,13 @@ export async function render(el, ctx) {
               </div>
             </div>
             <span class="tcard__pt">∞/∞</span>
+            <span class="tcard__foil" aria-hidden="true"></span>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section wrap reveal" aria-labelledby="voies-title">
+    <section class="section wrap" aria-labelledby="voies-title">
       <div class="section-head">
         <div><span class="kicker">Rendez-vous au paragraphe de votre choix</span><h2 id="voies-title">Choisissez votre voie</h2></div>
         <span class="mono muted" style="font-size:12px;letter-spacing:.08em">CLAVIER : 1 – 4 · N</span>
@@ -128,7 +129,6 @@ export async function render(el, ctx) {
   /* ---------- Interactions ---------- */
   const offFoil = enableFoil(el);
   const offTilt = oracleTilt($("[data-oracle]", el));
-  const offReveal = revealOnScroll(el);
 
   $("[data-filters]", el).addEventListener("click", (e) => {
     const b = e.target.closest("[data-f]");
@@ -137,7 +137,7 @@ export async function render(el, ctx) {
     if (f === "near") state.near = !state.near;
     else state[f] = state[f] === v || v === "" ? null : v;
     renderFilters(el, me);
-    renderGrid(el, parties, byPartie, me);
+    renderGrid(el, parties, byPartie, me, { animate: false });   // filtre = action fréquente : aucun échelonnement
   });
 
   $("[data-roll]", el).addEventListener("click", (e) => rollD20(e.currentTarget, parties));
@@ -145,7 +145,7 @@ export async function render(el, ctx) {
   if (ctx.query.get("organiser")) openCreatePartie();
   if (ctx.path === "/parties") requestAnimationFrame(() => $("#quetes", el)?.scrollIntoView({ block: "start" }));
 
-  return () => { offFoil(); offTilt(); offReveal(); };
+  return () => { offFoil(); offTilt(); };
 }
 
 /* ===================================================================== */
@@ -154,7 +154,14 @@ function renderStats(el, parties) {
   const cities = new Set(parties.map((p) => p.city?.trim().toLowerCase()).filter(Boolean));
   const players = parties.reduce((s, p) => s + (p.current_players || 0), 0);
   const vals = [parties.length, cities.size, players];
+  // Pluriels corrects : "1 partie à venir", "1 ville"…
+  const labels = [
+    plural(vals[0], "partie à venir", "parties à venir"),
+    plural(vals[1], "ville", "villes"),
+    plural(vals[2], "aventurier·e inscrit·e", "aventurier·es inscrit·es"),
+  ].map((s) => s.replace(/^\d+\s/, ""));
   $$("[data-stats] strong", el).forEach((s, i) => { s.textContent = vals[i]; });
+  $$("[data-stats] [data-label]", el).forEach((s, i) => { s.textContent = labels[i]; });
 }
 
 function renderFilters(el, me) {
@@ -172,7 +179,7 @@ function renderFilters(el, me) {
     </div>`);
 }
 
-function renderGrid(el, parties, byPartie, me) {
+function renderGrid(el, parties, byPartie, me, { animate = true } = {}) {
   const coords = me?.city_lat ? { lat: me.city_lat, lng: me.city_lng } : null;
   const list = parties.filter((p) =>
     (!state.format || p.format === state.format) &&
@@ -194,6 +201,7 @@ function renderGrid(el, parties, byPartie, me) {
     return;
   }
   grid.classList.add("card-grid");
+  grid.classList.toggle("stagger", animate);
   mount(grid, html`${list.map((p, i) => partieCard(p, { participants: byPartie[p.id] || [], index: Math.min(i, 8), distance: coords && p.location_lat ? distanceKm(coords.lat, coords.lng, p.location_lat, p.location_lng) : null }))}`);
 }
 
@@ -225,7 +233,7 @@ async function renderFriends(el, me) {
     mount(sec, html`
       <div class="section-head"><div><span class="kicker">Votre groupe</span><h2 id="friends-title">Compagnons d'armes</h2></div></div>
       <div class="friends-strip">
-        ${profiles.map((u) => html`<a class="friend-chip" href="#/profil/${u.id}">${sigil(u, "lg")}<span>${u.full_name}</span></a>`)}
+        ${profiles.map((u) => html`<a class="friend-chip" href="#/profil/${u.id}" title="${u.full_name}">${sigil(u, "lg")}<span>${u.full_name}</span></a>`)}
       </div>`);
   } catch { /* section facultative */ }
 }
@@ -253,7 +261,7 @@ function renderPoster(el, parties) {
         <dl class="poster__facts">
           <div><dt>Format</dt><dd>${p.format}</dd></div>
           <div><dt>Quand</dt><dd class="tnum">${fmtDate(p.date)} · ${fmtTime(p.date)}</dd></div>
-          <div><dt>Où</dt><dd>${p.city}${p.location ? ` · ${p.location}` : ""}</dd></div>
+          <div><dt>Où</dt><dd title="${p.city}${p.location ? ` · ${p.location}` : ""}">${p.city}${p.location ? ` · ${p.location}` : ""}</dd></div>
           <div><dt>Places</dt><dd class="tnum">${plural(left, "siège libre", "sièges libres")}</dd></div>
         </dl>
         <a class="btn btn--primary" href="#/partie/${p.id}">${icon("swords")} Prendre place</a>
@@ -317,6 +325,7 @@ function rollD20(btn, parties) {
 function oracleTilt(card) {
   if (!card || !canHover() || prefersReducedMotion()) return () => {};
   const wrap = card.parentElement;
+  const foil = card.querySelector(".tcard__foil");
   let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
 
   const tick = () => {
@@ -324,8 +333,9 @@ function oracleTilt(card) {
     cx += (tx - cx) * 0.12;
     cy += (ty - cy) * 0.12;
     card.style.transform = `rotateX(${cy.toFixed(2)}deg) rotateY(${cx.toFixed(2)}deg)`;
-    card.style.setProperty("--mx", `${50 + cx * 4}%`);
-    card.style.setProperty("--my", `${50 - cy * 4}%`);
+    // le reflet est piloté sur son propre calque, pas sur la carte (pas de recalcul en cascade)
+    foil?.style.setProperty("--mx", `${50 + cx * 4}%`);
+    foil?.style.setProperty("--my", `${50 - cy * 4}%`);
     if (Math.abs(tx - cx) > 0.01 || Math.abs(ty - cy) > 0.01) raf = requestAnimationFrame(tick);
     else raf = 0;
   };

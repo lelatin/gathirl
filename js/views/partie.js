@@ -2,7 +2,7 @@
    LA QUÊTE — détail d'une partie
    ===================================================================== */
 import { $, html, icon, mount } from "../lib/dom.js";
-import { artFor, fmtDateLong, fmtTime, manaCost, plural, sigil, fmtCountdown } from "../lib/format.js";
+import { artFor, fmtDateLong, fmtTime, initial, manaCost, plural, sigil, fmtCountdown } from "../lib/format.js";
 import { osmLink } from "../lib/geo.js";
 import { db } from "../data/index.js";
 import { toast } from "../ui/toast.js";
@@ -97,7 +97,7 @@ export async function render(el, ctx) {
               <div class="seats" aria-hidden="true">
                 ${Array.from({ length: p.max_players }, (_, i) => {
                   const r = roster[i];
-                  return r ? html`<span class="seat is-taken" title="${r.user_name}">${(r.user_name || "?").charAt(0).toUpperCase()}</span>` : html`<span class="seat">·</span>`;
+                  return r ? html`<span class="seat is-taken" title="${r.user_name}">${initial(r.user_name)}</span>` : html`<span class="seat">·</span>`;
                 })}
               </div>
               <p class="seats-caption"><strong class="tnum">${p.current_players}/${p.max_players}</strong> — ${full ? "complet" : plural(left, "siège libre", "sièges libres")}</p>
