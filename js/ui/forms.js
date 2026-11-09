@@ -183,7 +183,7 @@ export function openCreatePartie({ onCreated, instant = false } = {}) {
           return;
         }
         if (new Date(date) < new Date()) {
-          err.textContent = "La date doit être dans le futur — même les sorciers ne remontent pas le temps.";
+          err.textContent = "La date doit être dans le futur : même les sorciers ne remontent pas le temps.";
           err.hidden = false;
           return;
         }

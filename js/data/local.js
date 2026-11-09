@@ -17,6 +17,11 @@ function load() {
   try {
     const raw = localStorage.getItem(KEY);
     mem = raw ? JSON.parse(raw) : seed();
+    // Première visite : on enregistre tout de suite les données d'exemple, sinon
+    // elles seraient régénérées (nouveaux identifiants, illustrations) à chaque chargement
+    if (!raw) { try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch {} }
+    // Migration : plus de tiret long dans les titres enregistrés
+    mem.parties?.forEach((p) => { if (p.title?.includes(" — ")) p.title = p.title.replaceAll(" — ", " · "); });
   } catch {
     mem = seed();
   }
@@ -60,7 +65,7 @@ function seed() {
   const P = (o) => ({ id: uid(), status: "ouvert", created_at: now(), location_address: "", description: "", ...o });
   const parties = [
     P({ title: "Commander du vendredi soir", format: "Commander", level: "Casual", date: at(2, 20), city: "Lyon", location: "Le Dé Pipé", location_lat: 45.7597, location_lng: 4.8422, max_players: 4, current_players: 3, host_id: "u-yanis", host_name: "Yanis B.", description: "Tables à 4, power level 6-7. Pas de combo infini au tour 3 s'il vous plaît 🙏\nBoissons sur place." }),
-    P({ title: "Draft Bloomburrow — 8 joueurs", format: "Draft", level: "Débutant", date: at(4, 14), city: "Bordeaux", location: "Ludothèque des Chartrons", location_lat: 44.8530, location_lng: -0.5700, max_players: 8, current_players: 5, host_id: "u-clem", host_name: "Clémence R.", description: "Draft pour débutant·es, on explique les règles du draft avant de commencer. Boosters à prévoir (ou à acheter sur place)." }),
+    P({ title: "Draft Bloomburrow · 8 joueurs", format: "Draft", level: "Débutant", date: at(4, 14), city: "Bordeaux", location: "Ludothèque des Chartrons", location_lat: 44.8530, location_lng: -0.5700, max_players: 8, current_players: 5, host_id: "u-clem", host_name: "Clémence R.", description: "Draft pour débutant·es, on explique les règles du draft avant de commencer. Boosters à prévoir (ou à acheter sur place)." }),
     P({ title: "Préparation RCQ Modern", format: "Modern", level: "Compétitif", date: at(5, 19, 30), city: "Paris", location: "Taverne du Gobelin", location_lat: 48.8625, location_lng: 2.3601, max_players: 6, current_players: 2, host_id: "u-morgane", host_name: "Morgane L.", description: "Testing sérieux en BO3. Apportez vos sideboards et votre meilleure mauvaise foi." }),
     P({ title: "Pauper & pizzas", format: "Pauper", level: "Casual", date: at(7, 19), city: "Lille", location: "Chez Tom (Vieux-Lille)", location_lat: 50.6400, location_lng: 3.0630, max_players: 4, current_players: 4, status: "complet", host_id: "u-tom", host_name: "Tom D.", description: "Complet cette semaine, mais revenez la prochaine !" }),
     P({ title: "Ligue Pioneer du jeudi", format: "Pioneer", level: "Compétitif", date: at(9, 19), city: "Nantes", location: "L'Antre du Dragon", location_lat: 47.2130, location_lng: -1.5560, max_players: 12, current_players: 7, host_id: "u-ines", host_name: "Inès K.", description: "Format suisse, 4 rondes. Lots pour le top 4." }),

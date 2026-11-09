@@ -100,7 +100,7 @@ export async function render(el, ctx) {
                   return r ? html`<span class="seat is-taken" title="${r.user_name}">${initial(r.user_name)}</span>` : html`<span class="seat">·</span>`;
                 })}
               </div>
-              <p class="seats-caption"><strong class="tnum">${p.current_players}/${p.max_players}</strong> — ${full ? "complet" : plural(left, "siège libre", "sièges libres")}</p>
+              <p class="seats-caption"><strong class="tnum">${p.current_players}/${p.max_players}</strong> · ${full ? "complet" : plural(left, "siège libre", "sièges libres")}</p>
               <div style="display:grid;gap:8px;margin-top:16px">${cta}</div>
             </div>
 

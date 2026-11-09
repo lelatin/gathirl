@@ -56,7 +56,7 @@ export async function renderInbox(el) {
           <div class="empty" style="margin-top:24px">
             <svg class="empty__icon"><use href="#i-scroll"/></svg>
             <h3>Aucun message</h3>
-            <p>Visitez le profil d'un joueur — ou l'organisateur·rice d'une partie — pour démarrer une conversation.</p>
+            <p>Visitez le profil d'un joueur, ou de l'organisateur·rice d'une partie, pour démarrer une conversation.</p>
             <a class="btn" href="#/parties">${icon("swords")} Parcourir les quêtes</a>
           </div>`}
       </div>`);

@@ -10,7 +10,7 @@ Ce dépôt est la **réécriture complète** de l'app Base44 (`gathirl.base44.ap
 
 | Fonction | Base44 | Ici |
 | --- | --- | --- |
-| Fil des parties à venir (format, niveau, ville, lieu, joueurs, inscrits) | ✅ | ✅ jaquettes de cassettes VHS années 80 |
+| Fil des parties à venir (format, niveau, ville, lieu, joueurs, inscrits) | ✅ | ✅ couvertures de modules d'aventure JDR années 80 |
 | Organiser une partie (titre, format, niveau, date, ville, lieu avec recherche d'adresse, joueurs max, description) | ✅ | ✅ |
 | Rejoindre une partie (complet / déjà inscrit) | ✅ | ✅ + **se désister**, **annuler** (hôte) |
 | Section « Près de chez vous » (10 km) | ✅ | ✅ + filtre de distance |
@@ -121,7 +121,7 @@ Le fichier `.nojekyll` évite que GitHub retraite les fichiers.
 - **Typographies** : *Grenze Gotisch* (titres, gothique lisible de pochette d'album), *Spectral* (texte, serif de livre), *Space Mono* (interface, esprit terminal).
 - **Signatures** :
   - Titre « Magic » en **chrome coucher de soleil** années 80 ; soleil rayé et sol en grille synthwave derrière le héros.
-  - Chaque partie est une **jaquette de cassette VHS des années 80** : tranche verticale avec logo VHS, case de classification = niveau (DÉB · CAS · CMP), autocollant de vidéoclub (compte à rebours ou « Complet »), bandes rétro et titre chromé aux couleurs néon du format, **compteur de magnétoscope** vert = joueurs inscrits / places.
+  - Chaque partie est une **couverture de module d'aventure JDR des années 80** (d'après le tableau Pinterest « 1er de couverture JDR » : comics pulp, boîtes de JDR, livres-jeux) : aplat de couleur néon du format sur papier usé, cartouche de code (« C4 »), mention « Module d'aventure », grand titre épais à contour noir, « par » l'organisateur·rice, ruban « Une partie dont VOUS êtes le héros ! » sur l'illustration encadrée, « Pour 4 aventuriers… », case des places et tampon « Complet ».
   - Sous le héros, **4 cartes de jeu** façon carte à collectionner servent de raccourcis (Rejoindre une table, Dresser votre table, Envoyer une missive, Forger votre fiche) ; la case F/E affiche la touche clavier.
   - Le profil est une **fiche de personnage** avec cases de caractéristiques.
   - Les places d'une partie sont des **jetons autour de la table**.

@@ -24,7 +24,7 @@ export async function render(el, ctx) {
         <h1>${isSignup ? "Signer le pacte" : "Franchir la porte"}</h1>
         <p>${isSignup ? "Créez votre compte pour rejoindre et organiser des parties." : "Connectez-vous pour rejoindre vos tables."}</p>
 
-        ${demo ? html`<p class="demo-note">✦ MODE DÉMO — votre compte est stocké uniquement dans ce navigateur. ${!isSignup ? "Pas encore de compte ? Inscrivez-vous en 10 secondes." : ""}</p>` : ""}
+        ${demo ? html`<p class="demo-note">✦ MODE DÉMO : votre compte est stocké uniquement dans ce navigateur. ${!isSignup ? "Pas encore de compte ? Inscrivez-vous en 10 secondes." : ""}</p>` : ""}
 
         ${!demo && CONFIG.GOOGLE_AUTH ? html`
           <button type="button" class="btn btn--block" data-google>${icon("google")} Continuer avec Google</button>

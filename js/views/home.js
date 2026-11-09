@@ -32,9 +32,9 @@ export async function render(el, ctx) {
 
         <!-- Les chiffres sont hors du bloc texte : l'Oracle se centre sur « Trouvez votre… » → boutons -->
         <div class="hero__stats" data-stats aria-live="polite">
-          <span><strong class="tnum">–</strong><span data-label>parties à venir</span></span>
-          <span><strong class="tnum">–</strong><span data-label>villes</span></span>
-          <span><strong class="tnum">–</strong><span data-label>aventurier·es inscrit·es</span></span>
+          <span><strong class="tnum">0</strong><span data-label>parties à venir</span></span>
+          <span><strong class="tnum">0</strong><span data-label>villes</span></span>
+          <span><strong class="tnum">0</strong><span data-label>aventurier·es inscrit·es</span></span>
         </div>
 
         <div class="oracle-wrap">
@@ -44,7 +44,7 @@ export async function render(el, ctx) {
                 <span class="pips"><span class="pip pip--b">${icon("skull")}</span><span class="pip pip--r">${icon("flame")}</span></span>
               </header>
               <div class="tcard__art print"><img src="assets/img/oracle-moine.jpg" alt="Un moine encapuchonné tenant une torche, dans la fenêtre en arche gothique d'une tour crénelée, sous une lune rouge, en bichromie rouge et noire." width="720" height="891" fetchpriority="high" /></div>
-              <div class="tcard__type"><span>Créature légendaire — Moine écarlate</span>${icon("crown", "tcard__set")}</div>
+              <div class="tcard__type"><span>Créature légendaire · Moine écarlate</span>${icon("crown", "tcard__set")}</div>
               <div class="tcard__text">
                 <p style="font-size:14.5px">Au début de chaque semaine, révélez les tables ouvertes près de chez vous.</p>
                 <p class="tcard__flavor">« Vous n'êtes pas seul. Aventurez-vous. »</p>
@@ -61,7 +61,6 @@ export async function render(el, ctx) {
       <div class="action-cards">${ACTIONS.map(actionCard)}</div>
     </section>
 
-    <section class="section wrap" data-near hidden aria-labelledby="near-title"></section>
     <section class="section wrap" data-friends hidden aria-labelledby="friends-title"></section>
 
     <section class="section wrap" id="quetes" aria-labelledby="quetes-title">
@@ -90,7 +89,6 @@ export async function render(el, ctx) {
   renderStats(el, parties);
   renderFilters(el, me);
   renderGrid(el, parties, byPartie, me);
-  renderNear(el, parties, byPartie, me);
   renderFriends(el, me);
 
   /* ---------- Interactions ---------- */
@@ -172,22 +170,6 @@ function renderGrid(el, parties, byPartie, me, { animate = true } = {}) {
   mount(grid, html`${list.map((p, i) => partieCard(p, { participants: byPartie[p.id] || [], index: Math.min(i, 8), distance: coords && p.location_lat ? distanceKm(coords.lat, coords.lng, p.location_lat, p.location_lng) : null }))}`);
 }
 
-function renderNear(el, parties, byPartie, me) {
-  const sec = $("[data-near]", el);
-  if (!me?.city_lat) return;
-  const near = parties
-    .map((p) => ({ p, d: p.location_lat ? distanceKm(me.city_lat, me.city_lng, p.location_lat, p.location_lng) : Infinity }))
-    .filter((x) => x.d <= CONFIG.NEARBY_RADIUS_KM)
-    .slice(0, 3);
-  if (!near.length) return;
-  sec.hidden = false;
-  mount(sec, html`
-    <div class="section-head">
-      <div><h2 id="near-title">Près de chez vous</h2></div>
-    </div>
-    <div class="card-grid stagger">${near.map(({ p, d }, i) => partieCard(p, { participants: byPartie[p.id] || [], index: i, distance: d }))}</div>`);
-}
-
 async function renderFriends(el, me) {
   if (!me) return;
   try {
@@ -210,13 +192,13 @@ async function renderFriends(el, me) {
    La case F/E affiche la touche clavier correspondante. */
 const ACTIONS = [
   { title: "Rejoindre une table", href: "#/parties", art: "assets/img/art-14.webp", frame: "#ff3d4f", pip: "r", pipIcon: "flame",
-    type: "Rituel — Quête", text: "Parcourez le tableau des quêtes et prenez place à une partie ouverte.", flavor: "« Une chaise libre est une invitation. »", key: "2" },
+    type: "Rituel · Quête", text: "Parcourez le tableau des quêtes et prenez place à une partie ouverte.", flavor: "« Une chaise libre est une invitation. »", key: "2" },
   { title: "Dresser votre table", action: "create-partie", art: "assets/img/art-13.webp", frame: "#ffb62e", pip: "w", pipIcon: "sun",
-    type: "Enchantement — Rassemblement", text: "Choisissez un format, un lieu, une date : les joueurs viendront à vous.", flavor: "« Qui plante l'étendard réunit la guilde. »", key: "N" },
+    type: "Enchantement · Rassemblement", text: "Choisissez un format, un lieu, une date : les joueurs viendront à vous.", flavor: "« Qui plante l'étendard réunit la guilde. »", key: "N" },
   { title: "Envoyer une missive", href: "#/messages", art: "assets/img/art-03.webp", frame: "#2fa8ff", pip: "u", pipIcon: "drop",
-    type: "Éphémère — Parchemin", text: "Discutez avec les autres joueurs pour caler la partie ou échanger des cartes.", flavor: "« Les corbeaux ne se perdent jamais. »", key: "3" },
+    type: "Éphémère · Parchemin", text: "Discutez avec les autres joueurs pour caler la partie ou échanger des cartes.", flavor: "« Les corbeaux ne se perdent jamais. »", key: "3" },
   { title: "Forger votre fiche", href: "#/profil", art: "assets/img/art-10.webp", frame: "#2fd47a", pip: "g", pipIcon: "leaf",
-    type: "Artefact — Grimoire", text: "Niveau, formats préférés, ville : laissez les autres vous trouver.", flavor: "« Chaque légende commence par un nom. »", key: "4" },
+    type: "Artefact · Grimoire", text: "Niveau, formats préférés, ville : laissez les autres vous trouver.", flavor: "« Chaque légende commence par un nom. »", key: "4" },
 ];
 
 function actionCard(a) {
