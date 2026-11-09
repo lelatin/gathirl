@@ -22,11 +22,6 @@ export async function render(el, ctx) {
       <div class="wrap hero__grid">
         <div class="hero__text">
           <p class="logo logo--hero" aria-label="Gathirl">
-            <svg class="logo__sigil" viewBox="0 0 32 32" aria-hidden="true">
-              <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.4"/>
-              <circle cx="16" cy="16" r="9.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2.4"/>
-              <path d="M16 4.5 18.2 13.8 27.5 16l-9.3 2.2L16 27.5l-2.2-9.3L4.5 16l9.3-2.2Z" fill="currentColor"/>
-            </svg>
             <span class="logo__word" aria-hidden="true">Gathirl</span>
           </p>
           <h1 class="hero__title">Trouvez votre prochaine partie <span class="chrome">Magic</span></h1>

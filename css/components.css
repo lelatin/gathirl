@@ -101,9 +101,11 @@
 .logo__word::before { top: 0; left: 12%; right: 0; }
 .logo__word::after { bottom: 0; left: 0; right: 12%; }
 .logo__word--sm { font-size: 18px; }
-/* Logo du héros (au-dessus du titre principal) : même sceau, en plus grand */
+/* Logo du héros (au-dessus du titre principal) : le mot « Gathirl » seul, en plus grand */
 .logo--hero { gap: 14px; margin-bottom: var(--space-5); }
-.logo--hero .logo__sigil { width: 44px; height: 44px; }
+/* logo typographique seul : ni sceau ni barres */
+.logo--hero .logo__word { padding-block: 0; }
+.logo--hero .logo__word::before, .logo--hero .logo__word::after { display: none; }
 .logo--hero .logo__word { font-size: clamp(32px, 2.4rem + 0.8vw, 44px); }
 
 /* =====================================================================
