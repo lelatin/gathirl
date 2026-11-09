@@ -13,7 +13,7 @@ Ce dépôt est la **réécriture complète** de l'app Base44 (`gathirl.base44.ap
 | Fil des parties à venir (format, niveau, ville, lieu, joueurs, inscrits) | ✅ | ✅ couvertures de modules d'aventure JDR années 80 |
 | Organiser une partie (titre, format, niveau, date, ville, lieu avec recherche d'adresse, joueurs max, description) | ✅ | ✅ |
 | Rejoindre une partie (complet / déjà inscrit) | ✅ | ✅ + **se désister**, **annuler** (hôte) |
-| Section « Près de chez vous » (10 km) | ✅ | ✅ + filtre de distance |
+| Section « Près de chez vous » (10 km) | ✅ | Remplacée par le filtre « À moins de 10 km » du tableau des quêtes |
 | Profil : niveau, ville, formats préférés, bio, stats, historique | ✅ | ✅ « fiche de personnage » façon D&D |
 | Amis : demande, accepter, refuser, liste | ✅ | ✅ « compagnons d'armes » |
 | Messagerie privée temps réel, non-lus | ✅ | ✅ « missives » |
