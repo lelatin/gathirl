@@ -21,9 +21,6 @@ export async function render(el, ctx) {
     <section class="hero">
       <div class="wrap hero__grid">
         <div class="hero__text">
-          <p class="logo logo--hero" aria-label="Gathirl">
-            <span class="logo__word" aria-hidden="true">Gathirl</span>
-          </p>
           <h1 class="hero__title">Trouvez votre prochaine partie <span class="chrome">Magic</span></h1>
           <p class="hero__lede">L'application pour trouver des joueurs et des parties près de chez vous, rejoignez une partie ou organisez la vôtre.</p>
           <div class="hero__ctas">

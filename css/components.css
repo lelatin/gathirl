@@ -81,7 +81,6 @@
 
 /* --- Logo --- */
 .logo { display: inline-flex; align-items: center; gap: 10px; color: var(--blood); flex-shrink: 0; }
-.logo__sigil { width: 28px; height: 28px; filter: drop-shadow(0 0 6px rgb(227 40 58 / 0.6)); }
 .logo__word {
   font-family: var(--font-display);
   font-weight: 700;
@@ -90,23 +89,8 @@
   line-height: 1;
   color: #ff4a57;
   text-shadow: 0 0 1px #ffb3b8, 0 0 12px rgb(227 40 58 / 0.75), 0 0 28px rgb(227 40 58 / 0.35);
-  position: relative;
-  padding-block: 3px;
 }
-/* Barres au-dessus/en-dessous, clin d'œil aux génériques 80s */
-.logo__word::before, .logo__word::after {
-  content: ""; position: absolute; height: 1.5px; background: var(--blood);
-  box-shadow: 0 0 8px rgb(227 40 58 / 0.8);
-}
-.logo__word::before { top: 0; left: 12%; right: 0; }
-.logo__word::after { bottom: 0; left: 0; right: 12%; }
 .logo__word--sm { font-size: 18px; }
-/* Logo du héros (au-dessus du titre principal) : le mot « Gathirl » seul, en plus grand */
-.logo--hero { gap: 14px; margin-bottom: var(--space-5); }
-/* logo typographique seul : ni sceau ni barres */
-.logo--hero .logo__word { padding-block: 0; }
-.logo--hero .logo__word::before, .logo--hero .logo__word::after { display: none; }
-.logo--hero .logo__word { font-size: clamp(32px, 2.4rem + 0.8vw, 44px); }
 
 /* =====================================================================
    Boutons — rétro "imprimés" avec ombre portée dure
