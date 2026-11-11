@@ -98,6 +98,8 @@ Si `SUPABASE_URL` est vide dans `js/config.js`, tout est stocké **dans le navig
 
 ## Publier sur GitHub Pages
 
+> **Avant chaque mise en ligne**, lancez `bash tools/bump-version.sh` : il ajoute un numéro de version (`?v=…`) à tous les scripts et styles. Sans lui, un navigateur peut garder d'anciens fichiers pendant 10 minutes et mélanger ancienne et nouvelle version (par exemple une page inconnue qui affiche « Vous vous êtes égaré·e »).
+
 1. Créez un dépôt `gathirl` sur GitHub.
 2. Envoyez ces fichiers :
    - **Sans ligne de commande** : sur la page du dépôt, *Add file → Upload files*, glissez tout le contenu du dossier (sauf `.claude/`) → *Commit*. Ou utilisez **GitHub Desktop**.
