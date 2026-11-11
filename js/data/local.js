@@ -124,6 +124,8 @@ export const localAdapter = {
     },
 
     async signInWithGoogle() { throw new Error("Indisponible en mode démo."); },
+    async providers() { return []; },
+    async signInWithProvider() { throw new Error("Indisponible en mode démo."); },
     async resetPassword() { throw new Error("Indisponible en mode démo."); },
 
     async signOut() { db().session = null; save(); },

@@ -624,3 +624,9 @@
 
 /* Lien vers le lore depuis la carte de l'Oracle */
 .tcard__lore { display: inline-block; margin-top: 8px; font: 700 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: #8f1222; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Connexion via Google, GitHub, Apple (affichés seulement s'ils sont activés dans Supabase) */
+.oauth { display: grid; gap: 10px; margin-bottom: var(--space-2); }
+.oauth__btn svg { width: 18px; height: 18px; }
+.oauth__btn--apple { background: #000; border-color: #000; color: #fff; }   /* style imposé par Apple */
+.oauth__btn--google { background: #fff; border-color: #fff; color: #1f1f1f; }

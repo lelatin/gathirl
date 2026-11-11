@@ -3,11 +3,23 @@
    Remplace Base44. Activé dès que js/config.js contient une URL + clé.
    Le schéma correspondant se trouve dans supabase/schema.sql.
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611120046";
-import { isNative } from "../lib/native.js?v=202611120046";
+import { CONFIG } from "../config.js?v=202611120058";
+import { isNative } from "../lib/native.js?v=202611120058";
 
 // Lien des e-mails (confirmation, connexion) : le site public, même depuis l'app
 const returnUrl = () => (isNative() ? CONFIG.PUBLIC_URL : location.origin + location.pathname);
+
+// Retour dans l'application après une connexion Google / GitHub / Apple
+const APP_RETURN = "fr.gathirl.app://auth";
+function listenForAppReturn() {
+  const app = window.Capacitor?.Plugins?.App;
+  app?.addListener?.("appUrlOpen", async ({ url }) => {
+    if (!url?.startsWith(APP_RETURN)) return;
+    const code = new URL(url.replace("fr.gathirl.app://", "https://app.local/")).searchParams.get("code");
+    window.Capacitor?.Plugins?.Browser?.close?.().catch?.(() => {});
+    if (code) await sb.auth.exchangeCodeForSession(code);
+  });
+}
 
 const SUPABASE_ESM = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
 
@@ -50,9 +62,13 @@ export const supabaseAdapter = {
   async init() {
     const { createClient } = await import(SUPABASE_ESM);
     sb = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      // PKCE : le fournisseur renvoie « ?code=… » (compatible avec le routeur à #), échangé contre une session
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" },
     });
     const { data: { session } } = await sb.auth.getSession();
+    // Retour d'un fournisseur (Google, GitHub, Apple) : on retire le code de l'adresse
+    if (/[?&](code|error)=/.test(location.search)) history.replaceState(null, "", location.pathname + location.hash);
+    if (isNative()) listenForAppReturn();
     await loadProfile(session?.user?.id);
 
     sb.auth.onAuthStateChange(async (_evt, s) => {
@@ -92,8 +108,27 @@ export const supabaseAdapter = {
       return { user: profile, needsConfirmation: !data.session };
     },
 
-    async signInWithGoogle() {
-      check(await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: returnUrl() } }));
+    /** Fournisseurs de connexion activés dans Supabase (Authentication → Sign In / Providers) */
+    async providers() {
+      try {
+        const r = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/settings`, { headers: { apikey: CONFIG.SUPABASE_ANON_KEY } });
+        const ext = (await r.json()).external || {};
+        return ["google", "github", "apple"].filter((p) => ext[p]);
+      } catch { return []; }
+    },
+
+    /** Connexion via Google, GitHub ou Apple */
+    async signInWithProvider(provider) {
+      if (!isNative()) {
+        check(await sb.auth.signInWithOAuth({ provider, options: { redirectTo: returnUrl() } }));
+        return;
+      }
+      // App : la page du fournisseur s'ouvre dans le navigateur du téléphone,
+      // puis revient dans l'app par le lien fr.gathirl.app://auth
+      const data = check(await sb.auth.signInWithOAuth({ provider, options: { redirectTo: APP_RETURN, skipBrowserRedirect: true } }));
+      const browser = window.Capacitor?.Plugins?.Browser;
+      if (browser) await browser.open({ url: data.url, presentationStyle: "popover" });
+      else location.href = data.url;
     },
 
     async resetPassword(email) {

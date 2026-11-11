@@ -1,10 +1,12 @@
 /* =====================================================================
    LE PACTE — connexion & inscription
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611120046";
-import { db } from "../data/index.js?v=202611120046";
-import { CONFIG } from "../config.js?v=202611120046";
-import { toast } from "../ui/toast.js?v=202611120046";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611120058";
+import { db } from "../data/index.js?v=202611120058";
+import { CONFIG } from "../config.js?v=202611120058";
+import { toast } from "../ui/toast.js?v=202611120058";
+
+const PROVIDER_NAMES = { google: "Google", github: "GitHub", apple: "Apple" };
 
 function safeReturn(q) {
   const r = q.get("retour") || "#/";
@@ -26,9 +28,8 @@ export async function render(el, ctx) {
 
         ${demo ? html`<p class="demo-note">✦ MODE DÉMO : votre compte est stocké uniquement dans ce navigateur. ${!isSignup ? "Pas encore de compte ? Inscrivez-vous en 10 secondes." : ""}</p>` : ""}
 
-        ${!demo && CONFIG.GOOGLE_AUTH ? html`
-          <button type="button" class="btn btn--block" data-google>${icon("google")} Continuer avec Google</button>
-          <p class="pact__sep">ou</p>` : ""}
+        <!-- Google, GitHub, Apple : seulement ceux activés dans Supabase -->
+        <div class="oauth" data-oauth hidden></div>
 
         <form class="form" novalidate>
           ${isSignup ? html`<label class="field"><span>Nom d'aventurier·e</span><input class="input" name="full_name" autocomplete="nickname" maxlength="60" placeholder="Ex. Morgane la Rouge" required /></label>` : ""}
@@ -82,7 +83,21 @@ export async function render(el, ctx) {
     }
   });
 
-  $("[data-google]", el)?.addEventListener("click", () => db.auth.signInWithGoogle().catch((ex) => fail(ex.message)));
+  // Boutons des fournisseurs activés (vérifiés auprès de Supabase)
+  const oauth = $("[data-oauth]", el);
+  db.auth.providers?.().then((list) => {
+    if (!list?.length || !oauth.isConnected) return;
+    mount(oauth, html`
+      ${list.map((p) => html`<button type="button" class="btn btn--block oauth__btn oauth__btn--${p}" data-provider="${p}">${icon(p)} Continuer avec ${PROVIDER_NAMES[p]}</button>`)}
+      <p class="pact__sep">ou avec votre email</p>`);
+    oauth.hidden = false;
+  });
+  oauth.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-provider]");
+    if (!b) return;
+    b.disabled = true;
+    db.auth.signInWithProvider(b.dataset.provider).catch((ex) => { b.disabled = false; fail(ex.message); });
+  });
   $("[data-forgot]", el)?.addEventListener("click", async () => {
     const email = form.email.value.trim();
     if (!email) { form.email.focus(); return fail("Saisissez d'abord votre email."); }

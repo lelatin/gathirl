@@ -22,7 +22,4 @@ export const CONFIG = {
 
   /* Rayon (km) de la section "Près de chez vous" */
   NEARBY_RADIUS_KM: 10,
-
-  /* Activer "Continuer avec Google" (à configurer dans Supabase → Auth → Providers) */
-  GOOGLE_AUTH: false,
 };
