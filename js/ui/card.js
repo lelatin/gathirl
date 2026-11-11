@@ -6,8 +6,8 @@
    - Pied : « Pour N aventuriers », date, lieu, sièges pris / places
    - Tampon « Complet » quand la table est pleine
    ===================================================================== */
-import { html, icon } from "../lib/dom.js?v=202611120009";
-import { artFor, fmtDate, fmtTime, frameClass, fmtCountdown, hash } from "../lib/format.js?v=202611120009";
+import { html, icon } from "../lib/dom.js?v=202611120016";
+import { artFor, fmtDate, fmtTime, frameClass, fmtCountdown, hash } from "../lib/format.js?v=202611120016";
 
 /* Niveau → mention de couverture (« pour personnages de niveau… ») */
 const LEVEL_LINE = { "Débutant": "aventuriers débutants", "Casual": "aventuriers de tous niveaux", "Compétitif": "aventuriers aguerris" };
