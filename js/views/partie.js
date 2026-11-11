@@ -60,7 +60,7 @@ export async function render(el, ctx) {
         <a class="back" href="#/parties">${icon("back")} Tableau des quêtes</a>
 
         <div class="quest">
-          <div>
+          <div class="quest__main">
             <div class="quest__banner print">
               <img src="${artFor(p.id)}" alt="" width="720" height="540" />
               <div class="quest__banner-text">

@@ -108,7 +108,11 @@
    ===================================================================== */
 .filters {
   display: grid; gap: var(--space-3);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--bento-gap);
+  padding: 16px 20px;
+  background: var(--card);
+  border-radius: var(--r-bento);
+  box-shadow: var(--shadow-card);
 }
 .filters__row {
   display: flex; gap: 8px;
@@ -148,18 +152,22 @@
 .back svg { width: 16px; height: 16px; }
 @media (hover: hover) and (pointer: fine) { .back:hover { color: var(--parch); } }
 
+/* La quête en cartes bento (joints de 6 px, coins --r-bento). Pas de fond --page
+   derrière les colonnes : leurs hauteurs varient (billet, inscrits), on n'étire rien. */
 .quest {
-  display: grid; gap: clamp(24px, 4vw, 48px);
-  padding-bottom: var(--space-8);
+  display: grid; gap: var(--bento-gap);
+  align-items: start;
+  margin-bottom: var(--space-8);
 }
-@media (min-width: 900px) { .quest { grid-template-columns: 1fr 360px; align-items: start; } }
+@media (min-width: 900px) { .quest { grid-template-columns: 1fr 360px; } }
+.quest__main, .quest__aside { display: flex; flex-direction: column; gap: var(--bento-gap); min-width: 0; }
 
 .quest__banner {
   position: relative;
   aspect-ratio: 16 / 8;
-  border-radius: var(--r-3);
+  border-radius: var(--r-bento);
   overflow: hidden;
-  box-shadow: 0 0 0 1px var(--line-2), var(--shadow-card);
+  box-shadow: var(--shadow-card);
 }
 .quest__banner img { width: 100%; height: 100%; object-fit: cover; }
 .quest__banner::after {
@@ -179,29 +187,23 @@
 .quest__facts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
-  gap: 1px;
-  margin-top: var(--space-5);
-  border-radius: var(--r-3);
-  overflow: hidden;
-  background: var(--line);
-  border: 1px solid var(--line);
+  gap: var(--bento-gap);
 }
-.fact { display: grid; gap: 4px; padding: 16px 18px; background: var(--ink-2); }
+.fact { display: grid; align-content: start; gap: 4px; padding: 20px 22px; background: var(--card); border-radius: var(--r-bento); box-shadow: var(--shadow-card); }
 .fact__label { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 .fact__label svg { width: 15px; height: 15px; color: var(--gold); }
 .fact__value { font-size: 17px; line-height: 1.35; }
 .fact__value small { display: block; color: var(--muted); font-size: 14px; }
 
-.quest__desc { margin-top: var(--space-5); }
+.quest__desc { padding: 20px 22px; background: var(--card); border-radius: var(--r-bento); box-shadow: var(--shadow-card); }
 .quest__desc h2, .aside-title {
   font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--gold); margin-bottom: 10px;
 }
 .quest__desc p { white-space: pre-line; color: var(--parch-2); max-width: 65ch; }
 
-.quest__aside { display: grid; gap: var(--space-4); }
-@media (min-width: 900px) { .quest__aside { position: sticky; top: calc(var(--hud-h) + 48px); } }
-.quest__aside .panel { padding: 20px; }
+.quest__aside .panel { padding: 20px 22px; background: var(--card); border: 0; border-radius: var(--r-bento); }
+.quest__aside .panel--corners::before, .quest__aside .panel--corners::after { display: none; }
 
 /* Sièges autour de la table : jetons pleins / vides */
 .seats { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 6px 14px; }

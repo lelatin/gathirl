@@ -413,18 +413,17 @@
   --tint: var(--magic, #ffb35c);
   --on-tint: var(--magic-ink, #1a0e0a);
   position: relative;
-  border-radius: 6px;
+  border-radius: var(--r-bento);
   color: var(--ink);
   background:
     radial-gradient(ellipse at center, transparent 62%, rgb(60 36 20 / 0.16) 100%),   /* bords légèrement vieillis */
     var(--paper);
   /* filet de couleur du format en tête, sobre ; aucune lueur néon */
   box-shadow:
-    0 0 0 1px #000,
     inset 0 6px 0 var(--tint),
     inset 0 0 0 1px rgb(255 255 255 / 0.3),
     var(--shadow-card);
-  transition: transform 200ms var(--ease-out);
+  transition: transform var(--dur-press) var(--ease-out);
   isolation: isolate;
 }
 .module__link {
@@ -567,10 +566,13 @@
   transition: opacity 150ms ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .module:hover { transform: translateY(-4px); }
   .module:hover::before { opacity: 1; }
 }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .module:hover { transform: translateY(-2px); }
+}
 .module:active { transform: scale(0.985); }
+@media (prefers-reduced-motion: reduce) { .module:active { transform: none; } }
 
 /* =====================================================================
    Grille bento de l'accueil — design system « Gathirl Bento »
@@ -782,12 +784,16 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
   .b-d20__num { font-size: 60px; }
 }
 
-/* Grille de cartes */
+/* Grille de cartes de partie : grille bento (joints de 6 px sur --page) */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-  gap: clamp(16px, 2.5vw, 28px);
+  gap: var(--bento-gap);
+  padding: var(--bento-gap);
+  background: var(--page);
+  border-radius: calc(var(--r-bento) + var(--bento-gap));
 }
+.card-grid > .skeleton { border-radius: var(--r-bento); }
 
 /* =====================================================================
    Panneaux / encarts
@@ -1069,7 +1075,7 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
 
 /* Liste échelonnée : uniquement au premier affichage (jamais sur un filtre ni un rafraîchissement),
    30 ms entre éléments, 240 ms au total maximum */
-.stagger > * { animation: rise 260ms var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 8) * 30ms); }
+.stagger > * { animation: rise 260ms var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 8) * var(--dur-stagger)); }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
 
 /* =====================================================================
