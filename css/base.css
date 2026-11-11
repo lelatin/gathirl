@@ -24,7 +24,30 @@
   --ember: #ff7438;
   --gold: #e3b35b;
   --gold-deep: #8a6420;
-  --violet: #7a3fb0;
+  --violet: #a865e0;      /* teinte « violet » du design system Gathirl Bento */
+
+  /* --- Design system « Gathirl Bento » (thème Nuit) --- */
+  --page: #07050a;        /* fond visible dans les joints de la grille bento */
+  --card: #16101b;        /* fond des cartes bento */
+  --card-raised: #211824;
+  --or: #ffb35c;          /* teintes du mot « Magic » : remplissages */
+  --braise: #ff6a3d;
+  --rouge: #e3283a;       /* blocs et barres sans texte */
+  --rouge-deep: #c41e2f;  /* fonds porteurs de texte (texte : --on-rouge) */
+  --on-or: #1a0e0a;
+  --on-braise: #1a0e0a;
+  --on-rouge: #fff4ea;
+  --on-violet: #140a1c;
+  --or-text: #ffb35c;     /* versions « texte sur carte » (≥ 4,5:1 sur --card) */
+  --braise-text: #ff6a3d;
+  --rouge-text: #ff4a57;
+  --violet-text: #a865e0;
+  --magic-1: #fff7dc; --magic-2: #ffe39a; --magic-3: #ffb35c;
+  --magic-4: #ff6a3d; --magic-5: #e3283a; --magic-6: #7a3fb0;
+  --bento-gap: 6px;
+  --r-bento: 14px;
+  --dur-press: 160ms;
+  --dur-stagger: 40ms;
 
   /* --- Palette "couverture de roman 70s-80s" (tableau d'inspiration) --- */
   --vermilion: #e2552c;   /* ciel de crépuscule, sérigraphie rouge-orange */

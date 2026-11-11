@@ -1,6 +1,6 @@
 /* =====================================================================
    LA TAVERNE — accueil
-   Héros + carte de l'Oracle · Choisissez votre voie · Près de chez vous
+   Héros + carte de l'Oracle · Grille bento (design system « Gathirl Bento »)
    · Compagnons · Tableau des quêtes (filtres)
    ===================================================================== */
 import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js";
@@ -30,13 +30,6 @@ export async function render(el, ctx) {
           </div>
         </div>
 
-        <!-- Les chiffres sont hors du bloc texte : l'Oracle se centre sur « Trouvez votre… » → boutons -->
-        <div class="hero__stats" data-stats aria-live="polite">
-          <span><strong class="tnum">0</strong><span data-label>parties à venir</span></span>
-          <span><strong class="tnum">0</strong><span data-label>villes</span></span>
-          <span><strong class="tnum">0</strong><span data-label>aventurier·es inscrit·es</span></span>
-        </div>
-
         <div class="oracle-wrap">
           <article class="tcard oracle" data-oracle aria-label="L'Oracle du Gathirl">
             <div class="tcard__inner">
@@ -57,8 +50,8 @@ export async function render(el, ctx) {
       </div>
     </section>
 
-    <section class="section wrap" aria-label="Que voulez-vous faire ?">
-      <div class="tiles">${ACTIONS.map(actionCard)}</div>
+    <section class="section wrap" aria-label="La taverne en un coup d'œil">
+      <div class="bento" data-bento>${bento([], me)}</div>
     </section>
 
     <section class="section wrap" data-friends hidden aria-labelledby="friends-title"></section>
@@ -86,7 +79,7 @@ export async function render(el, ctx) {
   }
   if (!el.isConnected) return;
 
-  renderStats(el, parties);
+  mount($("[data-bento]", el), bento(parties, me));
   renderFilters(el, me);
   renderGrid(el, parties, byPartie, me);
   renderFriends(el, me);
@@ -105,7 +98,18 @@ export async function render(el, ctx) {
     renderGrid(el, parties, byPartie, me, { animate: false });   // filtre = action fréquente : aucun échelonnement
   });
 
-  $("[data-roll]", el).addEventListener("click", (e) => rollD20(e.currentTarget, parties));
+  // le d20 (bouton du héros et carte bento) et les cartes de format (filtre du tableau)
+  el.addEventListener("click", (e) => {
+    const roll = e.target.closest("[data-roll]");
+    if (roll) { rollD20(roll, parties); return; }
+    const cat = e.target.closest("[data-cat]");
+    if (cat) {
+      state.format = cat.dataset.cat;
+      renderFilters(el, me);
+      renderGrid(el, parties, byPartie, me, { animate: false });
+      $("#quetes", el)?.scrollIntoView({ block: "start", behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    }
+  });
 
   if (ctx.query.get("organiser")) openCreatePartie();
   if (ctx.path === "/parties") requestAnimationFrame(() => $("#quetes", el)?.scrollIntoView({ block: "start" }));
@@ -114,20 +118,6 @@ export async function render(el, ctx) {
 }
 
 /* ===================================================================== */
-
-function renderStats(el, parties) {
-  const cities = new Set(parties.map((p) => p.city?.trim().toLowerCase()).filter(Boolean));
-  const players = parties.reduce((s, p) => s + (p.current_players || 0), 0);
-  const vals = [parties.length, cities.size, players];
-  // Pluriels corrects : "1 partie à venir", "1 ville"…
-  const labels = [
-    plural(vals[0], "partie à venir", "parties à venir"),
-    plural(vals[1], "ville", "villes"),
-    plural(vals[2], "aventurier·e inscrit·e", "aventurier·es inscrit·es"),
-  ].map((s) => s.replace(/^\d+\s/, ""));
-  $$("[data-stats] strong", el).forEach((s, i) => { s.textContent = vals[i]; });
-  $$("[data-stats] [data-label]", el).forEach((s, i) => { s.textContent = labels[i]; });
-}
 
 function renderFilters(el, me) {
   const hasCoords = Boolean(me?.city_lat && me?.city_lng);
@@ -187,38 +177,139 @@ async function renderFriends(el, me) {
   } catch { /* section facultative */ }
 }
 
-/* ---------- Les 4 cartes d'action (remplacent « Choisissez votre voie ») ----------
-   Cartes à jouer façon carte à collectionner : chacune est un raccourci.
-   La case F/E affiche la touche clavier correspondante. */
-/* Toutes les cartouches partagent la teinte « or » du dégradé « Magic » */
-const ACTIONS = [
-  { title: "Rejoindre une table", href: "#/parties", art: "assets/img/art-14.webp", ic: "swords",
-    text: "Parcourez le tableau des quêtes et prenez place à une partie ouverte.", go: "Voir les quêtes", key: "2" },
-  { title: "Dresser votre table", action: "create-partie", art: "assets/img/art-13.webp", ic: "plus",
-    text: "Choisissez un format, un lieu, une date : les joueurs viendront à vous.", go: "Organiser", key: "N" },
-  { title: "Envoyer une missive", href: "#/messages", art: "assets/img/art-03.webp", ic: "scroll",
-    text: "Discutez avec les autres joueurs pour caler la partie ou échanger des cartes.", go: "Ouvrir les missives", key: "3" },
-  { title: "Forger votre fiche", href: "#/profil", art: "assets/img/art-10.webp", ic: "user",
-    text: "Niveau, formats préférés, ville : laissez les autres vous trouver.", go: "Voir ma fiche", key: "4" },
+/* ---------- Grille bento de l'accueil (design system « Gathirl Bento ») ----------
+   Chaque carte vient des vraies données : aucun chiffre décoratif. */
+
+/* Teinte d'un format : les 4 couleurs du mot « Magic » */
+const TINT = {
+  Commander: "or", Standard: "or",
+  Pioneer: "braise", Vintage: "braise", Sealed: "braise",
+  Draft: "rouge", Pauper: "rouge",
+  Modern: "violet", Legacy: "violet", Cube: "violet",
+};
+const tintOf = (f) => TINT[f] || "or";
+
+/* Moments de la journée (barres du graphique) */
+const MOMENTS = [
+  { label: "Matin", test: (h) => h < 12 },
+  { label: "Après-midi", test: (h) => h >= 12 && h < 18 },
+  { label: "Soir", test: (h) => h >= 18 },
 ];
 
-/* Cartouche dans la direction artistique du site : panneau d'encre (comme les
-   panneaux des pages), équerres d'angle, liseré au dégradé de « Magic »,
-   illustration imprimée, titre gothique crème, libellé mono + touche clavier. */
+function bento(parties, me) {
+  const open = parties.filter((p) => p.current_players < p.max_players);
+  const cities = new Set(parties.map((p) => p.city?.trim().toLowerCase()).filter(Boolean));
+  const players = parties.reduce((s, p) => s + (p.current_players || 0), 0);
+  const word = (n, one, other) => plural(n, one, other).replace(/^\d+\s/, "");
+
+  /* graphique : nombre de parties par moment de la journée */
+  const counts = MOMENTS.map((m) => parties.filter((p) => m.test(new Date(p.date).getHours())).length);
+  const max = Math.max(1, ...counts);
+  const top = counts.indexOf(Math.max(...counts));
+
+  /* catégories : les deux formats qui ont le plus de tables */
+  const byFormat = {};
+  for (const p of parties) (byFormat[p.format] ||= []).push(p);
+  const cats = Object.entries(byFormat).sort((a, b) => b[1].length - a[1].length).slice(0, 2);
+  // aucune cellule vide : sans assez de tables, on propose d'en dresser une
+  for (const f of ["Commander", "Draft", "Modern"]) if (cats.length < 2 && !byFormat[f]) cats.push([f, []]);
+
+  return html`
+    <a class="bcard b-go" href="#/parties">
+      <span class="b-go__art" aria-hidden="true"><img src="assets/img/art-14.webp" alt="" width="720" height="540" decoding="async" /></span>
+      <span class="bcard__eyebrow">La taverne · tableau des quêtes</span>
+      <span class="b-go__tagline">Une table vous attend. <span>Rejoignez-la ou dressez la vôtre.</span></span>
+      <span class="bcard__label">${parties.length
+        ? html`<strong>${plural(open.length, "partie ouverte", "parties ouvertes")}</strong> dans ${plural(cities.size, "ville", "villes")}`
+        : "Aucune partie à venir pour l'instant"}</span>
+      <span class="bcard__go">Voir les quêtes ${icon("arrow")}<kbd class="bcard__kbd" title="Raccourci clavier : 2">2</kbd></span>
+    </a>
+
+    <div class="bcard b-stat1 is-or">
+      <span class="bcard__num tnum">${parties.length}</span>
+      <span class="bcard__label">${word(parties.length, "partie", "parties")} <strong>à venir</strong></span>
+    </div>
+    <div class="bcard b-stat2 is-violet">
+      <span class="bcard__num tnum">${players}</span>
+      <span class="bcard__label">${word(players, "aventurier·e", "aventurier·es")} <strong>${word(players, "inscrit·e", "inscrit·es")}</strong></span>
+    </div>
+
+    <button type="button" class="bcard b-d20" data-roll title="Le dé choisit une partie ouverte au hasard">
+      <span class="b-d20__label">Lancer le d20<br />Le hasard choisit une table</span>
+      <span class="b-d20__row"><span class="b-d20__num" data-d20-num>20</span>${icon("d20", "d20")}</span>
+    </button>
+
+    <div class="bcard b-chart">
+      <div class="b-chart__head">
+        <span class="bcard__eyebrow">Parties par moment</span>
+        ${parties.length ? html`<span class="b-chart__badge">${MOMENTS[top].label}</span>` : ""}
+      </div>
+      <div class="bars" role="img" aria-label="${MOMENTS.map((m, i) => `${m.label} : ${counts[i]}`).join(", ")}">
+        ${MOMENTS.map((m, i) => html`
+          <span class="bar"><span class="bar__val">${counts[i]}</span><span class="bar__fill" style="--h:${(counts[i] / max).toFixed(3)}"></span><span class="bar__lbl">${m.label}</span></span>`)}
+      </div>
+      <span class="bcard__label">${parties.length
+        ? html`Le <strong>${MOMENTS[top].label.toLowerCase()}</strong> est le moment le plus demandé.`
+        : "Les tables apparaîtront ici dès la première partie."}</span>
+    </div>
+
+    ${ACTIONS.map(actionCard)}
+
+    ${cats.map(([f, list], i) => catCard(f, list, i))}
+
+    <div class="bcard b-quote">
+      <p class="b-quote__text">Une partie dont <em>vous</em> êtes le héros.</p>
+      <p class="b-quote__by">Gathirl · le grimoire des rencontres</p>
+    </div>`;
+}
+
+function catCard(format, list, i) {
+  const tint = tintOf(format);
+  const free = list.reduce((s, p) => s + Math.max(0, p.max_players - p.current_players), 0);
+  const levels = [...new Set(list.map((p) => p.level))].slice(0, 1);
+  const cities = [...new Set(list.map((p) => p.city).filter(Boolean))].slice(0, 1);
+  const cls = `bcard b-cat b-cat${i + 1} is-${tint}`;
+  if (!list.length) {
+    return html`
+      <button type="button" class="${cls}" data-action="create-partie">
+        <span class="b-cat__name">${format}</span>
+        <span class="b-cat__focus">Aucune table</span>
+        <span class="bpills"><span class="bpill bpill--accent">Dresser la première</span></span>
+      </button>`;
+  }
+  return html`
+    <button type="button" class="${cls}" data-cat="${format}" title="Afficher les parties ${format}">
+      <span class="b-cat__name">${format}</span>
+      <span class="b-cat__focus">${plural(list.length, "table ouverte", "tables ouvertes")}</span>
+      <span class="bpills">
+        ${levels.map((l) => html`<span class="bpill">${l}</span>`)}
+        ${cities.map((c) => html`<span class="bpill">${c}</span>`)}
+        <span class="bpill ${free ? "bpill--accent" : ""}">${free ? plural(free, "place libre", "places libres") : "Complet"}</span>
+      </span>
+    </button>`;
+}
+
+/* ---------- Les 3 cartes d'action (la 4e, « Rejoindre », est la carte Hero) ---------- */
+const ACTIONS = [
+  { title: "Dresser votre table", action: "create-partie", art: "assets/img/art-13.webp", area: "b-new",
+    text: "Un format, un lieu, une date : les joueurs viendront à vous.", go: "Organiser", key: "N" },
+  { title: "Envoyer une missive", href: "#/messages", art: "assets/img/art-03.webp", area: "b-msg",
+    text: "Calez la partie ou échangez des cartes avec les autres joueurs.", go: "Missives", key: "3" },
+  { title: "Forger votre fiche", href: "#/profil", art: "assets/img/art-10.webp", area: "b-me",
+    text: "Niveau, formats, ville : laissez les autres vous trouver.", go: "Ma fiche", key: "4" },
+];
+
 function actionCard(a) {
   const inner = html`
-    <span class="tile__art print"><img src="${a.art}" alt="" loading="lazy" decoding="async" width="720" height="540" /></span>
-    <span class="tile__body">
-      <span class="tile__head">
-        <span class="tile__icon" aria-hidden="true">${icon(a.ic)}</span>
-        <h3 class="tile__title">${a.title}</h3>
-      </span>
-      <span class="tile__text">${a.text}</span>
-      <span class="tile__go">${a.go} ${icon("arrow")}<kbd class="tile__key" title="Raccourci clavier : ${a.key}">${a.key}</kbd></span>
+    <span class="b-act__art"><img src="${a.art}" alt="" loading="lazy" decoding="async" width="720" height="540" /></span>
+    <span class="b-act__body">
+      <span class="b-act__title">${a.title}</span>
+      <span class="b-act__text">${a.text}</span>
+      <span class="bcard__go">${a.go} ${icon("arrow")}<kbd class="bcard__kbd" title="Raccourci clavier : ${a.key}">${a.key}</kbd></span>
     </span>`;
   return a.href
-    ? html`<a class="tile" href="${a.href}">${inner}</a>`
-    : html`<button type="button" class="tile" data-action="${a.action}">${inner}</button>`;
+    ? html`<a class="bcard b-act ${a.area}" href="${a.href}">${inner}</a>`
+    : html`<button type="button" class="bcard b-act ${a.area}" data-action="${a.action}">${inner}</button>`;
 }
 
 /* ---------- Le d20 : le hasard choisit une table ---------- */
@@ -234,6 +325,8 @@ function rollD20(btn, parties) {
   void btn.offsetWidth; // relance l'animation
   btn.classList.add("is-rolling");
   btn.disabled = true;
+  const face = btn.querySelector("[data-d20-num]");   // carte bento : le résultat s'affiche sur le dé
+  if (face) face.textContent = n;
   setTimeout(() => {
     btn.disabled = false;
     const crit = n === 20 ? "Coup critique ! " : n === 1 ? "Échec critique… mais " : "";

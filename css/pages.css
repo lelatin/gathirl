@@ -38,25 +38,21 @@
   mask-image: linear-gradient(to top, black, transparent 85%);
 }
 
-/* Mobile : texte → chiffres → Oracle.
-   Desktop : l'Oracle est centré verticalement sur le bloc « Trouvez votre… » → boutons
-   (rangée 1) ; les chiffres passent dessous (rangée 2). */
+/* Mobile : texte puis Oracle. Dès 720 px : 2 colonnes, l'Oracle centré sur le bloc texte.
+   (Les chiffres sont passés dans la grille bento, juste en dessous.) */
 .hero__grid {
   display: grid;
   gap: clamp(36px, 6vw, 72px);
   align-items: center;
-  grid-template-areas: "text" "stats" "oracle";
+  grid-template-areas: "text" "oracle";
 }
 .hero__text { grid-area: text; }
-.hero__stats { grid-area: stats; }
 .oracle-wrap { grid-area: oracle; }
 @media (min-width: 720px) {   /* 2 colonnes dès la tablette */
   .hero__grid {
     grid-template-columns: 1.15fr 0.85fr;
-    grid-template-areas: "text oracle" "stats .";
-    row-gap: 0;
+    grid-template-areas: "text oracle";
   }
-  .hero__grid .hero__stats { margin-top: var(--space-6); }
 }
 
 
@@ -87,23 +83,6 @@
   .hero__ctas > .btn--primary { flex-basis: 100%; }
 }
 
-.hero__stats {
-  display: flex; flex-wrap: wrap; gap: var(--space-5) var(--space-6);
-  margin-top: 0;
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--line);
-  font-family: var(--font-mono);
-  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--muted);
-}
-.hero__stats strong {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 34px; line-height: 1;
-  letter-spacing: 0;
-  color: var(--parch);
-  font-variant-numeric: tabular-nums;
-}
 
 /* --- Carte de l'Oracle (illustration principale, inclinable) --- */
 /* Même gabarit que les cartes de partie (même largeur que la colonne de la grille,
