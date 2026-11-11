@@ -231,56 +231,76 @@
 .roster a { display: flex; align-items: center; gap: 10px; }
 
 /* =====================================================================
-   FICHE DE PERSONNAGE — profil
+   FICHE DE PERSONNAGE — profil, en grilles bento (gabarit B)
+   Haut : identité, 4 caractéristiques, bio en citation.
+   Bas : les listes, une carte chacune.
    ===================================================================== */
-.sheet { padding-block: var(--space-6) var(--space-8); display: grid; gap: var(--space-6); }
+.sheet { padding-block: var(--space-6) var(--space-8); display: grid; gap: var(--space-5); }
 
-.sheet__head {
-  display: grid; gap: var(--space-5);
-  padding: clamp(20px, 4vw, 32px);
+.sheet__top, .sheet__lists {
+  display: grid;
+  gap: var(--bento-gap);
+  padding: var(--bento-gap);
+  background: var(--page);
+  border-radius: calc(var(--r-bento) + var(--bento-gap));
 }
-@media (min-width: 720px) { .sheet__head { grid-template-columns: auto 1fr auto; align-items: center; } }
-.sheet__id h1 { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }
-.sheet__meta { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 8px; color: var(--muted); font-size: 15px; }
+.sheet__top {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas: "head head" "s1 s2" "s3 s4" "bio bio";
+}
+@media (min-width: 720px) {
+  .sheet__top {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas: "head head s1" "head head s2" "s3 s4 bio";
+  }
+}
+@media (min-width: 1180px) {
+  .sheet__top {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas: "head head s1 s2" "head head s3 s4" "bio bio bio bio";
+  }
+}
+.sheet__head { grid-area: head; } .sheet__s1 { grid-area: s1; } .sheet__s2 { grid-area: s2; }
+.sheet__s3 { grid-area: s3; } .sheet__s4 { grid-area: s4; } .sheet__bio { grid-area: bio; }
+
+/* Identité */
+.sheet__head { justify-content: space-between; gap: var(--space-4); padding: clamp(20px, 3vw, 28px); }
+.sheet__head::before {   /* liseré au dégradé du mot « Magic » */
+  content: ""; position: absolute; inset: 0 0 auto; height: 4px;
+  background: linear-gradient(90deg, var(--magic-2), var(--magic-3), var(--magic-4), var(--magic-5), var(--magic-6));
+}
+.sheet__who { display: flex; align-items: center; gap: var(--space-4); min-width: 0; }
+.sheet__id { display: grid; gap: 6px; min-width: 0; }
+.sheet__id h1 { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; overflow-wrap: anywhere; }
+.sheet__meta { display: flex; flex-wrap: wrap; gap: 8px 16px; color: var(--muted); font-size: 15px; }
 .sheet__meta span { display: inline-flex; align-items: center; gap: 6px; }
 .sheet__meta svg { width: 15px; height: 15px; color: var(--gold); }
-.sheet__tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.sheet__bio { margin-top: 14px; color: var(--parch-2); max-width: 65ch; font-style: italic; }
 .sheet__actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
-/* Caractéristiques façon feuille de D&D */
-.abilities {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
-  gap: var(--space-3);
-}
-.ability {
-  position: relative;
-  display: grid; justify-items: center; gap: 2px;
-  padding: 18px 10px 26px;
-  border: 1.5px solid var(--line-2);
-  border-radius: 14px 14px 40% 40% / 14px 14px 22% 22%;
-  background: linear-gradient(180deg, var(--ink-2), var(--ink-1));
-  text-align: center;
-}
-.ability__label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
-.ability__value { font-family: var(--font-display); font-size: 42px; line-height: 1.05; font-variant-numeric: tabular-nums; }
-.ability__value--word { font-size: 26px; line-height: 1.6; }
-.ability__mod {
-  position: absolute; bottom: -12px;
-  min-width: 40px; padding: 2px 8px;
+/* Caractéristiques : cartes chiffres, modificateur façon feuille de D&D */
+.sheet__top .bcard:not(.sheet__head):not(.sheet__bio) { justify-content: flex-start; }
+.sheet__word { font-size: 32px; line-height: 1.1; }
+.sheet__mod {
+  position: absolute; top: 14px; right: 14px;
+  min-width: 34px; padding: 3px 8px;
   border-radius: 999px;
-  background: var(--ink-1);
-  border: 1.5px solid var(--line-gold);
-  font-family: var(--font-mono); font-size: 12px; color: var(--gold);
+  border: 1px solid var(--line-gold);
+  font: 700 12px/1 var(--font-mono); text-align: center;
+  color: var(--gold);
 }
 
-.sheet__section h2 {
+/* Bio : citation */
+.sheet__bio .b-quote__text { max-width: 60ch; }
+
+/* Listes */
+.sheet__lists { grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); align-items: stretch; }
+.sheet__card { justify-content: flex-start; gap: var(--space-4); }
+.sheet__card h2 {
   display: flex; align-items: center; gap: 10px;
   font-family: var(--font-display); font-size: var(--step-2); line-height: 1;
-  margin-bottom: var(--space-4);
 }
-.sheet__section h2 svg { width: 22px; height: 22px; color: var(--blood); }
+.sheet__card h2 svg { width: 22px; height: 22px; color: var(--blood); }
+.sheet__card.empty { align-items: center; text-align: center; }
 
 .mini-list { display: grid; gap: 10px; }
 .mini {
@@ -288,7 +308,7 @@
   padding: 12px 14px;
   border-radius: var(--r-2);
   border: 1px solid var(--line);
-  background: var(--ink-2);
+  background: var(--card-raised);
   transition: border-color 150ms ease, transform 120ms var(--ease-out);
 }
 .mini:active { transform: scale(0.99); }

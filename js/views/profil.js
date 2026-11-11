@@ -64,63 +64,80 @@ export async function render(el, ctx) {
       else friendBtn = html`<button type="button" class="btn btn--sm btn--gold" data-friend-accept="${rel.id}">${icon("check")} Accepter</button><button type="button" class="btn btn--sm btn--icon" data-friend-decline="${rel.id}" aria-label="Refuser">${icon("x")}</button>`;
     }
 
+    // Bio en carte citation (le négatif du thème) ; à défaut, une phrase utile
+    const bio = user.bio
+      ? html`« ${user.bio} »`
+      : isMe ? html`Votre histoire reste à <em>écrire</em>. Ajoutez une bio !`
+      : html`Un·e aventurier·e de <em>${user.city || "la taverne"}</em>.`;
+
     mount(el, html`
       <div class="wrap sheet">
-        <section class="panel panel--corners sheet__head">
-          ${sigil(user, "lg")}
-          <div class="sheet__id">
-            <h1>${user.full_name || "Joueur"}</h1>
-            <div class="sheet__meta">
-              ${user.city ? html`<span>${icon("pin")} ${user.city}</span>` : ""}
-              <span>${levelPip(lvl)} ${lvl}</span>
+        <!-- Grille bento : identité, caractéristiques, bio -->
+        <section class="sheet__top">
+          <div class="bcard sheet__head">
+            <div class="sheet__who">
+              ${sigil(user, "lg")}
+              <div class="sheet__id">
+                <span class="bcard__eyebrow">Fiche de personnage</span>
+                <h1>${user.full_name || "Joueur"}</h1>
+                <div class="sheet__meta">
+                  ${user.city ? html`<span>${icon("pin")} ${user.city}</span>` : ""}
+                  <span>${levelPip(lvl)} ${lvl}</span>
+                </div>
+              </div>
             </div>
-            ${(user.favorite_formats || []).length ? html`<div class="sheet__tags">${user.favorite_formats.map((f) => html`<span class="tag tag--gold">${f}</span>`)}</div>` : ""}
-            ${user.bio ? html`<p class="sheet__bio">« ${user.bio} »</p>` : isMe ? html`<p class="sheet__bio muted">Votre histoire reste à écrire… Ajoutez une bio !</p>` : ""}
+            ${(user.favorite_formats || []).length ? html`<div class="bpills">${user.favorite_formats.map((f) => html`<span class="bpill">${f}</span>`)}</div>` : ""}
+            <div class="sheet__actions">
+              ${isMe
+                ? html`<button type="button" class="btn btn--gold btn--sm" data-edit>${icon("edit")} Modifier ma fiche</button>
+                       <button type="button" class="btn btn--ghost btn--sm" data-logout>${icon("logout")} Déconnexion</button>`
+                : meNow ? html`<a class="btn btn--primary btn--sm" href="#/messages/${user.id}">${icon("scroll")} Missive</a>${friendBtn}`
+                : html`<a class="btn btn--sm" href="#/connexion">Se connecter pour contacter</a>`}
+            </div>
           </div>
-          <div class="sheet__actions">
-            ${isMe
-              ? html`<button type="button" class="btn btn--gold btn--sm" data-edit>${icon("edit")} Modifier ma fiche</button>
-                     <button type="button" class="btn btn--ghost btn--sm" data-logout>${icon("logout")} Déconnexion</button>`
-              : meNow ? html`<a class="btn btn--primary btn--sm" href="#/messages/${user.id}">${icon("scroll")} Missive</a>${friendBtn}`
-              : html`<a class="btn btn--sm" href="#/connexion">Se connecter pour contacter</a>`}
+
+          <div class="bcard is-or sheet__s1"><span class="bcard__num tnum">${history.length}</span><span class="bcard__label">${history.length > 1 ? "parties" : "partie"} <strong>jouée${history.length > 1 ? "s" : ""}</strong></span><span class="sheet__mod">XP</span></div>
+          <div class="bcard is-violet sheet__s2"><span class="bcard__num sheet__word">${lvl}</span><span class="bcard__label">niveau <strong>global</strong></span><span class="sheet__mod">${levelMeta(lvl).mod}</span></div>
+          <div class="bcard is-braise sheet__s3"><span class="bcard__num tnum">${organised.length}</span><span class="bcard__label">${organised.length > 1 ? "parties" : "partie"} <strong>organisée${organised.length > 1 ? "s" : ""}</strong></span><span class="sheet__mod">MJ</span></div>
+          <div class="bcard is-rouge sheet__s4"><span class="bcard__num tnum">${upcoming.length}</span><span class="bcard__label"><strong>à venir</strong></span><span class="sheet__mod">⚔</span></div>
+
+          <div class="bcard b-quote sheet__bio">
+            <p class="b-quote__text">${bio}</p>
+            <p class="b-quote__by">${user.full_name || "Joueur"}</p>
           </div>
         </section>
 
-        <section class="abilities" aria-label="Caractéristiques">
-          <div class="ability"><span class="ability__label">Parties jouées</span><span class="ability__value">${history.length}</span><span class="ability__mod">XP</span></div>
-          <div class="ability"><span class="ability__label">Niveau global</span><span class="ability__value ability__value--word">${lvl}</span><span class="ability__mod">${levelMeta(lvl).mod}</span></div>
-          <div class="ability"><span class="ability__label">Organisées</span><span class="ability__value">${organised.length}</span><span class="ability__mod">MJ</span></div>
-          <div class="ability"><span class="ability__label">À venir</span><span class="ability__value">${upcoming.length}</span><span class="ability__mod">⚔</span></div>
+        <!-- Les listes, chacune dans sa carte -->
+        <section class="sheet__lists">
+          ${incoming.length ? html`
+            <div class="bcard sheet__card">
+              <h2>${icon("user-plus")} Demandes d'amis</h2>
+              <div class="mini-list">${incoming.map((f) => html`
+                <div class="request">
+                  ${sigil({ id: f.requester_id, full_name: f.requester_name })}
+                  <div class="request__who"><p><a class="link" href="#/profil/${f.requester_id}">${f.requester_name}</a></p><p>Veut être votre compagnon d'armes</p></div>
+                  <button type="button" class="btn btn--sm btn--gold" data-friend-accept="${f.id}">${icon("check")} Accepter</button>
+                  <button type="button" class="btn btn--sm btn--icon" data-friend-decline="${f.id}" aria-label="Refuser">${icon("x")}</button>
+                </div>`)}</div>
+            </div>` : ""}
+
+          ${listSection("calendar", "Parties à venir", upcoming)}
+          ${listSection("swords", "Historique", history)}
+          ${organised.length ? listSection("crown", "Parties organisées", organised.sort((a, b) => new Date(b.date) - new Date(a.date))) : ""}
+
+          ${mates.length ? html`
+            <div class="bcard sheet__card">
+              <h2>${icon("users")} Compagnons (${mates.length})</h2>
+              <div class="friends-strip">${mates.map((u) => html`<a class="friend-chip" href="#/profil/${u.id}" title="${u.full_name}">${sigil(u)}<span>${u.full_name}</span></a>`)}</div>
+            </div>` : ""}
+
+          ${!all.length ? html`
+            <div class="bcard sheet__card empty">
+              <svg class="empty__icon"><use href="#i-scroll"/></svg>
+              <h3>Aucune partie pour le moment.</h3>
+              ${isMe ? html`<p>Rejoignez ou organisez une partie pour remplir votre historique !</p><a class="btn btn--primary" href="#/parties">${icon("swords")} Trouver une table</a>` : ""}
+            </div>` : ""}
         </section>
-
-        ${incoming.length ? html`
-          <section class="sheet__section">
-            <h2>${icon("user-plus")} Demandes d'amis</h2>
-            <div class="mini-list">${incoming.map((f) => html`
-              <div class="request">
-                ${sigil({ id: f.requester_id, full_name: f.requester_name })}
-                <div class="request__who"><p><a class="link" href="#/profil/${f.requester_id}">${f.requester_name}</a></p><p>Veut être votre compagnon d'armes</p></div>
-                <button type="button" class="btn btn--sm btn--gold" data-friend-accept="${f.id}">${icon("check")} Accepter</button>
-                <button type="button" class="btn btn--sm btn--icon" data-friend-decline="${f.id}" aria-label="Refuser">${icon("x")}</button>
-              </div>`)}</div>
-          </section>` : ""}
-
-        ${mates.length ? html`
-          <section class="sheet__section">
-            <h2>${icon("users")} Compagnons (${mates.length})</h2>
-            <div class="friends-strip">${mates.map((u) => html`<a class="friend-chip" href="#/profil/${u.id}" title="${u.full_name}">${sigil(u)}<span>${u.full_name}</span></a>`)}</div>
-          </section>` : ""}
-
-        ${listSection("calendar", "Parties à venir", upcoming)}
-        ${listSection("swords", "Historique", history)}
-        ${organised.length ? listSection("crown", "Parties organisées", organised.sort((a, b) => new Date(b.date) - new Date(a.date))) : ""}
-
-        ${!all.length ? html`
-          <div class="empty">
-            <svg class="empty__icon"><use href="#i-scroll"/></svg>
-            <h3>Aucune partie pour le moment.</h3>
-            ${isMe ? html`<p>Rejoignez ou organisez une partie pour remplir votre historique !</p><a class="btn btn--primary" href="#/parties">${icon("swords")} Trouver une table</a>` : ""}
-          </div>` : ""}
       </div>`);
   };
 
@@ -143,7 +160,7 @@ export async function render(el, ctx) {
 function listSection(ic, title, items) {
   if (!items.length) return "";
   return html`
-    <section class="sheet__section">
+    <div class="bcard sheet__card">
       <h2>${icon(ic)} ${title}</h2>
       <div class="mini-list">${items.map((p) => html`
         <a class="mini" href="#/partie/${p.id}">
@@ -151,5 +168,5 @@ function listSection(ic, title, items) {
           <span class="mini__body"><p title="${p.title}">${p.title}</p><p>${p.format} · ${p.city} · ${fmtTime(p.date)}</p></span>
           <span class="mini__count tnum">${p.current_players}/${p.max_players}</span>
         </a>`)}</div>
-    </section>`;
+    </div>`;
 }
