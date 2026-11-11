@@ -342,36 +342,53 @@
    ===================================================================== */
 .inbox { padding-block: var(--space-6) var(--space-8); max-width: 760px; }
 .inbox h1, .thread__head h1 { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }
-.inbox__list { display: grid; gap: 8px; margin-top: var(--space-5); }
-.convo {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px;
-  border-radius: var(--r-2);
-  border: 1px solid var(--line);
-  background: var(--ink-2);
-  transition: border-color 150ms ease;
+/* Liste en grille bento : une carte par conversation, joints de 6 px sur --page */
+.inbox__list {
+  display: grid; gap: var(--bento-gap);
+  margin-top: var(--space-5);
+  padding: var(--bento-gap);
+  background: var(--page);
+  border-radius: calc(var(--r-bento) + var(--bento-gap));
 }
+.convo {
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px;
+  border-radius: var(--r-bento);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur-press) var(--ease-out), background-color 150ms ease;
+}
+.convo:active { transform: scale(0.985); }
+@media (prefers-reduced-motion: reduce) { .convo:active { transform: none; } }
 .convo__body { min-width: 0; flex: 1; }
 .convo__top { display: flex; justify-content: space-between; gap: 10px; }
 .convo__top p { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .convo__top time { flex-shrink: 0; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
 .convo__last { font-size: 15px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.convo.is-unread { border-color: rgb(227 40 58 / 0.5); }
+/* non lu : liseré de tête rouge (pas de bordure gauche), aperçu en clair */
+.convo.is-unread { box-shadow: inset 0 4px 0 var(--rouge), var(--shadow-card); }
 .convo.is-unread .convo__last { color: var(--parch); }
 .convo .dot { position: static; flex-shrink: 0; }
-@media (hover: hover) and (pointer: fine) { .convo:hover { border-color: var(--line-gold); } }
+@media (hover: hover) and (pointer: fine) { .convo:hover { background: var(--card-raised); } }
 
 .thread {
   max-width: 760px;
   display: flex; flex-direction: column;
-  height: calc(100dvh - var(--hud-h) - 28px - var(--tabbar-h) - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px));
+  gap: var(--bento-gap);
+  padding: var(--bento-gap);
+  margin-block: var(--space-4);
+  background: var(--page);
+  border-radius: calc(var(--r-bento) + var(--bento-gap));
+  height: calc(100dvh - var(--hud-h) - 28px - 2 * var(--space-4) - var(--tabbar-h) - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px));
   min-height: 420px;
 }
-@media (min-width: 900px) { .thread { height: calc(100dvh - var(--hud-h) - 28px - 40px); } }
+@media (min-width: 900px) { .thread { height: calc(100dvh - var(--hud-h) - 28px - 40px - 2 * var(--space-4)); } }
+/* Trois cartes bento : en-tête, fil, rédaction */
+.thread__head, .thread__scroll, .composer { background: var(--card); border-radius: var(--r-bento); box-shadow: var(--shadow-card); }
 .thread__head {
   display: flex; align-items: center; gap: 12px;
-  padding-block: 16px;
-  border-bottom: 1px solid var(--line);
+  padding: 14px 18px;
 }
 .thread__head h1 { font-size: var(--step-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .thread__head p { font-size: 14px; color: var(--muted); }
@@ -381,7 +398,7 @@
   flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-block: 18px;
+  padding: 18px;
   display: flex; flex-direction: column; gap: 6px;
 }
 .bubble {
@@ -394,24 +411,28 @@
 .bubble time { display: block; margin-top: 2px; font-family: var(--font-mono); font-size: 11px; opacity: 0.6; text-align: right; }
 .bubble--me {
   align-self: flex-end;
-  background: var(--blood);
-  color: #fff6ea;
+  background: var(--rouge-deep);   /* texte --on-rouge : 5,2:1 */
+  color: var(--on-rouge);
   border-bottom-right-radius: 4px;
 }
 .bubble--them {
   align-self: flex-start;
-  background: var(--ink-3);
+  background: var(--card-raised);
   border: 1px solid var(--line);
   border-bottom-left-radius: 4px;
 }
-.bubble.is-new { animation: fade-in 150ms var(--ease-out); }
+/* Nouvelle bulle : elle part de son côté (pas un simple fondu venu de nulle part) */
+.bubble.is-new { animation: bubble-in 180ms var(--ease-out); }
+.bubble--me.is-new { transform-origin: bottom right; }
+.bubble--them.is-new { transform-origin: bottom left; }
+@keyframes bubble-in { from { opacity: 0; transform: translateY(4px) scale(0.97); } }
+@media (prefers-reduced-motion: reduce) { .bubble.is-new { animation-name: fade-in; } }
 @keyframes fade-in { from { opacity: 0; } }
 .thread__day { align-self: center; margin-block: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
 
 .composer {
   display: flex; gap: 8px; align-items: flex-end;
-  padding-block: 12px;
-  border-top: 1px solid var(--line);
+  padding: 10px;
 }
 .composer .textarea { min-height: 46px; max-height: 160px; resize: none; }
 
