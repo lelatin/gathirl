@@ -22,6 +22,8 @@ Ce dépôt est la **réécriture complète** de l'app Base44 (`gathirl.base44.ap
 | Le **d20** qui choisit une partie au hasard | ❌ | ✅ |
 | Raccourcis clavier `1`–`4` (navigation) et `N` (organiser) | ❌ | ✅ |
 | Mode démo hors-ligne avec joueurs d'exemple | ❌ | ✅ |
+| **Ajouter à mon calendrier** (fichier `.ics` avec rappel 2 h avant : Apple, Google, Outlook, Samsung) | ❌ | ✅ |
+| **Billet de partie** en PNG (illustration, infos, QR code vers la partie), partage natif sur téléphone | ❌ | ✅ `js/ui/ticket.js` |
 
 ---
 

@@ -6,6 +6,8 @@ import { artFor, fmtDateLong, fmtTime, initial, manaCost, plural, sigil, fmtCoun
 import { osmLink } from "../lib/geo.js";
 import { db } from "../data/index.js";
 import { toast } from "../ui/toast.js";
+import { downloadIcs } from "../lib/calendar.js";
+import { ticketFor, saveTicket, ticketTilt } from "../ui/ticket.js";
 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -104,6 +106,18 @@ export async function render(el, ctx) {
               <div style="display:grid;gap:8px;margin-top:16px">${cta}</div>
             </div>
 
+            ${!cancelled && !past ? html`
+              <div class="panel ticket-panel">
+                <p class="aside-title">Votre billet</p>
+                <div class="ticket" data-ticket-tilt>
+                  <img data-ticket-img width="340" height="816" alt="Billet Gathirl de la partie « ${p.title} » : ${fmtDateLong(p.date)} à ${fmtTime(p.date)}, ${p.location || p.city}, avec un QR code vers la partie" hidden />
+                </div>
+                <div class="ticket-actions">
+                  <button type="button" class="btn btn--sm btn--block" data-ticket-dl>${icon("download")} Télécharger le billet</button>
+                  <button type="button" class="btn btn--sm btn--ghost btn--block" data-ics>${icon("calendar")} Ajouter à mon calendrier</button>
+                </div>
+              </div>` : ""}
+
             <div class="panel" style="padding:20px">
               <p class="aside-title">Organisateur·rice</p>
               <div class="host">
@@ -126,9 +140,19 @@ export async function render(el, ctx) {
           </aside>
         </div>
       </div>`);
+
+    const img = $("[data-ticket-img]", el);
+    if (img) {
+      ticketFor(p).then((t) => {
+        if (!img.isConnected) return;
+        img.src = t.url;
+        img.hidden = false;
+      }).catch(() => {});
+    }
   };
 
   draw();
+  const offTilt = ticketTilt(el);
 
   const act = async (fn, okTitle, okDesc) => {
     try {
@@ -144,6 +168,14 @@ export async function render(el, ctx) {
   };
 
   el.addEventListener("click", async (e) => {
+    if (e.target.closest("[data-ics]") && data.p) {
+      downloadIcs(data.p);
+      toast.success("Événement prêt", "Ouvrez le fichier .ics pour l'ajouter à votre calendrier.");
+    }
+    if (e.target.closest("[data-ticket-dl]") && data.p) {
+      try { await saveTicket(data.p); }
+      catch { toast.error("Oups", "Le billet n'a pas pu être généré."); }
+    }
     if (e.target.closest("[data-join]")) {
       if (!db.auth.user()) {
         location.hash = "#/connexion?retour=" + encodeURIComponent(location.hash);
@@ -168,5 +200,5 @@ export async function render(el, ctx) {
     data = await load().catch(() => data);
     draw();
   });
-  return off;
+  return () => { off?.(); offTilt(); };
 }
