@@ -606,7 +606,9 @@
 
 .lore__figure { display: grid; gap: 10px; justify-items: center; }
 .lore__figure img { width: 100%; max-width: 280px; border-radius: var(--r-3); box-shadow: 0 0 0 1px var(--line-2), 0 20px 40px -20px rgb(0 0 0 / 0.9); }
-.lore__figure--sigil img { max-width: 180px; box-shadow: none; filter: drop-shadow(0 0 22px rgb(227 40 58 / 0.45)); }
+.lore__figure--sigil img { max-width: 220px; border-radius: 0; box-shadow: none; filter: drop-shadow(0 0 22px rgb(226 94 93 / 0.35)); }
+.lore__legend { display: grid; gap: 6px; margin-top: 6px; padding: 0; max-width: 260px; font-size: 14px; line-height: 1.4; color: var(--muted); }
+.lore__legend b { color: var(--parch); font-weight: 600; }
 .lore__figure figcaption { font: 700 11px/1.3 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-align: center; }
 
 /* Citation de l'Oracle, entre deux chapitres */

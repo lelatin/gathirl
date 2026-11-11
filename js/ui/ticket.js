@@ -5,9 +5,9 @@
    en V au niveau de la perforation, talon avec le QR code.
    Format post Instagram : 1080 × 1350 px (4:5).
    ===================================================================== */
-import qrcode from "../vendor/qrcode.js?v=202611120004";
-import { artFor, fmtTime, hash, plural } from "../lib/format.js?v=202611120004";
-import { partieUrl, slug, downloadBlob } from "../lib/calendar.js?v=202611120004";
+import qrcode from "../vendor/qrcode.js?v=202611120009";
+import { artFor, fmtTime, hash, plural } from "../lib/format.js?v=202611120009";
+import { partieUrl, slug, downloadBlob } from "../lib/calendar.js?v=202611120009";
 
 /* Teintes « Magic » par format : les mêmes que les cartouches de parties */
 // Une seule teinte pour tous les formats : le rouge de la marque (texte crème dessus, 5,2:1)

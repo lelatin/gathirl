@@ -1,10 +1,10 @@
 /* =====================================================================
    LE PACTE — connexion & inscription
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611120004";
-import { db } from "../data/index.js?v=202611120004";
-import { CONFIG } from "../config.js?v=202611120004";
-import { toast } from "../ui/toast.js?v=202611120004";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611120009";
+import { db } from "../data/index.js?v=202611120009";
+import { CONFIG } from "../config.js?v=202611120009";
+import { toast } from "../ui/toast.js?v=202611120009";
 
 function safeReturn(q) {
   const r = q.get("retour") || "#/";

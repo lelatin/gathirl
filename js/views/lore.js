@@ -4,7 +4,7 @@
    et de la charte graphique (« Au début des mondes »), à peine retouchés.
    Page de lecture : chapitres courts, 62 caractères par ligne au plus.
    ===================================================================== */
-import { html, icon, mount } from "../lib/dom.js?v=202611120004";
+import { html, icon, mount } from "../lib/dom.js?v=202611120009";
 
 const CHAPTERS = [
   {
@@ -76,8 +76,14 @@ export function render(el) {
               </figure>` : ""}
             ${c.figure === "sigil" ? html`
               <figure class="lore__figure lore__figure--sigil">
-                <img src="assets/favicon.svg" alt="Le sceau du Gathirl, tracé par l'Oracle." width="200" height="200" loading="lazy" />
+                <img src="assets/img/logo-gathirl.png" alt="Le logo du Gathirl : trois octogones et cercles emboîtés, entourés de six points." width="640" height="640" loading="lazy" />
                 <figcaption>Le sceau du Gathirl</figcaption>
+                <!-- Signification, d'après la charte graphique (Logo · Construction) -->
+                <ul class="lore__legend" role="list">
+                  <li><b>Les six points</b> : les joueurs autour d'une table de jeu</li>
+                  <li><b>Les octogones</b> : Magic et Donjons &amp; Dragons, la pluralité des jeux</li>
+                  <li><b>Le cercle au centre</b> : l'unification, la communauté</li>
+                </ul>
               </figure>` : ""}
           </section>
           ${c.id === "oracle" ? html`<blockquote class="lore__quote"><p>« Vous n'êtes pas seul, venez rejoindre ce combat. Seul vous ne pourrez rien, ensemble vous saurez combattre… »</p><cite>L'Oracle</cite></blockquote>` : ""}`)}
