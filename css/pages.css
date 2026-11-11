@@ -470,8 +470,8 @@
 .ticket-panel { display: grid; justify-items: center; }
 .ticket-panel .aside-title { justify-self: stretch; }
 .ticket {
-  width: min(100%, 17rem);
-  aspect-ratio: 340 / 816;
+  width: min(100%, 20rem);
+  aspect-ratio: 4 / 5;
   margin-block: 4px 18px;
   /* la silhouette (coins coupés, encoches) est dans le PNG transparent */
   filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.4)) drop-shadow(0 18px 26px rgb(0 0 0 / 0.55)) drop-shadow(0 0 22px rgb(227 40 58 / 0.18));

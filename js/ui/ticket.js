@@ -2,7 +2,8 @@
    BILLET DE PARTIE — dessiné en <canvas>, affiché tel quel dans la page
    et téléchargeable en PNG (ce que l'on voit = ce que l'on télécharge).
    Silhouette inspirée du ticket de dqnamo.com : coins coupés, encoches
-   en V au niveau de la perforation, talon (≈ 24 %) avec le QR code.
+   en V au niveau de la perforation, talon avec le QR code.
+   Format post Instagram : 1080 × 1350 px (4:5).
    ===================================================================== */
 import qrcode from "../vendor/qrcode.js";
 import { artFor, fmtTime, hash, plural } from "../lib/format.js";
@@ -28,11 +29,12 @@ const F = {
 };
 
 /* Gabarit (unités logiques ; le PNG est rendu à ×3) */
-export const TICKET = { W: 340, H: 816, CORNER: 12, NOTCH: 14 };
-TICKET.STUB = Math.round(TICKET.H * 0.24);
+// 360 × 450 logiques, rendu ×3 = 1080 × 1350 px (post Instagram 4:5)
+export const TICKET = { W: 360, H: 450, CORNER: 10, NOTCH: 12 };
+TICKET.STUB = 112;
 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const dayYear = new Intl.DateTimeFormat("fr-FR", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+const dayMonth = new Intl.DateTimeFormat("fr-FR", { weekday: "short", day: "numeric", month: "short" });
 export const ticketCode = (p) => `${(p.format || "M").charAt(0).toUpperCase()}${(hash(p.id) % 9) + 1}`;
 
 async function fontsReady() {
@@ -92,8 +94,8 @@ function wrap(ctx, text, maxW, maxLines) {
 }
 
 function label(ctx, text, x, y, color = C.muted) {
-  ctx.font = `700 9.5px ${F.mono}`;
-  spaced(ctx, 1.6);
+  ctx.font = `700 8.5px ${F.mono}`;
+  spaced(ctx, 1.4);
   ctx.fillStyle = color;
   ctx.fillText(text.toUpperCase(), x, y);
   spaced(ctx, 0);
@@ -102,16 +104,16 @@ function label(ctx, text, x, y, color = C.muted) {
 /** Un champ « étiquette + valeur », renvoie sa hauteur */
 function field(ctx, name, value, sub, x, y, w) {
   label(ctx, name, x, y);
-  ctx.font = `600 15px ${F.body}`;
+  ctx.font = `600 13.5px ${F.body}`;
   ctx.fillStyle = C.parch;
   const lines = wrap(ctx, value, w, 2);
-  lines.forEach((l, i) => ctx.fillText(l, x, y + 16 + i * 19));
-  let h = 16 + lines.length * 19;
+  lines.forEach((l, i) => ctx.fillText(l, x, y + 13 + i * 16));
+  let h = 13 + lines.length * 16;
   if (sub) {
-    ctx.font = `400 13px ${F.body}`;
+    ctx.font = `400 11.5px ${F.body}`;
     ctx.fillStyle = C.muted;
     ctx.fillText(wrap(ctx, sub, w, 1)[0] || "", x, y + h + 1);
-    h += 18;
+    h += 15;
   }
   return h;
 }
@@ -132,10 +134,11 @@ function drawQR(ctx, text, x, y, size, ink) {
   }
 }
 
-/** Dessine le billet et renvoie le <canvas> */
+/** Dessine le billet (format post Instagram 4:5) et renvoie le <canvas> */
 export async function renderTicket(p, { scale = 3 } = {}) {
   const { W, H, NOTCH: N, STUB: S } = TICKET;
   const Y = H - S;
+  const M = 22;                      // marge intérieure
   const [tint, onTint] = tintFor(p.format);
   await fontsReady();
   const art = await loadImage(artFor(p.id));
@@ -157,7 +160,7 @@ export async function renderTicket(p, { scale = 3 } = {}) {
   g = ctx.createRadialGradient(W * 0.9, 0, 0, W * 0.9, 0, W * 0.9);
   g.addColorStop(0, "rgba(122,63,176,.28)"); g.addColorStop(1, "rgba(122,63,176,0)");
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  g = ctx.createRadialGradient(0, H * 0.55, 0, 0, H * 0.55, W);
+  g = ctx.createRadialGradient(0, H * 0.6, 0, 0, H * 0.6, W);
   g.addColorStop(0, "rgba(227,40,58,.14)"); g.addColorStop(1, "rgba(227,40,58,0)");
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   g = ctx.createLinearGradient(0, 0, W * 0.6, H * 0.5);
@@ -165,27 +168,27 @@ export async function renderTicket(p, { scale = 3 } = {}) {
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
 
   /* Liseré de la teinte du format, en haut */
-  ctx.fillStyle = tint; ctx.fillRect(0, 0, W, 5);
+  ctx.fillStyle = tint; ctx.fillRect(0, 0, W, 4);
 
   /* --- En-tête : logo néon + numéro de billet --- */
   ctx.save();
-  ctx.font = `700 27px ${F.display}`;
-  spaced(ctx, 2.2);
+  ctx.font = `700 23px ${F.display}`;
+  spaced(ctx, 1.8);
   ctx.fillStyle = C.neon;
   ctx.shadowColor = "rgba(227,40,58,.85)";
-  ctx.shadowBlur = 12 * scale;
-  ctx.fillText("Gathirl", 22, 19);
+  ctx.shadowBlur = 10 * scale;
+  ctx.fillText("Gathirl", M, 14);
   ctx.shadowBlur = 0;
   ctx.restore();
   ctx.textAlign = "right";
-  label(ctx, "Billet d'aventure", W - 22, 22, C.gold);
-  label(ctx, `N° ${ticketCode(p)} · ${String(hash(p.id) % 10000).padStart(4, "0")}`, W - 22, 36);
+  label(ctx, "Billet d'aventure", W - M, 15, C.gold);
+  label(ctx, `N° ${ticketCode(p)} · ${String(hash(p.id) % 10000).padStart(4, "0")}`, W - M, 28);
   ctx.textAlign = "left";
 
   /* --- Bandeau illustré --- */
-  const ax = 16, ay = 62, aw = W - 32, ah = 168;
+  const ax = 14, ay = 46, aw = W - 28, ah = 104;
   ctx.save();
-  ctx.beginPath(); ctx.roundRect(ax, ay, aw, ah, 6); ctx.clip();
+  ctx.beginPath(); ctx.roundRect(ax, ay, aw, ah, 5); ctx.clip();
   ctx.fillStyle = C.ink; ctx.fillRect(ax, ay, aw, ah);
   if (art) {
     const r = Math.max(aw / art.width, ah / art.height);
@@ -194,84 +197,84 @@ export async function renderTicket(p, { scale = 3 } = {}) {
     ctx.drawImage(art, ax + (aw - iw) / 2, ay + (ah - ih) / 2, iw, ih);
     ctx.filter = "none";
   }
-  g = ctx.createLinearGradient(0, ay + ah * 0.45, 0, ay + ah);
+  g = ctx.createLinearGradient(0, ay + ah * 0.4, 0, ay + ah);
   g.addColorStop(0, "rgba(14,10,19,0)"); g.addColorStop(1, "rgba(14,10,19,.85)");
   ctx.fillStyle = g; ctx.fillRect(ax, ay, aw, ah);
   ctx.restore();
   ctx.strokeStyle = "rgba(239,227,200,.16)"; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.roundRect(ax + 0.5, ay + 0.5, aw - 1, ah - 1, 6); ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(ax + 0.5, ay + 0.5, aw - 1, ah - 1, 5); ctx.stroke();
   /* équerre d'angle, comme sur les cartouches */
   ctx.strokeStyle = tint; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(ax + aw - 7, ay + ah - 21); ctx.lineTo(ax + aw - 7, ay + ah - 7); ctx.lineTo(ax + aw - 21, ay + ah - 7); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ax + aw - 6, ay + ah - 18); ctx.lineTo(ax + aw - 6, ay + ah - 6); ctx.lineTo(ax + aw - 18, ay + ah - 6); ctx.stroke();
 
   /* étiquette du format sur l'illustration */
-  ctx.font = `700 10.5px ${F.mono}`;
-  spaced(ctx, 1.4);
+  ctx.font = `700 9.5px ${F.mono}`;
+  spaced(ctx, 1.3);
   const tag = `${p.format}${p.level ? " · " + p.level : ""}`.toUpperCase();
-  const tw = ctx.measureText(tag).width + 18;
+  const tw = ctx.measureText(tag).width + 16;
   ctx.fillStyle = tint;
-  ctx.beginPath(); ctx.roundRect(ax + 12, ay + ah - 34, tw, 22, 3); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(ax + 10, ay + ah - 29, tw, 19, 3); ctx.fill();
   ctx.fillStyle = onTint;
-  ctx.fillText(tag, ax + 21, ay + ah - 28);
+  ctx.fillText(tag, ax + 18, ay + ah - 24);
   spaced(ctx, 0);
 
-  /* --- Titre --- */
-  ctx.font = `700 33px ${F.display}`;
+  /* --- Titre (2 lignes max) --- */
+  ctx.font = `700 25px ${F.display}`;
   ctx.fillStyle = C.parch;
-  const titleLines = wrap(ctx, p.title, W - 44, 3);
-  let y = ay + ah + 20;
-  titleLines.forEach((l, i) => ctx.fillText(l, 22, y + i * 33));
-  y += titleLines.length * 33 + 12;
+  const titleLines = wrap(ctx, p.title, W - M * 2, 2);
+  // un titre d'une seule ligne est centré dans l'espace prévu pour deux
+  const ty = ay + ah + 12 + (2 - titleLines.length) * 13;
+  titleLines.forEach((l, i) => ctx.fillText(l, M, ty + i * 26));
 
+  /* --- Informations : calées au-dessus de la perforation --- */
+  const fy = 232;
   ctx.fillStyle = "rgba(239,227,200,.12)";
-  ctx.fillRect(22, y, W - 44, 1);
-  y += 16;
-
-  /* --- Informations --- */
+  ctx.fillRect(M, fy - 10, W - M * 2, 1);
+  const gap = 12, col = (W - M * 2 - gap * 2) / 3;
+  const c1 = M, c2 = M + col + gap, c3 = M + (col + gap) * 2;
+  const d = new Date(p.date);
   const left = p.max_players - p.current_players;
-  const half = (W - 44 - 16) / 2, x2 = 22 + half + 16;
-  y += Math.max(
-    field(ctx, "Date", cap(dayYear.format(new Date(p.date))), null, 22, y, half),
-    field(ctx, "Heure", fmtTime(p.date), null, x2, y, half),
-  ) + 14;
-  y += field(ctx, "Lieu", p.location || p.city, p.location_address || (p.location ? p.city : ""), 22, y, W - 44) + 14;
-  field(ctx, "Organisation", p.host_name, null, 22, y, half);
-  field(ctx, "Joueurs", `${p.current_players} / ${p.max_players}`,
-    left > 0 ? plural(left, "place libre", "places libres") : "Complet", x2, y, half);
-
-  /* Mention d'admission, calée au-dessus de la perforation */
-  ctx.fillStyle = "rgba(239,227,200,.12)";
-  ctx.fillRect(22, Y - 44, W - 44, 1);
-  label(ctx, "Admet 1 aventurier·e", 22, Y - 30, C.parch2);
-  ctx.textAlign = "right";
-  label(ctx, "gathirl", W - 22, Y - 30, C.neon);
-  ctx.textAlign = "left";
+  const rowA = Math.max(
+    field(ctx, "Date", cap(dayMonth.format(d)), String(d.getFullYear()), c1, fy, col),
+    field(ctx, "Heure", fmtTime(p.date), null, c2, fy, col),
+    field(ctx, "Joueurs", `${p.current_players} / ${p.max_players}`,
+      left > 0 ? plural(left, "place libre", "places libres") : "Complet", c3, fy, col),
+  );
+  const fy2 = fy + rowA + 10;
+  field(ctx, "Lieu", p.location || p.city, p.location_address || (p.location ? p.city : ""), c1, fy2, col * 2 + gap);
+  field(ctx, "Organisation", p.host_name, null, c3, fy2, col);
 
   /* --- Perforation --- */
   ctx.strokeStyle = "rgba(239,227,200,.32)"; ctx.lineWidth = 1;
-  ctx.setLineDash([5, 5]);
-  ctx.beginPath(); ctx.moveTo(N + 8, Y + 0.5); ctx.lineTo(W - N - 8, Y + 0.5); ctx.stroke();
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(N + 6, Y + 0.5); ctx.lineTo(W - N - 6, Y + 0.5); ctx.stroke();
   ctx.setLineDash([]);
 
   /* --- Talon : QR code sur parchemin + mention --- */
-  const qs = 132, qx = 22, qy = Y + (S - qs) / 2;
+  const qs = 86, qx = M, qy = Y + (S - qs) / 2;
   ctx.fillStyle = C.parch;
-  ctx.beginPath(); ctx.roundRect(qx, qy, qs, qs, 6); ctx.fill();
-  drawQR(ctx, partieUrl(p.id), qx + 4, qy + 4, qs - 8, C.ink);
+  ctx.beginPath(); ctx.roundRect(qx, qy, qs, qs, 5); ctx.fill();
+  drawQR(ctx, partieUrl(p.id), qx + 3, qy + 3, qs - 6, C.ink);
 
-  const tx = qx + qs + 18, tW = W - tx - 22;
-  label(ctx, "Scannez-moi", tx, qy + 4, tint);
-  ctx.font = `700 22px ${F.display}`;
+  const tx = qx + qs + 16, tW = W - tx - M;
+  label(ctx, "Scannez-moi", tx, qy + 2, tint);
+  ctx.font = `700 20px ${F.display}`;
   ctx.fillStyle = C.parch;
-  const cta = wrap(ctx, "Ouvrir la partie", tW, 2);
-  cta.forEach((l, i) => ctx.fillText(l, tx, qy + 22 + i * 23));
-  ctx.font = `400 12.5px ${F.body}`;
+  ctx.fillText(wrap(ctx, "Ouvrir la partie", tW, 1)[0], tx, qy + 16);
+  ctx.font = `400 11.5px ${F.body}`;
   ctx.fillStyle = C.muted;
-  wrap(ctx, "Présentez ce billet à la table.", tW, 2).forEach((l, i) => ctx.fillText(l, tx, qy + 30 + cta.length * 23 + i * 16));
-  ctx.font = `700 22px ${F.mono}`;
-  ctx.fillStyle = tint;
+  ctx.fillText(wrap(ctx, "Présentez ce billet à la table.", tW, 1)[0], tx, qy + 41);
   ctx.textBaseline = "alphabetic";
-  ctx.fillText(ticketCode(p), tx, qy + qs - 2);
+  ctx.font = `700 18px ${F.mono}`;
+  ctx.fillStyle = tint;
+  ctx.fillText(ticketCode(p), tx, qy + qs - 1);
+  ctx.textAlign = "right";
+  ctx.font = `700 8.5px ${F.mono}`;
+  spaced(ctx, 1.4);
+  ctx.fillStyle = C.parch2;
+  ctx.fillText("ADMET 1 AVENTURIER·E", W - M, qy + qs - 2);
+  spaced(ctx, 0);
+  ctx.textAlign = "left";
   ctx.textBaseline = "top";
 
   /* Liseré intérieur qui suit la silhouette */

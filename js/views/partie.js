@@ -110,7 +110,7 @@ export async function render(el, ctx) {
               <div class="panel ticket-panel">
                 <p class="aside-title">Votre billet</p>
                 <div class="ticket" data-ticket-tilt>
-                  <img data-ticket-img width="340" height="816" alt="Billet Gathirl de la partie « ${p.title} » : ${fmtDateLong(p.date)} à ${fmtTime(p.date)}, ${p.location || p.city}, avec un QR code vers la partie" hidden />
+                  <img data-ticket-img width="360" height="450" alt="Billet Gathirl de la partie « ${p.title} » : ${fmtDateLong(p.date)} à ${fmtTime(p.date)}, ${p.location || p.city}, avec un QR code vers la partie" hidden />
                 </div>
                 <div class="ticket-actions">
                   <button type="button" class="btn btn--sm btn--block" data-ticket-dl>${icon("download")} Télécharger le billet</button>

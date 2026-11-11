@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Gathirl//Parties Magic//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:677cd1af-0c5b-402d-9f84-18aebbfed0c9@gathirl
+DTSTAMP:20261111T192513Z
+DTSTART:20261115T130000Z
+DTEND:20261115T160000Z
+SUMMARY:Draft Bloomburrow · 8 joueurs
+LOCATION:Ludothèque des Chartrons\, Bordeaux
+GEO:44.853;-0.57
+DESCRIPTION:Partie de Magic · Draft · Débutant\nOrganisée par Clémence
+  R.\n5 / 8 joueurs\nDraft pour débutant·es\, on explique les règles du 
+ draft avant de commencer. Boosters à prévoir (ou à acheter sur place).\
+ nhttp://localhost:5173/#/partie/677cd1af-0c5b-402d-9f84-18aebbfed0c9
+URL:http://localhost:5173/#/partie/677cd1af-0c5b-402d-9f84-18aebbfed0c9
+CATEGORIES:Magic: The Gathering
+STATUS:CONFIRMED
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Draft Bloomburrow · 8 joueurs
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

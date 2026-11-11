@@ -23,7 +23,7 @@ Ce dépôt est la **réécriture complète** de l'app Base44 (`gathirl.base44.ap
 | Raccourcis clavier `1`–`4` (navigation) et `N` (organiser) | ❌ | ✅ |
 | Mode démo hors-ligne avec joueurs d'exemple | ❌ | ✅ |
 | **Ajouter à mon calendrier** (fichier `.ics` avec rappel 2 h avant : Apple, Google, Outlook, Samsung) | ❌ | ✅ |
-| **Billet de partie** en PNG (illustration, infos, QR code vers la partie), partage natif sur téléphone | ❌ | ✅ `js/ui/ticket.js` |
+| **Billet de partie** en PNG 1080 × 1350 (format post Instagram 4:5 ; illustration, infos, QR code vers la partie), partage natif sur téléphone | ❌ | ✅ `js/ui/ticket.js` |
 
 ---
 
