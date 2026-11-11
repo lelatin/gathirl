@@ -4,6 +4,10 @@
    Le schéma correspondant se trouve dans supabase/schema.sql.
    ===================================================================== */
 import { CONFIG } from "../config.js?v=202611120042";
+import { isNative } from "../lib/native.js?v=202611120042";
+
+// Lien des e-mails (confirmation, connexion) : le site public, même depuis l'app
+const returnUrl = () => (isNative() ? CONFIG.PUBLIC_URL : location.origin + location.pathname);
 
 const SUPABASE_ESM = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
 
@@ -81,7 +85,7 @@ export const supabaseAdapter = {
         password,
         options: {
           data: { full_name: full_name?.trim() },
-          emailRedirectTo: location.origin + location.pathname,
+          emailRedirectTo: returnUrl(),
         },
       }));
       if (data.session) await loadProfile(data.user.id);
@@ -89,7 +93,7 @@ export const supabaseAdapter = {
     },
 
     async signInWithGoogle() {
-      check(await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + location.pathname } }));
+      check(await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: returnUrl() } }));
     },
 
     async resetPassword(email) {
