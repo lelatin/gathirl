@@ -18,7 +18,8 @@ const C = {
   gold: "#e4c7ab", neon: "#ff4a57", blood: "#e3283a",
 };
 const F = {
-  display: '"Grenze Gotisch", Georgia, serif',
+  display: 'Fraunces, Georgia, serif',
+  logo: '"Grenze Gotisch", Georgia, serif',
   body: 'Spectral, Georgia, serif',
   mono: '"Space Mono", ui-monospace, Menlo, monospace',
 };
@@ -36,6 +37,7 @@ async function fontsReady() {
   if (!document.fonts) return;
   await Promise.all([
     document.fonts.load(`700 34px ${F.display}`),
+    document.fonts.load(`700 23px ${F.logo}`),
     document.fonts.load(`600 15px ${F.body}`),
     document.fonts.load(`400 13px ${F.body}`),
     document.fonts.load(`700 11px ${F.mono}`),
@@ -164,7 +166,7 @@ export async function renderTicket(p, { scale = 3 } = {}) {
 
   /* --- En-tête : logo néon + numéro de billet --- */
   ctx.save();
-  ctx.font = `700 23px ${F.display}`;
+  ctx.font = `700 23px ${F.logo}`;
   spaced(ctx, 1.8);
   ctx.fillStyle = C.neon;
   ctx.shadowColor = "rgba(227,40,58,.85)";
@@ -211,7 +213,7 @@ export async function renderTicket(p, { scale = 3 } = {}) {
   spaced(ctx, 0);
 
   /* --- Titre (2 lignes max) --- */
-  ctx.font = `700 25px ${F.display}`;
+  ctx.font = `700 22px ${F.display}`;
   ctx.fillStyle = C.parch;
   const titleLines = wrap(ctx, p.title, W - M * 2, 2);
   // un titre d'une seule ligne est centré dans l'espace prévu pour deux
@@ -250,7 +252,7 @@ export async function renderTicket(p, { scale = 3 } = {}) {
 
   const tx = qx + qs + 16, tW = W - tx - M;
   label(ctx, "Scannez-moi", tx, qy + 2, tint);
-  ctx.font = `700 20px ${F.display}`;
+  ctx.font = `700 18px ${F.display}`;
   ctx.fillStyle = C.parch;
   ctx.fillText(wrap(ctx, "Ouvrir la partie", tW, 1)[0], tx, qy + 16);
   ctx.font = `400 11.5px ${F.body}`;

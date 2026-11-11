@@ -58,7 +58,7 @@
 
 .hero__title {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 800;
   font-size: var(--step-4);
   line-height: 0.92;
   letter-spacing: -0.015em;
@@ -252,7 +252,7 @@
   border-radius: 50%;
   border: 1.5px dashed var(--line-2);
   color: var(--faint);
-  font-family: var(--font-display); font-weight: 900; font-size: 16px;
+  font-family: var(--font-display); font-weight: 800; font-size: 16px;
 }
 .seat.is-taken {
   border: 0;
