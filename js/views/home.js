@@ -44,6 +44,7 @@ export async function render(el, ctx) {
               <div class="tcard__text">
                 <p style="font-size:14.5px">Au début de chaque semaine, révélez les tables ouvertes près de chez vous.</p>
                 <p class="tcard__flavor">« Vous n'êtes pas seul. Aventurez-vous. »</p>
+                <a class="tcard__lore" href="#/lore">Lire la légende de l'Oracle →</a>
               </div>
             </div>
             <span class="tcard__pt">∞/∞</span>

@@ -13,6 +13,7 @@ import * as Partie from "./views/partie.js";
 import * as Profil from "./views/profil.js";
 import * as Auth from "./views/auth.js";
 import { renderInbox, renderThread } from "./views/messages.js";
+import * as Lore from "./views/lore.js";
 
 /* ---------------- Routes ---------------- */
 const routes = [
@@ -25,6 +26,7 @@ const routes = [
   { re: /^\/messages\/([\w-]+)$/, keys: ["id"], nav: "messages", title: "Missive", view: renderThread },
   { re: /^\/connexion$/, nav: "profil", title: "Connexion", view: Auth.render },
   { re: /^\/inscription$/, nav: "profil", title: "Inscription", view: Auth.render },
+  { re: /^\/lore$/, nav: null, title: "Le lore", view: Lore.render },
 ];
 
 const app = document.getElementById("app");

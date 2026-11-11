@@ -551,3 +551,74 @@
 @keyframes ticket-in { from { opacity: 0; transform: translateY(6px); } }
 .ticket-actions { display: grid; gap: 8px; width: 100%; }
 .ticket-actions .btn svg { width: 16px; height: 16px; }
+
+/* =====================================================================
+   LE LORE — page de lecture (chapitres courts, ≤ 62 caractères par ligne)
+   ===================================================================== */
+.lore { padding-bottom: var(--space-8); }
+.lore__head { padding-block: clamp(40px, 7vw, 88px) var(--space-6); max-width: 900px; }
+.lore__eyebrow { font: 700 12px/1.3 var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+.lore__title {
+  margin-top: var(--space-3);
+  font-family: var(--font-display); font-weight: 800;
+  font-size: var(--step-4); line-height: 0.98; letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.lore__lede { margin-top: var(--space-4); max-width: 52ch; font-size: var(--step-1); line-height: 1.5; color: var(--parch-2); text-wrap: pretty; }
+
+/* Sommaire */
+.lore__toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--space-6); }
+.lore__toc a {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 36px; padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  font-size: 14.5px; color: var(--parch-2);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.lore__toc a span { font: 700 11px/1 var(--font-mono); letter-spacing: 0.08em; color: var(--blood); }
+@media (hover: hover) and (pointer: fine) { .lore__toc a:hover { background: var(--ink-3); color: var(--parch); } }
+@media (pointer: coarse) { .lore__toc a { min-height: 44px; } }
+
+/* Chapitres */
+.lore__body { max-width: 1040px; display: grid; gap: var(--space-5); }
+.lore__chapter {
+  display: grid; gap: var(--space-6); align-items: center;
+  padding: clamp(24px, 4vw, 44px);
+  background: var(--card);
+  border-radius: var(--r-bento);
+  box-shadow: var(--shadow-card);
+  scroll-margin-top: calc(var(--hud-h) + 52px);
+}
+@media (min-width: 860px) { .lore__chapter.has-figure { grid-template-columns: minmax(0, 1fr) 280px; } }
+.lore__text { max-width: 62ch; }
+.lore__num { font: 700 13px/1 var(--font-mono); letter-spacing: 0.2em; color: var(--blood); }
+.lore__text h2 {
+  margin-block: 10px 18px;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--step-3); line-height: 1.05; letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.lore__text p { font-size: 18px; line-height: 1.7; color: var(--parch-2); text-wrap: pretty; }
+.lore__text p + p { margin-top: 1em; }
+.lore__text strong { color: var(--parch); font-weight: 600; }
+.lore__text em { color: var(--parch); }
+
+.lore__figure { display: grid; gap: 10px; justify-items: center; }
+.lore__figure img { width: 100%; max-width: 280px; border-radius: var(--r-3); box-shadow: 0 0 0 1px var(--line-2), 0 20px 40px -20px rgb(0 0 0 / 0.9); }
+.lore__figure--sigil img { max-width: 180px; box-shadow: none; filter: drop-shadow(0 0 22px rgb(227 40 58 / 0.45)); }
+.lore__figure figcaption { font: 700 11px/1.3 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-align: center; }
+
+/* Citation de l'Oracle, entre deux chapitres */
+.lore__quote { margin: var(--space-3) auto; max-width: 36ch; text-align: center; }
+.lore__quote p { font-family: var(--font-display); font-weight: 600; font-style: italic; font-size: var(--step-2); line-height: 1.25; color: var(--parch); }
+.lore__quote cite { display: block; margin-top: 12px; font: 700 12px/1 var(--font-mono); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; color: var(--blood); }
+
+/* Appel final */
+.lore__end { max-width: 900px; padding-top: var(--space-7); text-align: center; }
+.lore__call { font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); line-height: 1.05; }
+.lore__call span { color: var(--blood); }
+.lore__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-5); }
+
+/* Lien vers le lore depuis la carte de l'Oracle */
+.tcard__lore { display: inline-block; margin-top: 8px; font: 700 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: #8f1222; text-decoration: underline; text-underline-offset: 3px; }
