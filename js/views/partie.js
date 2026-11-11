@@ -7,7 +7,7 @@ import { osmLink } from "../lib/geo.js";
 import { db } from "../data/index.js";
 import { toast } from "../ui/toast.js";
 import { downloadIcs } from "../lib/calendar.js";
-import { ticketFor, saveTicket, ticketTilt } from "../ui/ticket.js";
+import { ticketFor, saveTicket, ticketTilt, lastTicket } from "../ui/ticket.js";
 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -110,7 +110,7 @@ export async function render(el, ctx) {
               <div class="panel ticket-panel">
                 <p class="aside-title">Votre billet</p>
                 <div class="ticket" data-ticket-tilt>
-                  <img data-ticket-img width="360" height="450" alt="Billet Gathirl de la partie « ${p.title} » : ${fmtDateLong(p.date)} à ${fmtTime(p.date)}, ${p.location || p.city}, avec un QR code vers la partie" hidden />
+                  <img data-ticket-img width="360" height="450" alt="Billet Gathirl de la partie « ${p.title} » : ${fmtDateLong(p.date)} à ${fmtTime(p.date)}, ${p.location || p.city}, avec un QR code vers la partie" ${lastTicket(p.id) ? html`src="${lastTicket(p.id).url}"` : "hidden"} />
                 </div>
                 <div class="ticket-actions">
                   <button type="button" class="btn btn--sm btn--block" data-ticket-dl>${icon("download")} Télécharger le billet</button>
@@ -145,7 +145,9 @@ export async function render(el, ctx) {
     if (img) {
       ticketFor(p).then((t) => {
         if (!img.isConnected) return;
-        img.src = t.url;
+        // apparition animée seulement la toute première fois ; ensuite on remplace l'image sans bouger
+        if (img.hidden) img.classList.add("is-entering");
+        if (img.getAttribute("src") !== t.url) img.src = t.url;
         img.hidden = false;
       }).catch(() => {});
     }

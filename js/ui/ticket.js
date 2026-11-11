@@ -288,6 +288,8 @@ export async function renderTicket(p, { scale = 3 } = {}) {
 
 /* Cache par partie (on ne redessine que si une info du billet change) */
 const cache = new Map();
+/** Dernier billet dessiné pour cette partie (même périmé) : affiché tout de suite au redessin */
+export const lastTicket = (id) => cache.get(id) || null;
 const keyOf = (p) => [p.id, p.title, p.date, p.location, p.location_address, p.city, p.format, p.level, p.host_name, p.current_players, p.max_players].join("|");
 
 export async function ticketFor(p) {
