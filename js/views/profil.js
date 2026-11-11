@@ -1,11 +1,11 @@
 /* =====================================================================
    FICHE DE PERSONNAGE — profil d'un joueur
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611120042";
-import { fmtDay, fmtMonth, fmtTime, levelMeta, levelPip, sigil } from "../lib/format.js?v=202611120042";
-import { db } from "../data/index.js?v=202611120042";
-import { openEditProfile } from "../ui/forms.js?v=202611120042";
-import { toast } from "../ui/toast.js?v=202611120042";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611120046";
+import { fmtDay, fmtMonth, fmtTime, levelMeta, levelPip, sigil } from "../lib/format.js?v=202611120046";
+import { db } from "../data/index.js?v=202611120046";
+import { openEditProfile } from "../ui/forms.js?v=202611120046";
+import { toast } from "../ui/toast.js?v=202611120046";
 
 export async function render(el, ctx) {
   const me = db.auth.user();
