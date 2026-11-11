@@ -26,7 +26,8 @@ export function levelPip(level) {
 export const frameClass = (format) => `frame--${String(format || "").toLowerCase()}`;
 
 /* Couleur du sceau d'un joueur, stable selon son id */
-const SIGIL_COLORS = ["var(--gold)", "var(--mana-r)", "var(--mana-u)", "var(--mana-g)", "var(--mana-b)", "var(--mana-w)", "#c58b4c"];
+// Sceaux des joueurs : la palette de la charte (rouge, sable, rouge sombre, parchemin), pas d'arc-en-ciel
+const SIGIL_COLORS = ["var(--blood)", "var(--gold)", "#923f3f", "var(--parch-2)"];
 export function sigil(user, size = "") {
   const name = user?.full_name || user?.name || user?.user_name || "?";
   const c = SIGIL_COLORS[hash(user?.id || name) % SIGIL_COLORS.length];

@@ -83,6 +83,44 @@
   .hero__ctas > .btn--primary { flex-basis: 100%; }
 }
 
+/* Les chiffres clés, en une ligne sous les actions */
+.hero__facts {
+  margin-top: var(--space-4);
+  font: 700 12px/1.5 var(--font-mono);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* =====================================================================
+   Joueurs près de chez vous (accueil)
+   ===================================================================== */
+.players {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: var(--bento-gap);
+  padding: var(--bento-gap);
+  background: var(--page);
+  border-radius: calc(var(--r-bento) + var(--bento-gap));
+}
+.player {
+  display: flex; align-items: center; gap: 14px;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: var(--r-bento);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur-press) var(--ease-out), background-color 150ms ease;
+}
+.player:active { transform: scale(0.985); }
+@media (hover: hover) and (pointer: fine) { .player:hover { background: var(--card-raised); } }
+@media (prefers-reduced-motion: reduce) { .player:active { transform: none; } }
+.player__body { display: grid; gap: 3px; min-width: 0; }
+.player__name { font-weight: 600; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.player__meta { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--muted); min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player__meta .pip { width: 16px; height: 16px; }
+.player__meta .pip svg { width: 10px; height: 10px; }
+.player__formats { font: 700 10.5px/1.3 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 
 /* --- Carte de l'Oracle (illustration principale, inclinable) --- */
 /* Même gabarit que les cartes de partie (même largeur que la colonne de la grille,
@@ -152,58 +190,59 @@
 .back svg { width: 16px; height: 16px; }
 @media (hover: hover) and (pointer: fine) { .back:hover { color: var(--parch); } }
 
-/* La quête en cartes bento (joints de 6 px, coins --r-bento). Pas de fond --page
-   derrière les colonnes : leurs hauteurs varient (billet, inscrits), on n'étire rien. */
-.quest {
+/* La partie : le billet à gauche (collant sur grand écran) avec ses actions,
+   à droite seulement ce que le billet ne montre pas. Cartes bento, joints de 6 px. */
+.party {
   display: grid; gap: var(--bento-gap);
   align-items: start;
   margin-bottom: var(--space-8);
 }
-@media (min-width: 900px) { .quest { grid-template-columns: 1fr 360px; } }
-.quest__main, .quest__aside { display: flex; flex-direction: column; gap: var(--bento-gap); min-width: 0; }
-
-.quest__banner {
-  position: relative;
-  aspect-ratio: 16 / 8;
+@media (min-width: 860px) {
+  .party { grid-template-columns: minmax(320px, 420px) minmax(0, 1fr); }
+  .party__ticket { position: sticky; top: calc(var(--hud-h) + 44px); }
+}
+.party__ticket {
+  display: grid; justify-items: center; gap: var(--space-4);
+  padding: 20px;
+  background: var(--card);
   border-radius: var(--r-bento);
-  overflow: hidden;
   box-shadow: var(--shadow-card);
 }
-.quest__banner img { width: 100%; height: 100%; object-fit: cover; }
-.quest__banner::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 35%, rgb(14 10 19 / 0.95));
+.party .ticket { width: min(100%, 380px); margin: 0; }
+.ticket.is-off img { filter: grayscale(0.8) brightness(0.8); }
+.party__actions { display: grid; gap: 8px; width: min(100%, 380px); }
+.party__row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; }
+.party__row .btn { padding-inline: 8px; }
+.party__row .btn svg { width: 16px; height: 16px; }
+.party__state {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px; border-radius: var(--r-2);
+  border: 1px solid var(--line-2);
+  font: 700 12px/1.3 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--parch);
 }
-.quest__banner-text { position: absolute; z-index: 1; left: 20px; right: 20px; bottom: 18px; }
-.quest__banner-text h1 {
-  font-family: var(--font-display);
-  font-size: var(--step-3);
-  line-height: 0.98;
-  text-wrap: balance;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 0.8);
-}
-.quest__tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.party__state svg { width: 16px; height: 16px; color: var(--blood); }
+.party__state--off { border-color: var(--blood); color: var(--blood); }
 
-.quest__facts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
-  gap: var(--bento-gap);
+.party__info { display: grid; gap: var(--bento-gap); min-width: 0; }
+.pcard {
+  display: grid; gap: var(--space-4); align-content: start;
+  padding: 22px 24px;
+  background: var(--card);
+  border-radius: var(--r-bento);
+  box-shadow: var(--shadow-card);
 }
-.fact { display: grid; align-content: start; gap: 4px; padding: 20px 22px; background: var(--card); border-radius: var(--r-bento); box-shadow: var(--shadow-card); }
-.fact__label { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-.fact__label svg { width: 15px; height: 15px; color: var(--gold); }
-.fact__value { font-size: 17px; line-height: 1.35; }
-.fact__value small { display: block; color: var(--muted); font-size: 14px; }
-
-.quest__desc { padding: 20px 22px; background: var(--card); border-radius: var(--r-bento); box-shadow: var(--shadow-card); }
-.quest__desc h2, .aside-title {
-  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 10px;
+.pcard__title {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  font: 700 12px/1.3 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold);
 }
-.quest__desc p { white-space: pre-line; color: var(--parch-2); max-width: 65ch; }
-
-.quest__aside .panel { padding: 20px 22px; background: var(--card); border: 0; border-radius: var(--r-bento); }
-.quest__aside .panel--corners::before, .quest__aside .panel--corners::after { display: none; }
+.pcard__title span { color: var(--parch); font-size: 14px; }
+.host { display: flex; align-items: center; gap: 12px; }
+.host__msg { margin-left: auto; }
+.party__desc { white-space: pre-line; color: var(--parch-2); max-width: 65ch; font-size: 17px; line-height: 1.6; }
+.party__where { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--muted); }
+.party__where svg { width: 16px; height: 16px; color: var(--blood); }
 
 /* Sièges autour de la table : jetons pleins / vides */
 .seats { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 6px 14px; }

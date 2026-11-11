@@ -57,7 +57,7 @@ export async function renderInbox(el) {
             <svg class="empty__icon"><use href="#i-scroll"/></svg>
             <h3>Aucun message</h3>
             <p>Visitez le profil d'un joueur, ou de l'organisateur·rice d'une partie, pour démarrer une conversation.</p>
-            <a class="btn" href="#/parties">${icon("swords")} Parcourir les quêtes</a>
+            <a class="btn" href="#/parties">${icon("swords")} Parcourir les parties</a>
           </div>`}
       </div>`);
     firstDraw = false;   // un nouveau message ne rejoue pas l'animation de toute la liste

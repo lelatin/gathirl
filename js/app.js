@@ -17,8 +17,8 @@ import { renderInbox, renderThread } from "./views/messages.js";
 /* ---------------- Routes ---------------- */
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
-  { re: /^\/parties$/, nav: "parties", title: "Quêtes", view: Home.render },
-  { re: /^\/partie\/([\w-]+)$/, keys: ["id"], nav: "parties", title: "Quête", view: Partie.render },
+  { re: /^\/parties$/, nav: "parties", title: "Parties", view: Home.render },
+  { re: /^\/partie\/([\w-]+)$/, keys: ["id"], nav: "parties", title: "Partie", view: Partie.render },
   { re: /^\/profil$/, nav: "profil", title: "Ma fiche", view: Profil.render },
   { re: /^\/profil\/([\w-]+)$/, keys: ["id"], nav: "profil", title: "Fiche de personnage", view: Profil.render },
   { re: /^\/messages$/, nav: "messages", title: "Missives", view: renderInbox },

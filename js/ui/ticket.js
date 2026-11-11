@@ -10,17 +10,12 @@ import { artFor, fmtTime, hash, plural } from "../lib/format.js";
 import { partieUrl, slug, downloadBlob } from "../lib/calendar.js";
 
 /* Teintes « Magic » par format : les mêmes que les cartouches de parties */
-const TINTS = {
-  Commander: ["#ffb35c", "#1a0e0a"], Standard: ["#ffb35c", "#1a0e0a"],
-  Draft: ["#e3283a", "#fff4ea"], Pauper: ["#e3283a", "#fff4ea"],
-  Pioneer: ["#ff6a3d", "#1a0e0a"], Vintage: ["#ff6a3d", "#1a0e0a"], Sealed: ["#ff6a3d", "#1a0e0a"],
-  Modern: ["#a865e0", "#140a1c"], Legacy: ["#a865e0", "#140a1c"], Cube: ["#a865e0", "#140a1c"],
-};
-const tintFor = (f) => TINTS[f] || TINTS.Commander;
+// Une seule teinte pour tous les formats : le rouge de la marque (texte crème dessus, 5,2:1)
+const tintFor = () => ["#c41e2f", "#fff4ea"];
 
 const C = {
   ink: "#0e0a13", ink2: "#16101b", parch: "#efe3c8", parch2: "#cdbfa3", muted: "#9a8d8f",
-  gold: "#e3b35b", neon: "#ff4a57", blood: "#e3283a",
+  gold: "#e4c7ab", neon: "#ff4a57", blood: "#e3283a",
 };
 const F = {
   display: '"Grenze Gotisch", Georgia, serif',
@@ -153,12 +148,9 @@ export async function renderTicket(p, { scale = 3 } = {}) {
   ctx.save();
   ctx.clip();
 
-  /* --- Papier : encre profonde + lueurs violette / rouge + reflet --- */
+  /* --- Papier : encre profonde + lueur rouge + reflet --- */
   let g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, "#1e1523"); g.addColorStop(1, "#0b080f");
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  g = ctx.createRadialGradient(W * 0.9, 0, 0, W * 0.9, 0, W * 0.9);
-  g.addColorStop(0, "rgba(122,63,176,.28)"); g.addColorStop(1, "rgba(122,63,176,0)");
+  g.addColorStop(0, "#1f1c1c"); g.addColorStop(1, "#0f0e0e");
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   g = ctx.createRadialGradient(0, H * 0.6, 0, 0, H * 0.6, W);
   g.addColorStop(0, "rgba(227,40,58,.14)"); g.addColorStop(1, "rgba(227,40,58,0)");

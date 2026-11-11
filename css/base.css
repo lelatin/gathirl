@@ -6,11 +6,12 @@
 
 :root {
   /* --- Encres (fonds) --- */
-  --ink-0: #07050a;
-  --ink-1: #0e0a13;      /* fond principal */
-  --ink-2: #16101b;      /* surfaces */
-  --ink-3: #211824;      /* surfaces surélevées */
-  --ink-4: #2d2230;
+  /* Noirs de la charte graphique Gathirl (noir de référence #191818, jamais #000) */
+  --ink-0: #0b0a0a;
+  --ink-1: #121111;      /* fond principal */
+  --ink-2: #191818;      /* surfaces : le noir de la charte */
+  --ink-3: #221f1f;      /* surfaces surélevées */
+  --ink-4: #2c2828;
 
   /* --- Parchemin (textes) --- */
   --parch: #efe3c8;
@@ -22,14 +23,15 @@
   --blood: #e3283a;       /* rouge néon "Upside Down" */
   --blood-deep: #8f1222;
   --ember: #ff7438;
-  --gold: #e3b35b;
-  --gold-deep: #8a6420;
+  /* « Sable » de la charte (remplace le doré) : sur-titres, touches, focus */
+  --gold: #e4c7ab;
+  --gold-deep: #8f7c69;
   --violet: #a865e0;      /* teinte « violet » du design system Gathirl Bento */
 
   /* --- Design system « Gathirl Bento » (thème Nuit) --- */
-  --page: #07050a;        /* fond visible dans les joints de la grille bento */
-  --card: #16101b;        /* fond des cartes bento */
-  --card-raised: #211824;
+  --page: #0a0909;        /* fond visible dans les joints de la grille bento */
+  --card: #191818;        /* fond des cartes bento (noir de la charte) */
+  --card-raised: #221f1f;
   --or: #ffb35c;          /* teintes du mot « Magic » : remplissages */
   --braise: #ff6a3d;
   --rouge: #e3283a;       /* blocs et barres sans texte */
@@ -60,17 +62,18 @@
   --halftone: radial-gradient(circle at center, rgb(0 0 0 / 0.55) 0.9px, transparent 1.4px) 0 0 / 4px 4px;
 
   /* --- Couleurs de mana (formats & niveaux) --- */
-  --mana-w: #f1e5b0;
-  --mana-u: #4ea3e0;
-  --mana-b: #a78aa8;
-  --mana-r: #ea553b;
-  --mana-g: #4fb06a;
-  --mana-c: #b9b2a8;
+  /* Pastilles de niveau : une seule couleur (le rouge), le niveau se lit au nombre et à l'icône */
+  --mana-w: #e4c7ab;
+  --mana-u: #e3283a;
+  --mana-b: #923f3f;
+  --mana-r: #e3283a;
+  --mana-g: #e3283a;
+  --mana-c: #8f8580;
 
   /* --- Lignes --- */
   --line: rgb(239 227 200 / 0.10);
   --line-2: rgb(239 227 200 / 0.18);
-  --line-gold: rgb(227 179 91 / 0.45);
+  --line-gold: rgb(228 199 171 / 0.4);
 
   /* --- Dégradé chrome "coucher de soleil" 80s --- */
   --chrome: linear-gradient(180deg, #fff7dc 0%, #ffe39a 30%, #ffb35c 46%, #ff6a3d 56%, #e3283a 70%, #7a3fb0 100%);
@@ -157,7 +160,6 @@ html {
 body {
   min-height: 100svh;
   background:
-    radial-gradient(1200px 600px at 85% -10%, rgb(122 63 176 / 0.16), transparent 60%),
     radial-gradient(900px 500px at 0% 10%, rgb(227 40 58 / 0.10), transparent 60%),
     var(--ink-1);
   color: var(--parch);

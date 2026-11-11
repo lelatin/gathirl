@@ -237,7 +237,7 @@
    Carte de partie — façon carte à collectionner
    ===================================================================== */
 .tcard {
-  --frame: var(--mana-c);
+  --frame: var(--blood);
   position: relative;
   border-radius: 14px;
   padding: 8px;
@@ -384,16 +384,7 @@
 .tcard.is-full .tcard__art img { filter: grayscale(0.7) brightness(0.7); }
 
 /* Couleur du cadre selon le format : teintes néon 80s, plus vives que les pastilles de mana */
-.frame--commander { --frame: #ffb62e; }
-.frame--standard { --frame: #fff0a8; }
-.frame--modern { --frame: #2fa8ff; }
-.frame--pioneer { --frame: #2fd47a; }
-.frame--legacy { --frame: #c46bff; }
-.frame--vintage { --frame: #ff7a2f; }
-.frame--pauper { --frame: #cfc7bd; }
-.frame--draft { --frame: #ff3d4f; }
-.frame--sealed { --frame: #22e0b4; }
-.frame--cube { --frame: #9b5cff; }
+/* Plus de couleur par format : un seul cadre, le rouge de la marque */
 
 /* =====================================================================
    Couverture de module d'aventure / livre-jeu des années 80 — cartes
@@ -407,9 +398,8 @@
 :where(.module) { --frame: var(--mana-c); }
 .module {
   --ink: #140c0e;
-  --paper: color-mix(in oklab, var(--frame) 10%, #ebdfc6);          /* parchemin à peine teinté */
-  /* Teinte vive tirée du dégradé « Magic » (braise, or, rouge, violet) selon le format ;
-     le fond parchemin, lui, reste piloté par --frame */
+  --paper: #ebdfc6;          /* parchemin, identique pour tous les formats */
+  /* Une seule teinte d'accent : le rouge (code du module, liseré, places) */
   --tint: var(--magic, #ffb35c);
   --on-tint: var(--magic-ink, #1a0e0a);
   position: relative;
@@ -550,12 +540,7 @@
 
 /* Halo du survol : calque fixe dont seule l'opacité change */
 /* Une teinte « Magic » par carte, choisie selon le format */
-.module.frame--commander, .module.frame--standard { --magic: #ffb35c; --magic-ink: #1a0e0a; }   /* or */
-.module.frame--draft, .module.frame--pauper       { --magic: #e3283a; --magic-ink: #fff4ea; }   /* rouge */
-.module.frame--pioneer, .module.frame--vintage,
-.module.frame--sealed                             { --magic: #ff6a3d; --magic-ink: #1a0e0a; }   /* orange braise */
-.module.frame--modern, .module.frame--legacy,
-.module.frame--cube                               { --magic: #a865e0; --magic-ink: #140a1c; }   /* violet */
+.module { --magic: var(--rouge-deep); --magic-ink: var(--on-rouge); }   /* rouge profond + crème : 5,2:1 */
 
 .module::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
@@ -1001,8 +986,8 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
 .toast p { font-size: 15px; color: var(--parch-2); line-height: 1.4; }
 .toast--error { border-left-color: var(--blood); }
 .toast--error svg { color: var(--blood); }
-.toast--success { border-left-color: var(--mana-g); }
-.toast--success svg { color: var(--mana-g); }
+.toast--success { border-left-color: var(--gold); }
+.toast--success svg { color: var(--gold); }
 
 /* =====================================================================
    Barre d'onglets mobile

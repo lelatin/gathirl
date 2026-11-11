@@ -133,6 +133,8 @@ export const localAdapter = {
   profiles: {
     async get(id) { return publicUser(db().users.find((u) => u.id === id)); },
     async many(ids) { const s = new Set(ids); return db().users.filter((u) => s.has(u.id)).map(publicUser); },
+    /** Les joueurs inscrits (annuaire « Joueurs près de chez vous ») */
+    async list({ limit = 24 } = {}) { return db().users.slice(0, limit).map(publicUser); },
     async update(patch) {
       const u = requireMe();
       Object.assign(u, patch, { id: u.id, email: u.email });

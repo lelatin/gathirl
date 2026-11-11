@@ -106,6 +106,10 @@ export const supabaseAdapter = {
       if (!ids.length) return [];
       return check(await sb.from("profiles").select("*").in("id", ids));
     },
+    /** Les joueurs inscrits (annuaire « Joueurs près de chez vous ») */
+    async list({ limit = 24 } = {}) {
+      return check(await sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(limit));
+    },
     async update(patch) {
       const me = requireMe();
       const { id, email, created_at, ...clean } = patch;

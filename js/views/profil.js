@@ -96,10 +96,10 @@ export async function render(el, ctx) {
             </div>
           </div>
 
-          <div class="bcard is-or sheet__s1"><span class="bcard__num tnum">${history.length}</span><span class="bcard__label">${history.length > 1 ? "parties" : "partie"} <strong>jouée${history.length > 1 ? "s" : ""}</strong></span><span class="sheet__mod">XP</span></div>
-          <div class="bcard is-violet sheet__s2"><span class="bcard__num sheet__word">${lvl}</span><span class="bcard__label">niveau <strong>global</strong></span><span class="sheet__mod">${levelMeta(lvl).mod}</span></div>
-          <div class="bcard is-braise sheet__s3"><span class="bcard__num tnum">${organised.length}</span><span class="bcard__label">${organised.length > 1 ? "parties" : "partie"} <strong>organisée${organised.length > 1 ? "s" : ""}</strong></span><span class="sheet__mod">MJ</span></div>
-          <div class="bcard is-rouge sheet__s4"><span class="bcard__num tnum">${upcoming.length}</span><span class="bcard__label"><strong>à venir</strong></span><span class="sheet__mod">⚔</span></div>
+          <div class="bcard sheet__s1"><span class="bcard__num tnum">${history.length}</span><span class="bcard__label">${history.length > 1 ? "parties" : "partie"} <strong>jouée${history.length > 1 ? "s" : ""}</strong></span><span class="sheet__mod">XP</span></div>
+          <div class="bcard sheet__s2"><span class="bcard__num sheet__word">${lvl}</span><span class="bcard__label">niveau <strong>global</strong></span><span class="sheet__mod">${levelMeta(lvl).mod}</span></div>
+          <div class="bcard sheet__s3"><span class="bcard__num tnum">${organised.length}</span><span class="bcard__label">${organised.length > 1 ? "parties" : "partie"} <strong>organisée${organised.length > 1 ? "s" : ""}</strong></span><span class="sheet__mod">MJ</span></div>
+          <div class="bcard sheet__s4"><span class="bcard__num tnum">${upcoming.length}</span><span class="bcard__label"><strong>à venir</strong></span><span class="sheet__mod">⚔</span></div>
 
           <div class="bcard b-quote sheet__bio">
             <p class="b-quote__text">${bio}</p>
