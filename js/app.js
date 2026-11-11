@@ -3,17 +3,18 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611120016";
-import { sigil } from "./lib/format.js?v=202611120016";
-import { db, initData } from "./data/index.js?v=202611120016";
-import { openCreatePartie } from "./ui/forms.js?v=202611120016";
+import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611120042";
+import { sigil } from "./lib/format.js?v=202611120042";
+import { db, initData } from "./data/index.js?v=202611120042";
+import { openCreatePartie } from "./ui/forms.js?v=202611120042";
 
-import * as Home from "./views/home.js?v=202611120016";
-import * as Partie from "./views/partie.js?v=202611120016";
-import * as Profil from "./views/profil.js?v=202611120016";
-import * as Auth from "./views/auth.js?v=202611120016";
-import { renderInbox, renderThread } from "./views/messages.js?v=202611120016";
-import * as Lore from "./views/lore.js?v=202611120016";
+import * as Home from "./views/home.js?v=202611120042";
+import * as Partie from "./views/partie.js?v=202611120042";
+import * as Profil from "./views/profil.js?v=202611120042";
+import * as Auth from "./views/auth.js?v=202611120042";
+import { renderInbox, renderThread } from "./views/messages.js?v=202611120042";
+import * as Lore from "./views/lore.js?v=202611120042";
+import { setupNative } from "./lib/native.js?v=202611120042";
 
 /* ---------------- Routes ---------------- */
 const routes = [
@@ -137,6 +138,7 @@ document.addEventListener("keydown", (e) => {
 
 /* ---------------- Démarrage ---------------- */
 (async function boot() {
+  setupNative();   // application mobile : barre d'état, bouton retour (sans effet sur le site)
   await initData();
 
   $("#hud-mode").textContent = db.mode === "demo" ? "◆ MODE DÉMO" : "◆ SERVEUR";

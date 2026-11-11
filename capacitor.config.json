@@ -1,0 +1,25 @@
+{
+  "appId": "fr.gathirl.app",
+  "appName": "Gathirl",
+  "webDir": "www",
+  "backgroundColor": "#121111",
+  "android": {
+    "backgroundColor": "#121111"
+  },
+  "ios": {
+    "backgroundColor": "#121111",
+    "contentInset": "never"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 600,
+      "backgroundColor": "#121111",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#121111",
+      "overlaysWebView": false
+    }
+  }
+}

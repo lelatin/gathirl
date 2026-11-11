@@ -16,6 +16,10 @@ export const CONFIG = {
   SUPABASE_URL: "",
   SUPABASE_ANON_KEY: "",
 
+  /* Adresse publique du site : les QR codes des billets y renvoient, y compris
+     depuis l'application mobile (dont l'adresse interne n'est pas joignable). */
+  PUBLIC_URL: "https://lelatin.github.io/gathirl/",
+
   /* Rayon (km) de la section "Près de chez vous" */
   NEARBY_RADIUS_KM: 10,
 

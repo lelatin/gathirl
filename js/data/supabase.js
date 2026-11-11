@@ -3,7 +3,7 @@
    Remplace Base44. Activé dès que js/config.js contient une URL + clé.
    Le schéma correspondant se trouve dans supabase/schema.sql.
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611120016";
+import { CONFIG } from "../config.js?v=202611120042";
 
 const SUPABASE_ESM = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
 

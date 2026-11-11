@@ -5,9 +5,10 @@
    en V au niveau de la perforation, talon avec le QR code.
    Format post Instagram : 1080 × 1350 px (4:5).
    ===================================================================== */
-import qrcode from "../vendor/qrcode.js?v=202611120016";
-import { artFor, fmtTime, hash, plural } from "../lib/format.js?v=202611120016";
-import { partieUrl, slug, downloadBlob } from "../lib/calendar.js?v=202611120016";
+import qrcode from "../vendor/qrcode.js?v=202611120042";
+import { artFor, fmtTime, hash, plural } from "../lib/format.js?v=202611120042";
+import { partieUrl, slug, downloadBlob } from "../lib/calendar.js?v=202611120042";
+import { isNative, shareFile } from "../lib/native.js?v=202611120042";
 
 /* Teintes « Magic » par format : les mêmes que les cartouches de parties */
 // Une seule teinte pour tous les formats : le rouge de la marque (texte crème dessus, 5,2:1)
@@ -301,6 +302,7 @@ export async function ticketFor(p) {
 /** Télécharge le billet ; sur téléphone, ouvre la feuille de partage (« Enregistrer l'image ») */
 export async function saveTicket(p) {
   const t = await ticketFor(p);
+  if (isNative()) return shareFile(t.blob, t.name, p.title);   // app : feuille de partage (Enregistrer l'image…)
   const file = typeof File === "function" ? new File([t.blob], t.name, { type: "image/png" }) : null;
   const touch = matchMedia("(pointer: coarse)").matches;
   if (touch && file && navigator.canShare?.({ files: [file] })) {

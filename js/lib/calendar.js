@@ -2,6 +2,8 @@
    Export calendrier (.ics, RFC 5545) — compatible Apple Calendrier,
    Google Agenda, Outlook, Samsung Calendar…
    ===================================================================== */
+import { CONFIG } from "../config.js?v=202611120042";
+import { isNative, shareFile } from "./native.js?v=202611120042";
 
 const pad = (n) => String(n).padStart(2, "0");
 /** Date → 20261113T190000Z (UTC) */
@@ -27,7 +29,8 @@ function fold(line) {
 }
 
 /** Lien absolu vers une partie (utilisé aussi par le QR code du billet) */
-export const partieUrl = (id) => `${location.origin}${location.pathname}#/partie/${id}`;
+// Dans l'app, l'adresse de la page est interne au téléphone : on renvoie vers le site public
+export const partieUrl = (id) => `${isNative() ? CONFIG.PUBLIC_URL : location.origin + location.pathname}#/partie/${id}`;
 
 export function partieToIcs(p, { durationHours = 3 } = {}) {
   const start = new Date(p.date);
@@ -77,6 +80,7 @@ export const slug = (s) => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g
 
 /** Télécharge un Blob (iOS l'ouvre dans Calendrier / Photos selon le type) */
 export function downloadBlob(blob, filename) {
+  if (isNative()) return shareFile(blob, filename);   // app : feuille de partage du téléphone
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = filename;

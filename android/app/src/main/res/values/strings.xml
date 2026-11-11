@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Gathirl</string>
+    <string name="title_activity_main">Gathirl</string>
+    <string name="package_name">fr.gathirl.app</string>
+    <string name="custom_url_scheme">fr.gathirl.app</string>
+</resources>
