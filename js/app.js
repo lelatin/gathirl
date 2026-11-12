@@ -3,19 +3,19 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611120151";
-import { sigil } from "./lib/format.js?v=202611120151";
-import { db, initData } from "./data/index.js?v=202611120151";
-import { openCreatePartie } from "./ui/forms.js?v=202611120151";
+import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611120206";
+import { sigil } from "./lib/format.js?v=202611120206";
+import { db, initData } from "./data/index.js?v=202611120206";
+import { openCreatePartie } from "./ui/forms.js?v=202611120206";
 
-import * as Home from "./views/home.js?v=202611120151";
-import * as Partie from "./views/partie.js?v=202611120151";
-import * as Profil from "./views/profil.js?v=202611120151";
-import * as Auth from "./views/auth.js?v=202611120151";
-import { renderInbox, renderThread } from "./views/messages.js?v=202611120151";
-import * as Lore from "./views/lore.js?v=202611120151";
-import * as Legal from "./views/legal.js?v=202611120151";
-import { setupNative } from "./lib/native.js?v=202611120151";
+import * as Home from "./views/home.js?v=202611120206";
+import * as Partie from "./views/partie.js?v=202611120206";
+import * as Profil from "./views/profil.js?v=202611120206";
+import * as Auth from "./views/auth.js?v=202611120206";
+import { renderInbox, renderThread } from "./views/messages.js?v=202611120206";
+import * as Lore from "./views/lore.js?v=202611120206";
+import * as Legal from "./views/legal.js?v=202611120206";
+import { setupNative } from "./lib/native.js?v=202611120206";
 
 /* ---------------- Routes ---------------- */
 const routes = [

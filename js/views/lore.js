@@ -4,7 +4,7 @@
    et de la charte graphique (« Au début des mondes »), à peine retouchés.
    Page de lecture : chapitres courts, 62 caractères par ligne au plus.
    ===================================================================== */
-import { html, icon, mount } from "../lib/dom.js?v=202611120151";
+import { html, icon, mount } from "../lib/dom.js?v=202611120206";
 
 const CHAPTERS = [
   {
