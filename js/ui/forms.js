@@ -1,12 +1,12 @@
 /* =====================================================================
    Formulaires : création de partie, édition de la fiche, saisie de lieu
    ===================================================================== */
-import { $, $$, html, icon, mount, debounce } from "../lib/dom.js?v=202611120146";
-import { FORMATS, LEVELS, levelPip, toLocalInput } from "../lib/format.js?v=202611120146";
-import { searchPlaces } from "../lib/geo.js?v=202611120146";
-import { db } from "../data/index.js?v=202611120146";
-import { openModal } from "./modal.js?v=202611120146";
-import { toast } from "./toast.js?v=202611120146";
+import { $, $$, html, icon, mount, debounce } from "../lib/dom.js?v=202611120151";
+import { FORMATS, LEVELS, levelPip, toLocalInput } from "../lib/format.js?v=202611120151";
+import { searchPlaces } from "../lib/geo.js?v=202611120151";
+import { db } from "../data/index.js?v=202611120151";
+import { openModal } from "./modal.js?v=202611120151";
+import { toast } from "./toast.js?v=202611120151";
 
 /* ---------------------------------------------------------------------
    Champ avec suggestions de lieux (combobox ARIA, clavier ↑ ↓ Entrée)

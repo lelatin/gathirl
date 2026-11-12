@@ -22,7 +22,7 @@ export const CONFIG = {
 
   /* Adresse de contact affichée sur les pages légales (questions, demandes RGPD, signalements).
      Vide : les pages affichent « [adresse email à compléter] ». */
-  CONTACT_EMAIL: "",
+  CONTACT_EMAIL: "anthony.peyronin@icloud.com",
 
   /* Rayon (km) de la section "Près de chez vous" */
   NEARBY_RADIUS_KM: 10,
