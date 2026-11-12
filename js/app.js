@@ -3,18 +3,19 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611120138";
-import { sigil } from "./lib/format.js?v=202611120138";
-import { db, initData } from "./data/index.js?v=202611120138";
-import { openCreatePartie } from "./ui/forms.js?v=202611120138";
+import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611120146";
+import { sigil } from "./lib/format.js?v=202611120146";
+import { db, initData } from "./data/index.js?v=202611120146";
+import { openCreatePartie } from "./ui/forms.js?v=202611120146";
 
-import * as Home from "./views/home.js?v=202611120138";
-import * as Partie from "./views/partie.js?v=202611120138";
-import * as Profil from "./views/profil.js?v=202611120138";
-import * as Auth from "./views/auth.js?v=202611120138";
-import { renderInbox, renderThread } from "./views/messages.js?v=202611120138";
-import * as Lore from "./views/lore.js?v=202611120138";
-import { setupNative } from "./lib/native.js?v=202611120138";
+import * as Home from "./views/home.js?v=202611120146";
+import * as Partie from "./views/partie.js?v=202611120146";
+import * as Profil from "./views/profil.js?v=202611120146";
+import * as Auth from "./views/auth.js?v=202611120146";
+import { renderInbox, renderThread } from "./views/messages.js?v=202611120146";
+import * as Lore from "./views/lore.js?v=202611120146";
+import * as Legal from "./views/legal.js?v=202611120146";
+import { setupNative } from "./lib/native.js?v=202611120146";
 
 /* ---------------- Routes ---------------- */
 const routes = [
@@ -28,6 +29,9 @@ const routes = [
   { re: /^\/connexion$/, nav: "profil", title: "Connexion", view: Auth.render },
   { re: /^\/inscription$/, nav: "profil", title: "Inscription", view: Auth.render },
   { re: /^\/lore$/, nav: null, title: "Le lore", view: Lore.render },
+  { re: /^\/confidentialite$/, nav: null, title: "Politique de confidentialité", view: Legal.renderConfidentialite },
+  { re: /^\/donnees-personnelles$/, nav: null, title: "Données personnelles", view: Legal.renderDonnees },
+  { re: /^\/mentions-legales$/, nav: null, title: "Mentions légales", view: Legal.renderMentions },
 ];
 
 const app = document.getElementById("app");
