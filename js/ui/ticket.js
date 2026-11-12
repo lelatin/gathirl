@@ -5,10 +5,10 @@
    en V au niveau de la perforation, talon avec le QR code.
    Format post Instagram : 1080 × 1350 px (4:5).
    ===================================================================== */
-import qrcode from "../vendor/qrcode.js?v=202611120206";
-import { artFor, fmtTime, hash, plural } from "../lib/format.js?v=202611120206";
-import { partieUrl, slug, downloadBlob } from "../lib/calendar.js?v=202611120206";
-import { isNative, shareFile } from "../lib/native.js?v=202611120206";
+import qrcode from "../vendor/qrcode.js?v=202611120209";
+import { artFor, fmtTime, hash, plural } from "../lib/format.js?v=202611120209";
+import { partieUrl, slug, downloadBlob } from "../lib/calendar.js?v=202611120209";
+import { isNative, shareFile } from "../lib/native.js?v=202611120209";
 
 /* Teintes « Magic » par format : les mêmes que les cartouches de parties */
 // Une seule teinte pour tous les formats : le rouge de la marque (texte crème dessus, 5,2:1)
@@ -139,7 +139,7 @@ export async function renderTicket(p, { scale = 3 } = {}) {
   const M = 22;                      // marge intérieure
   const [tint, onTint] = tintFor(p.format);
   await fontsReady();
-  const art = await loadImage(artFor(p.id));
+  const [art, mark] = await Promise.all([loadImage(artFor(p.id)), loadImage("assets/img/logo-gathirl.png")]);
 
   const cv = document.createElement("canvas");
   cv.width = W * scale; cv.height = H * scale;
@@ -165,14 +165,20 @@ export async function renderTicket(p, { scale = 3 } = {}) {
   /* Liseré de la teinte du format, en haut */
   ctx.fillStyle = tint; ctx.fillRect(0, 0, W, 4);
 
-  /* --- En-tête : logo néon + numéro de billet --- */
+  /* --- En-tête : pictogramme officiel + mot-logo néon + numéro de billet --- */
   ctx.save();
+  const markSize = 24;
+  if (mark) {
+    ctx.shadowColor = "rgba(226,94,93,.5)";
+    ctx.shadowBlur = 6 * scale;
+    ctx.drawImage(mark, M, 13, markSize, markSize);
+  }
   ctx.font = `700 23px ${F.logo}`;
   spaced(ctx, 1.8);
   ctx.fillStyle = C.neon;
   ctx.shadowColor = "rgba(227,40,58,.85)";
   ctx.shadowBlur = 10 * scale;
-  ctx.fillText("Gathirl", M, 14);
+  ctx.fillText("Gathirl", mark ? M + markSize + 8 : M, 14);
   ctx.shadowBlur = 0;
   ctx.restore();
   ctx.textAlign = "right";

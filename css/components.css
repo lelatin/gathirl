@@ -84,6 +84,7 @@
 /* Le pictogramme officiel (charte) devant le mot-logo */
 .logo__mark { width: 30px; height: 30px; flex-shrink: 0; filter: drop-shadow(0 0 6px rgb(226 94 93 / 0.45)); }
 @media (max-width: 479px) { .logo__mark { width: 26px; height: 26px; } }
+.logo__mark.logo__mark--sm { width: 20px; height: 20px; }   /* pied de page */
 .logo__word {
   font-family: var(--font-logo);
   font-weight: 700;

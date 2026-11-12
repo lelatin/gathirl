@@ -7,11 +7,11 @@
    - #/mentions-legales       Mentions légales (LCEN)
    Modèle : les pages équivalentes du site Unemployed Staff.
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611120206";
-import { CONFIG } from "../config.js?v=202611120206";
-import { db } from "../data/index.js?v=202611120206";
-import { downloadBlob } from "../lib/calendar.js?v=202611120206";
-import { toast } from "../ui/toast.js?v=202611120206";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611120209";
+import { CONFIG } from "../config.js?v=202611120209";
+import { db } from "../data/index.js?v=202611120209";
+import { downloadBlob } from "../lib/calendar.js?v=202611120209";
+import { toast } from "../ui/toast.js?v=202611120209";
 
 const UPDATED = "12 novembre 2026";
 const EDITOR = "Anthony Peyronin";
