@@ -5,14 +5,14 @@
    3. Les joueurs près de chez vous
    4. Compagnons (si connecté·e)
    ===================================================================== */
-import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611120058";
-import { FORMATS, LEVELS, artFor, fmtDate, fmtTime, levelPip, plural, sigil } from "../lib/format.js?v=202611120058";
-import { distanceKm } from "../lib/geo.js?v=202611120058";
-import { db } from "../data/index.js?v=202611120058";
-import { CONFIG } from "../config.js?v=202611120058";
-import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611120058";
-import { openCreatePartie } from "../ui/forms.js?v=202611120058";
-import { toast } from "../ui/toast.js?v=202611120058";
+import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611120122";
+import { FORMATS, LEVELS, artFor, fmtDate, fmtTime, levelPip, plural, sigil } from "../lib/format.js?v=202611120122";
+import { distanceKm } from "../lib/geo.js?v=202611120122";
+import { db } from "../data/index.js?v=202611120122";
+import { CONFIG } from "../config.js?v=202611120122";
+import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611120122";
+import { openCreatePartie } from "../ui/forms.js?v=202611120122";
+import { toast } from "../ui/toast.js?v=202611120122";
 
 const state = { format: null, level: null, near: false };
 

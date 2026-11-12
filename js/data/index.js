@@ -1,8 +1,8 @@
 /* =====================================================================
    Sélection de l'adaptateur de données : démo (local) ou Supabase.
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611120058";
-import { localAdapter } from "./local.js?v=202611120058";
+import { CONFIG } from "../config.js?v=202611120122";
+import { localAdapter } from "./local.js?v=202611120122";
 
 export const usingSupabase = Boolean(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
 
@@ -11,7 +11,7 @@ export let db = localAdapter;
 export async function initData() {
   if (usingSupabase) {
     try {
-      const { supabaseAdapter } = await import("./supabase.js?v=202611120058");
+      const { supabaseAdapter } = await import("./supabase.js?v=202611120122");
       await supabaseAdapter.init();
       db = supabaseAdapter;
       return db;

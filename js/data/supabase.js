@@ -3,8 +3,8 @@
    Remplace Base44. Activé dès que js/config.js contient une URL + clé.
    Le schéma correspondant se trouve dans supabase/schema.sql.
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611120058";
-import { isNative } from "../lib/native.js?v=202611120058";
+import { CONFIG } from "../config.js?v=202611120122";
+import { isNative } from "../lib/native.js?v=202611120122";
 
 // Lien des e-mails (confirmation, connexion) : le site public, même depuis l'app
 const returnUrl = () => (isNative() ? CONFIG.PUBLIC_URL : location.origin + location.pathname);
@@ -113,7 +113,7 @@ export const supabaseAdapter = {
       try {
         const r = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/settings`, { headers: { apikey: CONFIG.SUPABASE_ANON_KEY } });
         const ext = (await r.json()).external || {};
-        return ["google", "github", "apple"].filter((p) => ext[p]);
+        return ["google", "apple", "discord", "github", "twitch"].filter((p) => ext[p]);
       } catch { return []; }
     },
 

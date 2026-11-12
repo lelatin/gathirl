@@ -2,7 +2,7 @@
    Toasts — transitions (interruptibles), pause quand l'onglet est caché,
    sortie plus rapide que l'entrée.
    ===================================================================== */
-import { create, html, icon } from "../lib/dom.js?v=202611120058";
+import { create, html, icon } from "../lib/dom.js?v=202611120122";
 
 const ICONS = { success: "check", error: "skull", info: "sparkle" };
 const MAX = 3;
