@@ -3,8 +3,8 @@
    Remplace Base44. Activé dès que js/config.js contient une URL + clé.
    Le schéma correspondant se trouve dans supabase/schema.sql.
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611120122";
-import { isNative } from "../lib/native.js?v=202611120122";
+import { CONFIG } from "../config.js?v=202611120138";
+import { isNative } from "../lib/native.js?v=202611120138";
 
 // Lien des e-mails (confirmation, connexion) : le site public, même depuis l'app
 const returnUrl = () => (isNative() ? CONFIG.PUBLIC_URL : location.origin + location.pathname);
@@ -136,6 +136,15 @@ export const supabaseAdapter = {
     },
 
     async signOut() { await sb.auth.signOut(); profile = null; emit(); },
+
+    /** Supprime définitivement le compte et tout ce qui s'y rattache (fonction SQL delete_my_account) */
+    async deleteAccount() {
+      requireMe();
+      check(await sb.rpc("delete_my_account"));
+      await sb.auth.signOut({ scope: "local" }).catch(() => {});
+      profile = null;
+      emit();
+    },
   },
 
   /* ---------------- Profils ---------------- */

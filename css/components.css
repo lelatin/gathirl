@@ -1088,3 +1088,31 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
   .logo { min-height: 44px; }
   .filters__row { gap: 8px; }
 }
+
+/* =====================================================================
+   Bouton « maintenir pour confirmer » (js/ui/hold.js) — actions irréversibles
+   ===================================================================== */
+.hold {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; min-width: 240px; padding: 0 18px;
+  border: 1px solid var(--blood); border-radius: var(--r-2);
+  background: rgb(227 40 58 / 0.12); color: var(--rouge-text, #ff4a57);
+  font: 700 13px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer;
+  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  transition: transform 150ms var(--ease-out), background-color 150ms var(--ease-out), color 150ms var(--ease-out);
+}
+.hold[data-input="pointer"]:active { transform: scale(0.98); }
+.hold:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.hold:disabled { cursor: not-allowed; opacity: 0.5; }
+.hold__label, .hold__fill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.hold__fill {
+  position: absolute; inset: 0; padding: 0 18px;
+  background: var(--rouge-deep); color: var(--on-rouge);
+  clip-path: inset(0 100% 0 0);
+  transition-property: clip-path;
+}
+.hold svg { width: 16px; height: 16px; }
+.hold[data-status="confirmed"] { background: var(--rouge-deep); border-color: var(--rouge-deep); color: var(--on-rouge); }
+@media (prefers-reduced-motion: reduce) { .hold[data-input="pointer"]:active { transform: none; } }

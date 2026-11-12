@@ -129,6 +129,25 @@ export const localAdapter = {
     async resetPassword() { throw new Error("Indisponible en mode démo."); },
 
     async signOut() { db().session = null; save(); },
+
+    /** Démo : retire le joueur et tout ce qui s'y rattache (comme la cascade de Supabase) */
+    async deleteAccount() {
+      const me = requireMe(), d = db();
+      const mine = new Set(d.parties.filter((p) => p.host_id === me.id).map((p) => p.id));
+      for (const pa of d.participations) {
+        if (pa.user_id !== me.id || mine.has(pa.partie_id)) continue;
+        const p = d.parties.find((x) => x.id === pa.partie_id);
+        if (p) { p.current_players = Math.max(0, p.current_players - 1); if (p.status === "complet") p.status = "ouvert"; }
+      }
+      d.parties = d.parties.filter((p) => !mine.has(p.id));
+      d.participations = d.participations.filter((pa) => pa.user_id !== me.id && !mine.has(pa.partie_id));
+      d.friendships = d.friendships.filter((f) => f.requester_id !== me.id && f.receiver_id !== me.id);
+      d.messages = d.messages.filter((m) => m.sender_id !== me.id && m.receiver_id !== me.id);
+      d.users = d.users.filter((u) => u.id !== me.id);
+      delete d.credentials[me.id];
+      d.session = null;
+      save();
+    },
   },
 
   /* ---------------- Profils ---------------- */

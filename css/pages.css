@@ -630,3 +630,17 @@
 .oauth__btn svg { width: 18px; height: 18px; }
 .oauth__btn--apple { background: #000; border-color: #000; color: #fff; }   /* style imposé par Apple */
 .oauth__btn--google { background: #fff; border-color: #fff; color: #1f1f1f; }
+
+/* Fiche : zone de suppression du compte (en bas, séparée du reste) */
+.danger {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4);
+  padding: 22px 24px;
+  border: 1px solid rgb(227 40 58 / 0.35);
+  border-radius: var(--r-bento);
+  background: var(--card);
+}
+.danger__text { flex: 1 1 320px; display: grid; gap: 6px; }
+.danger h2 { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: var(--step-1); line-height: 1.1; }
+.danger h2 svg { width: 20px; height: 20px; color: var(--blood); }
+.danger p { font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 60ch; }
+@media (max-width: 559px) { .danger .hold { width: 100%; min-width: 0; } }

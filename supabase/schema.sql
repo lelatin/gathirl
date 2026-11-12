@@ -225,3 +225,25 @@ do $$ begin
   begin alter publication supabase_realtime add table public.participations; exception when duplicate_object then null; end;
   begin alter publication supabase_realtime add table public.friendships;    exception when duplicate_object then null; end;
 end $$;
+
+-- ---------------------------------------------------------------------
+create or replace function public.delete_my_account()
+returns void language plpgsql security definer set search_path = public, auth as $$
+declare uid uuid := auth.uid();
+begin
+  if uid is null then raise exception 'AUTH_REQUIRED'; end if;
+
+  -- Libérer les places occupées dans les parties des autres joueurs
+  update public.parties p
+     set current_players = greatest(p.current_players - 1, 0),
+         status = case when p.status = 'complet' then 'ouvert' else p.status end
+   where p.host_id <> uid
+     and p.id in (select partie_id from public.participations where user_id = uid);
+
+  -- Supprimer le compte : profil, parties organisées, inscriptions, amis et
+  -- messages partent avec lui (« on delete cascade » dans tout le schéma)
+  delete from auth.users where id = uid;
+end $$;
+
+revoke all on function public.delete_my_account() from public, anon;
+grant execute on function public.delete_my_account() to authenticated;

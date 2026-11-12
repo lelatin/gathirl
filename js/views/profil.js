@@ -1,11 +1,12 @@
 /* =====================================================================
    FICHE DE PERSONNAGE — profil d'un joueur
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611120122";
-import { fmtDay, fmtMonth, fmtTime, levelMeta, levelPip, sigil } from "../lib/format.js?v=202611120122";
-import { db } from "../data/index.js?v=202611120122";
-import { openEditProfile } from "../ui/forms.js?v=202611120122";
-import { toast } from "../ui/toast.js?v=202611120122";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611120138";
+import { fmtDay, fmtMonth, fmtTime, levelMeta, levelPip, sigil } from "../lib/format.js?v=202611120138";
+import { db } from "../data/index.js?v=202611120138";
+import { openEditProfile } from "../ui/forms.js?v=202611120138";
+import { toast } from "../ui/toast.js?v=202611120138";
+import { holdToConfirm } from "../ui/hold.js?v=202611120138";
 
 export async function render(el, ctx) {
   const me = db.auth.user();
@@ -138,9 +139,45 @@ export async function render(el, ctx) {
               ${isMe ? html`<p>Rejoignez ou organisez une partie pour remplir votre historique !</p><a class="btn btn--primary" href="#/parties">${icon("swords")} Trouver une table</a>` : ""}
             </div>` : ""}
         </section>
+
+        ${isMe ? html`
+          <!-- Exigé par l'App Store et le Play Store : supprimer son compte depuis l'app -->
+          <section class="danger" aria-labelledby="danger-title">
+            <div class="danger__text">
+              <h2 id="danger-title">${icon("trash")} Supprimer mon compte</h2>
+              <p>Votre fiche, vos parties organisées, vos inscriptions, vos compagnons et vos missives seront effacés définitivement. Cette action est irréversible.</p>
+            </div>
+            <button type="button" class="hold" data-hold-delete>
+              <span class="hold__label">${icon("trash")} Maintenir pour supprimer</span>
+              <span class="hold__fill" aria-hidden="true">${icon("trash")} Maintenir pour supprimer</span>
+            </button>
+          </section>` : ""}
       </div>`);
+
+    // Suppression du compte : il faut maintenir le bouton 1,6 s (rien ne part sur un simple clic)
+    const del = $("[data-hold-delete]", el);
+    if (del) {
+      offHold?.();
+      offHold = holdToConfirm(del, {
+        duration: 1600,
+        resetAfter: 0,
+        confirmed: "Suppression…",
+        onConfirm: async () => {
+          del.disabled = true;
+          try {
+            await db.auth.deleteAccount();
+            toast("Compte supprimé", "Toutes vos données ont été effacées. Au revoir, voyageur·se.");
+            location.hash = "#/";
+          } catch (ex) {
+            toast.error("Suppression impossible", ex.message);
+            draw();
+          }
+        },
+      });
+    }
   };
 
+  let offHold = null;
   draw();
 
   el.addEventListener("click", async (e) => {
