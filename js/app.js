@@ -3,29 +3,29 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount, prefersReducedMotion } from "./lib/dom.js?v=202611142335";
-import { sigil } from "./lib/format.js?v=202611142335";
-import { db, initData } from "./data/index.js?v=202611142335";
-import { openCreatePartie } from "./ui/forms.js?v=202611142335";
+import { $, $$, html, icon, mount, prefersReducedMotion } from "./lib/dom.js?v=202611142347";
+import { sigil } from "./lib/format.js?v=202611142347";
+import { db, initData } from "./data/index.js?v=202611142347";
+import { openCreatePartie } from "./ui/forms.js?v=202611142347";
 
-import * as Home from "./views/home.js?v=202611142335";
-import { isNative, setupNative } from "./lib/native.js?v=202611142335";
-import { enableSwipeNav } from "./ui/swipe.js?v=202611142335";
+import * as Home from "./views/home.js?v=202611142347";
+import { isNative, setupNative } from "./lib/native.js?v=202611142347";
+import { enableSwipeNav } from "./ui/swipe.js?v=202611142347";
 
 /* ---------------- Routes ----------------
    Seul l'accueil est chargé au démarrage. Les autres pages (et leurs
    dépendances, comme le générateur de QR code du billet) ne sont
    téléchargées qu'à la première visite : l'application s'ouvre plus vite. */
 const lazy = (load, name = "render") => async (...a) => (await load())[name](...a);
-const Parties = () => import("./views/parties.js?v=202611142335");
-const Outils = () => import("./views/outils.js?v=202611142335");
-const Partie = () => import("./views/partie.js?v=202611142335");
-const Profil = () => import("./views/profil.js?v=202611142335");
-const Social = () => import("./views/social.js?v=202611142335");
-const Auth = () => import("./views/auth.js?v=202611142335");
-const Messages = () => import("./views/messages.js?v=202611142335");
-const Lore = () => import("./views/lore.js?v=202611142335");
-const Legal = () => import("./views/legal.js?v=202611142335");
+const Parties = () => import("./views/parties.js?v=202611142347");
+const Outils = () => import("./views/outils.js?v=202611142347");
+const Partie = () => import("./views/partie.js?v=202611142347");
+const Profil = () => import("./views/profil.js?v=202611142347");
+const Social = () => import("./views/social.js?v=202611142347");
+const Auth = () => import("./views/auth.js?v=202611142347");
+const Messages = () => import("./views/messages.js?v=202611142347");
+const Lore = () => import("./views/lore.js?v=202611142347");
+const Legal = () => import("./views/legal.js?v=202611142347");
 
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
