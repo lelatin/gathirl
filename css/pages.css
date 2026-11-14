@@ -103,6 +103,20 @@
 .hero__more:active { transform: translateY(2px); }
 @media (hover: hover) and (pointer: fine) { .hero__more:hover { color: var(--parch); } }
 @media (min-width: 720px) { .hero__more { display: none; } }
+
+/* Téléphone : l'accroche (titre, texte, boutons) occupe tout le premier écran,
+   centrée verticalement entre les deux barres ; la flèche reste en bas de l'écran. */
+@media (max-width: 719px) {
+  .hero { padding-top: 0; }
+  .hero__text {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: center;   /* bloc centré sur l'écran */
+    min-height: calc(100svh - var(--hud-h) - var(--tabbar-h) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    padding-block: var(--space-7);
+  }
+  /* la flèche, hors du flux : en bas de l'écran, au-dessus du losange « + » surélevé */
+  .hero__more { position: absolute; left: 50%; bottom: 34px; translate: -50% 0; margin: 0; }
+}
 /* Téléphone : l'action principale en pleine largeur, les deux autres côte à côte */
 @media (max-width: 559px) {
   .hero__ctas > * { flex: 1 1 calc(50% - var(--space-3)); }

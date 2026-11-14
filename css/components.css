@@ -1012,7 +1012,21 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
 .tabbar svg { width: 24px; height: 24px; }
 .tabbar a[aria-current="page"] { color: var(--blood); }
 .tabbar .dot { top: 10px; right: calc(50% - 15px); width: 7px; height: 7px; box-shadow: 0 0 0 2px var(--ink-0); }
-.tabbar__cta { color: var(--parch-2); }
+/* Le bouton « + » (organiser une partie) : losange rouge surélevé, l'action phare */
+.tabbar .tabbar__cta {
+  justify-self: center; align-self: center;
+  width: 50px; height: 50px;
+  margin-top: -22px;
+  border-radius: 14px;
+  rotate: 45deg;
+  background: var(--blood);
+  color: #fff6ea;
+  box-shadow: 0 4px 0 var(--blood-deep), 0 0 24px rgb(227 40 58 / 0.5);
+  border: 1px solid rgb(255 180 170 / 0.4);
+  transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+.tabbar .tabbar__cta svg { rotate: -45deg; width: 24px; height: 24px; }
+.tabbar .tabbar__cta:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--blood-deep), 0 0 18px rgb(227 40 58 / 0.4); }
 @media (prefers-reduced-motion: reduce) { .tabbar a:active, .tabbar__cta:active { transform: none; } }
 @media (min-width: 900px) { .tabbar { display: none; } }
 
