@@ -26,12 +26,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Grenze+Gotisch:wght@700&family=Space+Mono:wght@400;700&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" />
 
-  <link rel="preload" as="image" href="assets/img/oracle-moine.jpg" fetchpriority="high" />
-  <link rel="stylesheet" href="css/base.css?v=202611120209" />
-  <link rel="stylesheet" href="css/components.css?v=202611120209" />
-  <link rel="stylesheet" href="css/pages.css?v=202611120209" />
+  <link rel="preload" as="image" href="assets/img/oracle-moine.jpg" fetchpriority="high" media="(min-width: 1025px)" />
+  <link rel="stylesheet" href="css/base.css?v=202611141710" />
+  <link rel="stylesheet" href="css/components.css?v=202611141710" />
+  <link rel="stylesheet" href="css/pages.css?v=202611141710" />
 
-  <script type="module" src="js/app.js?v=202611120209"></script>
+  <script type="module" src="js/app.js?v=202611141710"></script>
 </head>
 <body>
   <a class="skip-link" href="#app">Aller au contenu</a>
@@ -43,7 +43,9 @@
       <symbol id="i-swords" viewBox="0 0 24 24"><path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2M9.5 6.5 12 4l3-1h3v3l-1 3-2.5 2.5M5 14l-2 5 5-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
       <symbol id="i-scroll" viewBox="0 0 24 24"><path d="M8 21h11a2 2 0 0 0 2-2v-1H10v1a2 2 0 0 1-4 0V5a2 2 0 0 0-2-2 2 2 0 0 0-2 2v3h4M19 18V5a2 2 0 0 0-2-2H4M10 8h6M10 12h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
       <symbol id="i-user" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.8 16.5c1-1.8 2.5-2.7 4.2-2.7s3.2.9 4.2 2.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
-      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+      <symbol id="i-create" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v9M7.5 12h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m15.5 15.5 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+      <symbol id="i-plus"viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
       <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
       <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
       <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
@@ -86,18 +88,13 @@
       </a>
 
       <nav class="hud__nav" aria-label="Navigation principale">
-        <a href="#/" data-nav="home"><span class="hud__num">1</span>Taverne</a>
-        <a href="#/parties" data-nav="parties"><span class="hud__num">2</span>Parties</a>
-        <a href="#/messages" data-nav="messages"><span class="hud__num">3</span>Missives<span class="dot" data-unread hidden></span></a>
-        <a href="#/profil" data-nav="profil"><span class="hud__num">4</span>Ma fiche</a>
+        <a href="#/" data-nav="home">Taverne</a>
+        <a href="#/parties" data-nav="parties">Parties</a>
+        <a href="#/messages" data-nav="messages">Missives<span class="dot" data-unread hidden></span></a>
+        <a href="#/social" data-nav="social">Social</a>
       </nav>
 
       <div class="hud__right" id="hud-auth"><!-- rempli par JS --></div>
-    </div>
-    <div class="hud__ticker" aria-hidden="true">
-      <span>✦ GRIMOIRE DES RENCONTRES</span>
-      <span class="hud__status"><i class="led"></i><span id="hud-clock">--:--</span> · EN LIGNE</span>
-      <span class="hud__mode" id="hud-mode"></span>
     </div>
   </header>
 
@@ -113,11 +110,11 @@
 
   <!-- ============ Barre d'onglets mobile ============ -->
   <nav class="tabbar" aria-label="Navigation mobile">
-    <a href="#/" data-nav="home"><svg><use href="#i-home"/></svg><span>Taverne</span></a>
-    <a href="#/parties" data-nav="parties"><svg><use href="#i-swords"/></svg><span>Parties</span></a>
-    <button type="button" class="tabbar__cta" data-action="create-partie" aria-label="Organiser une partie"><svg><use href="#i-plus"/></svg></button>
-    <a href="#/messages" data-nav="messages"><svg><use href="#i-scroll"/></svg><span>Missives</span><span class="dot" data-unread hidden></span></a>
-    <a href="#/profil" data-nav="profil"><svg><use href="#i-user"/></svg><span>Fiche</span></a>
+    <a href="#/" data-nav="home" aria-label="Taverne"><svg aria-hidden="true"><use href="#i-home"/></svg></a>
+    <a href="#/parties" data-nav="parties" aria-label="Parties"><svg aria-hidden="true"><use href="#i-swords"/></svg></a>
+    <button type="button" class="tabbar__cta" data-action="create-partie" aria-label="Organiser une partie"><svg aria-hidden="true"><use href="#i-create"/></svg></button>
+    <a href="#/messages" data-nav="messages" aria-label="Missives"><svg aria-hidden="true"><use href="#i-scroll"/></svg><span class="dot" data-unread hidden></span></a>
+    <a href="#/social" data-nav="social" aria-label="Social"><svg aria-hidden="true"><use href="#i-users"/></svg></a>
   </nav>
 
   <div class="toaster" id="toaster" aria-live="polite"></div>

@@ -43,36 +43,25 @@
   color: var(--ink-0);
   background: var(--parch);
 }
-.hud__nav a[aria-current="page"] .hud__num { color: var(--blood); }
-.hud__num { color: var(--gold); font-weight: 700; }
 .hud__nav .dot { position: static; margin-left: 2px; }
 .hud__right { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); }
 .hud__right .hud__cta { display: none; }
-/* Petits écrans : « Se connecter » masqué (accessible via l'onglet Fiche et la page d'inscription) */
+/* Petits écrans : « Se connecter » masqué (accessible depuis la page d'inscription et l'onglet Social) */
 @media (max-width: 479px) { .hud__right .hud__login { display: none; } }
 @media (min-width: 900px) { .hud__right .hud__cta { display: inline-flex; } }
 
-.hud__ticker {
-  display: flex; justify-content: space-between; gap: var(--space-4);
-  max-width: var(--maxw); margin-inline: auto;
-  padding: 4px var(--gutter-r) 4px var(--gutter-l);
-  font-family: var(--font-mono);
-  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--faint);
-  border-top: 1px solid var(--line);
-}
-.hud__ticker > span:first-child { display: none; }
-.hud__status { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
-.hud__mode { color: var(--gold); }
-.led {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: #47e07a; box-shadow: 0 0 8px #47e07a;
+/* Avatar du compte, en haut à droite : 28 pt sur téléphone (comme Instagram), anneau quand on est sur son profil */
+.sigil-link { display: grid; place-items: center; min-width: 44px; min-height: 44px; border-radius: 50%; }
+.sigil-link .sigil { box-shadow: 0 0 0 2px var(--ink-0), 0 0 0 3px transparent; }
+.sigil-link[aria-current="page"] .sigil { box-shadow: 0 0 0 2px var(--ink-0), 0 0 0 3.5px var(--parch); }
+@media (max-width: 899px) {
+  .sigil-link .sigil--sm { --size: 28px; }
+  .hud__inner { gap: var(--space-3); }
 }
 
 @media (min-width: 900px) {
   .hud__nav { display: flex; }
   .hud__right { margin-left: 0; }
-  .hud__ticker > span:first-child { display: inline; }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -83,7 +72,11 @@
 .logo { display: inline-flex; align-items: center; gap: 10px; color: var(--blood); flex-shrink: 0; }
 /* Le pictogramme officiel (charte) devant le mot-logo */
 .logo__mark { width: 30px; height: 30px; flex-shrink: 0; filter: drop-shadow(0 0 6px rgb(226 94 93 / 0.45)); }
-@media (max-width: 479px) { .logo__mark { width: 26px; height: 26px; } }
+@media (max-width: 899px) {
+  .logo { gap: 8px; }
+  .logo__mark { width: 24px; height: 24px; }
+  .logo__word { font-size: 24px; }
+}
 .logo__mark.logo__mark--sm { width: 20px; height: 20px; }   /* pied de page */
 .logo__word {
   font-family: var(--font-logo);
@@ -1006,34 +999,21 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--line);
 }
-.tabbar a {
+/* Gabarit Instagram : 5 onglets égaux, icônes seules de 24 pt, aucune étiquette,
+   l'onglet actif passe en pleine couleur (le libellé reste lu par les lecteurs d'écran). */
+.tabbar a, .tabbar__cta {
   position: relative;
-  display: grid; justify-items: center; gap: 3px;
-  padding-block: 6px;
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
-  color: var(--muted);
+  display: grid; place-items: center;
+  height: var(--tabbar-h);
+  color: var(--parch-2);
   transition: color 150ms ease, transform 120ms var(--ease-out);
 }
-.tabbar a:active { transform: scale(0.94); }
-.tabbar svg { width: 22px; height: 22px; }
-.tabbar a[aria-current="page"] { color: var(--parch); }
-.tabbar a[aria-current="page"] svg { color: var(--blood); filter: drop-shadow(0 0 6px rgb(227 40 58 / 0.7)); }
-.tabbar .dot { top: 2px; right: calc(50% - 18px); }
-.tabbar__cta {
-  justify-self: center;
-  width: 52px; height: 52px;
-  margin-top: -22px;
-  display: grid; place-items: center;
-  border-radius: 14px;
-  rotate: 45deg;
-  background: var(--blood);
-  color: #fff6ea;
-  box-shadow: 0 4px 0 var(--blood-deep), 0 0 24px rgb(227 40 58 / 0.5);
-  border: 1px solid rgb(255 180 170 / 0.4);
-  transition: transform 140ms var(--ease-out);
-}
-.tabbar__cta svg { rotate: -45deg; width: 24px; height: 24px; }
-.tabbar__cta:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--blood-deep); }
+.tabbar a:active, .tabbar__cta:active { transform: scale(0.9); }
+.tabbar svg { width: 24px; height: 24px; }
+.tabbar a[aria-current="page"] { color: var(--blood); }
+.tabbar .dot { top: 10px; right: calc(50% - 15px); width: 7px; height: 7px; box-shadow: 0 0 0 2px var(--ink-0); }
+.tabbar__cta { color: var(--parch-2); }
+@media (prefers-reduced-motion: reduce) { .tabbar a:active, .tabbar__cta:active { transform: none; } }
 @media (min-width: 900px) { .tabbar { display: none; } }
 
 /* =====================================================================

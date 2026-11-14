@@ -3,8 +3,8 @@
    Remplace Base44. Activé dès que js/config.js contient une URL + clé.
    Le schéma correspondant se trouve dans supabase/schema.sql.
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611120209";
-import { isNative } from "../lib/native.js?v=202611120209";
+import { CONFIG } from "../config.js?v=202611141710";
+import { isNative } from "../lib/native.js?v=202611141710";
 
 // Lien des e-mails (confirmation, connexion) : le site public, même depuis l'app
 const returnUrl = () => (isNative() ? CONFIG.PUBLIC_URL : location.origin + location.pathname);
@@ -157,6 +157,13 @@ export const supabaseAdapter = {
     /** Les joueurs inscrits (annuaire « Joueurs près de chez vous ») */
     async list({ limit = 24 } = {}) {
       return check(await sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(limit));
+    },
+    /** Recherche de comptes par nom ou par ville (page Social) */
+    async search(q, { limit = 30 } = {}) {
+      // on retire les caractères qui ont un sens dans un filtre PostgREST (virgules, parenthèses, jokers)
+      const t = String(q || "").replace(/[%_,()*\\:"']/g, " ").trim();
+      if (!t) return [];
+      return check(await sb.from("profiles").select("*").or(`full_name.ilike.%${t}%,city.ilike.%${t}%`).order("full_name").limit(limit));
     },
     async update(patch) {
       const me = requireMe();

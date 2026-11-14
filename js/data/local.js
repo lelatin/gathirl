@@ -156,6 +156,13 @@ export const localAdapter = {
     async many(ids) { const s = new Set(ids); return db().users.filter((u) => s.has(u.id)).map(publicUser); },
     /** Les joueurs inscrits (annuaire « Joueurs près de chez vous ») */
     async list({ limit = 24 } = {}) { return db().users.slice(0, limit).map(publicUser); },
+    /** Recherche de comptes par nom ou par ville (page Social) */
+    async search(q, { limit = 30 } = {}) {
+      const n = (s) => String(s || "").normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+      const t = n(q).trim();
+      if (!t) return [];
+      return db().users.filter((u) => n(u.full_name).includes(t) || n(u.city).includes(t)).slice(0, limit).map(publicUser);
+    },
     async update(patch) {
       const u = requireMe();
       Object.assign(u, patch, { id: u.id, email: u.email });

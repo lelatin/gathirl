@@ -1,18 +1,17 @@
 /* =====================================================================
    ACCUEIL — l'essentiel, dans l'ordre où on en a besoin :
-   1. Héros (titre, actions, chiffres en une ligne) + carte de l'Oracle
+   1. Héros (titre, actions) + carte de l'Oracle (ordinateur uniquement)
    2. Les parties (filtres + grille)
    3. Les joueurs près de chez vous
-   4. Compagnons (si connecté·e)
    ===================================================================== */
-import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611120209";
-import { FORMATS, LEVELS, artFor, fmtDate, fmtTime, levelPip, plural, sigil } from "../lib/format.js?v=202611120209";
-import { distanceKm } from "../lib/geo.js?v=202611120209";
-import { db } from "../data/index.js?v=202611120209";
-import { CONFIG } from "../config.js?v=202611120209";
-import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611120209";
-import { openCreatePartie } from "../ui/forms.js?v=202611120209";
-import { toast } from "../ui/toast.js?v=202611120209";
+import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611141710";
+import { FORMATS, LEVELS, artFor, fmtDate, fmtTime, levelPip, plural, sigil } from "../lib/format.js?v=202611141710";
+import { distanceKm } from "../lib/geo.js?v=202611141710";
+import { db } from "../data/index.js?v=202611141710";
+import { CONFIG } from "../config.js?v=202611141710";
+import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611141710";
+import { openCreatePartie } from "../ui/forms.js?v=202611141710";
+import { toast } from "../ui/toast.js?v=202611141710";
 
 const state = { format: null, level: null, near: false };
 
@@ -30,7 +29,6 @@ export async function render(el, ctx) {
             <a class="btn" href="#/parties">${icon("swords")} Voir les parties</a>
             <button type="button" class="btn btn--ghost" data-roll title="Le dé choisit une partie au hasard">${icon("d20", "d20")} Lancer le d20</button>
           </div>
-          <p class="hero__facts" data-stats aria-live="polite">&nbsp;</p>
         </div>
 
         <div class="oracle-wrap">
@@ -39,7 +37,7 @@ export async function render(el, ctx) {
               <header class="tcard__name"><h3>L'Oracle du Gathirl</h3>
                 <span class="pips"><span class="pip pip--b">${icon("skull")}</span><span class="pip pip--r">${icon("flame")}</span></span>
               </header>
-              <div class="tcard__art print"><img src="assets/img/oracle-moine.jpg" alt="Un moine encapuchonné tenant une torche, dans la fenêtre en arche gothique d'une tour crénelée, sous une lune rouge, en bichromie rouge et noire." width="720" height="891" fetchpriority="high" /></div>
+              <div class="tcard__art print"><img src="assets/img/oracle-moine.jpg" loading="lazy" alt="Un moine encapuchonné tenant une torche, dans la fenêtre en arche gothique d'une tour crénelée, sous une lune rouge, en bichromie rouge et noire." width="720" height="891" /></div>
               <div class="tcard__type"><span>Créature légendaire · Moine écarlate</span>${icon("crown", "tcard__set")}</div>
               <div class="tcard__text">
                 <p style="font-size:14.5px">Au début de chaque semaine, révélez les tables ouvertes près de chez vous.</p>
@@ -57,15 +55,12 @@ export async function render(el, ctx) {
     <section class="section wrap" id="parties" aria-labelledby="parties-title">
       <div class="section-head">
         <div><h2 id="parties-title">Les parties</h2></div>
-        <span class="filters__count" data-count></span>
       </div>
       <div class="filters" data-filters></div>
       <div class="card-grid stagger" data-grid>${skeletonCards(3)}</div>
     </section>
 
     <section class="section wrap" data-players hidden aria-labelledby="players-title"></section>
-
-    <section class="section wrap" data-friends hidden aria-labelledby="friends-title"></section>
   `);
 
   /* ---------- Données ---------- */
@@ -81,11 +76,9 @@ export async function render(el, ctx) {
   }
   if (!el.isConnected) return;
 
-  renderStats(el, parties);
   renderFilters(el, me);
   renderGrid(el, parties, byPartie, me);
   renderPlayers(el, me);
-  renderFriends(el, me);
 
   /* ---------- Interactions ---------- */
   const offFoil = enableFoil(el);
@@ -110,16 +103,6 @@ export async function render(el, ctx) {
 }
 
 /* ===================================================================== */
-
-/* Les chiffres tiennent en une ligne sous les boutons : on les lit d'un coup d'œil */
-function renderStats(el, parties) {
-  const open = parties.filter((p) => p.current_players < p.max_players).length;
-  const cities = new Set(parties.map((p) => p.city?.trim().toLowerCase()).filter(Boolean)).size;
-  const players = parties.reduce((s, p) => s + (p.current_players || 0), 0);
-  $("[data-stats]", el).textContent = parties.length
-    ? `${plural(open, "partie ouverte", "parties ouvertes")} · ${plural(cities, "ville", "villes")} · ${plural(players, "joueur inscrit", "joueurs inscrits")}`
-    : "Aucune partie pour l'instant : lancez la première !";
-}
 
 /* ---------- Joueurs près de chez vous ----------
    Les recherches du projet : trouver des joueurs proches, selon le niveau
@@ -177,8 +160,6 @@ function renderGrid(el, parties, byPartie, me, { animate = true } = {}) {
     (!state.level || p.level === state.level) &&
     (!state.near || (coords && p.location_lat && distanceKm(coords.lat, coords.lng, p.location_lat, p.location_lng) <= CONFIG.NEARBY_RADIUS_KM)));
 
-  $("[data-count]", el).textContent = plural(list.length, "partie", "parties");
-
   const grid = $("[data-grid]", el);
   if (!list.length) {
     grid.classList.remove("card-grid");
@@ -194,23 +175,6 @@ function renderGrid(el, parties, byPartie, me, { animate = true } = {}) {
   grid.classList.add("card-grid");
   grid.classList.toggle("stagger", animate);
   mount(grid, html`${list.map((p, i) => partieCard(p, { participants: byPartie[p.id] || [], index: Math.min(i, 8), distance: coords && p.location_lat ? distanceKm(coords.lat, coords.lng, p.location_lat, p.location_lng) : null }))}`);
-}
-
-async function renderFriends(el, me) {
-  if (!me) return;
-  try {
-    const fs = (await db.friendships.forUser(me.id)).filter((f) => f.status === "accepted");
-    if (!fs.length || !el.isConnected) return;
-    const ids = fs.map((f) => (f.requester_id === me.id ? f.receiver_id : f.requester_id));
-    const profiles = await db.profiles.many(ids);
-    const sec = $("[data-friends]", el);
-    sec.hidden = false;
-    mount(sec, html`
-      <div class="section-head"><div><h2 id="friends-title">Compagnons d'armes</h2></div></div>
-      <div class="friends-strip">
-        ${profiles.map((u) => html`<a class="friend-chip" href="#/profil/${u.id}" title="${u.full_name}">${sigil(u, "lg")}<span>${u.full_name}</span></a>`)}
-      </div>`);
-  } catch { /* section facultative */ }
 }
 
 /* ---------- Le d20 : le hasard choisit une table ---------- */

@@ -3,27 +3,29 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611120209";
-import { sigil } from "./lib/format.js?v=202611120209";
-import { db, initData } from "./data/index.js?v=202611120209";
-import { openCreatePartie } from "./ui/forms.js?v=202611120209";
+import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611141710";
+import { sigil } from "./lib/format.js?v=202611141710";
+import { db, initData } from "./data/index.js?v=202611141710";
+import { openCreatePartie } from "./ui/forms.js?v=202611141710";
 
-import * as Home from "./views/home.js?v=202611120209";
-import * as Partie from "./views/partie.js?v=202611120209";
-import * as Profil from "./views/profil.js?v=202611120209";
-import * as Auth from "./views/auth.js?v=202611120209";
-import { renderInbox, renderThread } from "./views/messages.js?v=202611120209";
-import * as Lore from "./views/lore.js?v=202611120209";
-import * as Legal from "./views/legal.js?v=202611120209";
-import { setupNative } from "./lib/native.js?v=202611120209";
+import * as Home from "./views/home.js?v=202611141710";
+import * as Partie from "./views/partie.js?v=202611141710";
+import * as Profil from "./views/profil.js?v=202611141710";
+import * as Social from "./views/social.js?v=202611141710";
+import * as Auth from "./views/auth.js?v=202611141710";
+import { renderInbox, renderThread } from "./views/messages.js?v=202611141710";
+import * as Lore from "./views/lore.js?v=202611141710";
+import * as Legal from "./views/legal.js?v=202611141710";
+import { setupNative } from "./lib/native.js?v=202611141710";
 
 /* ---------------- Routes ---------------- */
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
   { re: /^\/parties$/, nav: "parties", title: "Parties", view: Home.render },
   { re: /^\/partie\/([\w-]+)$/, keys: ["id"], nav: "parties", title: "Partie", view: Partie.render },
-  { re: /^\/profil$/, nav: "profil", title: "Ma fiche", view: Profil.render },
-  { re: /^\/profil\/([\w-]+)$/, keys: ["id"], nav: "profil", title: "Fiche de personnage", view: Profil.render },
+  { re: /^\/profil$/, nav: "profil", title: "Mon profil", view: Profil.render },
+  { re: /^\/profil\/([\w-]+)$/, keys: ["id"], nav: "social", title: "Profil", view: Profil.render },
+  { re: /^\/social$/, nav: "social", title: "Social", view: Social.render },
   { re: /^\/messages$/, nav: "messages", title: "Missives", view: renderInbox },
   { re: /^\/messages\/([\w-]+)$/, keys: ["id"], nav: "messages", title: "Missive", view: renderThread },
   { re: /^\/connexion$/, nav: "profil", title: "Connexion", view: Auth.render },
@@ -100,7 +102,7 @@ function renderHudAuth() {
   mount($("#hud-auth"), me
     ? html`
         <button type="button" class="btn btn--primary btn--sm hud__cta" data-action="create-partie">${icon("plus")} Organiser</button>
-        <a href="#/profil" class="sigil-link" aria-label="Ma fiche (${me.full_name})">${sigil(me, "sm")}</a>`
+        <a href="#/profil" class="sigil-link" data-nav="profil" aria-label="Mon profil (${me.full_name})">${sigil(me, "sm")}</a>`
     : html`
         <a class="btn btn--ghost btn--sm hud__login" href="#/connexion">Se connecter</a>
         <a class="btn btn--primary btn--sm" href="#/inscription">S'inscrire</a>`);
@@ -115,14 +117,6 @@ async function refreshUnread() {
   $$("[data-unread]").forEach((d) => (d.hidden = n === 0));
 }
 
-function startClock() {
-  const el = $("#hud-clock");
-  const fmt = new Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" });
-  const tick = () => (el.textContent = fmt.format(new Date()));
-  tick();
-  setInterval(tick, 30000);
-}
-
 /* ---------------- Actions globales ---------------- */
 document.addEventListener("click", (e) => {
   const b = e.target.closest('[data-action="create-partie"]');
@@ -134,7 +128,7 @@ document.addEventListener("keydown", (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
   const t = e.target;
   if (t.closest?.("input, textarea, select, [contenteditable], dialog")) return;
-  const map = { "1": "#/", "2": "#/parties", "3": "#/messages", "4": "#/profil" };
+  const map = { "1": "#/", "2": "#/parties", "3": "#/messages", "4": "#/social" };
   if (map[e.key]) { location.hash = map[e.key]; }
   // Ouverte au clavier = instantanée : on n'anime jamais une action clavier
   else if (e.key === "n" || e.key === "N") { e.preventDefault(); openCreatePartie({ instant: true }); }
@@ -145,8 +139,6 @@ document.addEventListener("keydown", (e) => {
   setupNative();   // application mobile : barre d'état, bouton retour (sans effet sur le site)
   await initData();
 
-  $("#hud-mode").textContent = db.mode === "demo" ? "◆ MODE DÉMO" : "◆ SERVEUR";
-  startClock();
   renderHudAuth();
   refreshUnread();
 

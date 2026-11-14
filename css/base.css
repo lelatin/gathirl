@@ -127,8 +127,9 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
   /* --- Hauteurs de chrome --- */
-  --hud-h: 64px;
-  --tabbar-h: 64px;
+  /* Téléphone/tablette : gabarit Instagram (barre du haut ~44-52 pt, barre d'onglets 50 pt, icônes 24 pt) */
+  --hud-h: 52px;
+  --tabbar-h: 50px;
 
   color-scheme: dark;
 }
@@ -156,7 +157,7 @@ html {
   -webkit-tap-highlight-color: transparent;   /* pas de flash gris au tap */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--hud-h) + 52px);
+  scroll-padding-top: calc(var(--hud-h) + 24px);
   background: var(--ink-1);
 }
 
@@ -176,6 +177,7 @@ body {
 }
 
 @media (min-width: 900px) {
+  :root { --hud-h: 64px; }
   body { padding-bottom: 0; }
 }
 
