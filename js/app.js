@@ -3,26 +3,26 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611141722";
-import { sigil } from "./lib/format.js?v=202611141722";
-import { db, initData } from "./data/index.js?v=202611141722";
-import { openCreatePartie } from "./ui/forms.js?v=202611141722";
+import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611141734";
+import { sigil } from "./lib/format.js?v=202611141734";
+import { db, initData } from "./data/index.js?v=202611141734";
+import { openCreatePartie } from "./ui/forms.js?v=202611141734";
 
-import * as Home from "./views/home.js?v=202611141722";
-import { isNative, setupNative } from "./lib/native.js?v=202611141722";
+import * as Home from "./views/home.js?v=202611141734";
+import { isNative, setupNative } from "./lib/native.js?v=202611141734";
 
 /* ---------------- Routes ----------------
    Seul l'accueil est chargé au démarrage. Les autres pages (et leurs
    dépendances, comme le générateur de QR code du billet) ne sont
    téléchargées qu'à la première visite : l'application s'ouvre plus vite. */
 const lazy = (load, name = "render") => async (...a) => (await load())[name](...a);
-const Partie = () => import("./views/partie.js?v=202611141722");
-const Profil = () => import("./views/profil.js?v=202611141722");
-const Social = () => import("./views/social.js?v=202611141722");
-const Auth = () => import("./views/auth.js?v=202611141722");
-const Messages = () => import("./views/messages.js?v=202611141722");
-const Lore = () => import("./views/lore.js?v=202611141722");
-const Legal = () => import("./views/legal.js?v=202611141722");
+const Partie = () => import("./views/partie.js?v=202611141734");
+const Profil = () => import("./views/profil.js?v=202611141734");
+const Social = () => import("./views/social.js?v=202611141734");
+const Auth = () => import("./views/auth.js?v=202611141734");
+const Messages = () => import("./views/messages.js?v=202611141734");
+const Lore = () => import("./views/lore.js?v=202611141734");
+const Legal = () => import("./views/legal.js?v=202611141734");
 
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
