@@ -305,20 +305,21 @@
    bio, boutons pleine largeur, puis les parties en onglets.
    Dès 720 px : avatar de 150 px dans sa colonne, tout le reste à droite.
    ===================================================================== */
-.sheet { padding-block: var(--space-5) var(--space-8); display: grid; gap: var(--space-5); max-width: 935px; }
+/* Rythme vertical façon Instagram (grille de 4/8 px) : chaque bloc respire, sans vide inutile */
+.sheet { padding-block: var(--space-6) var(--space-8); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); max-width: 935px; }
 
 .ig {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas: "avatar main" "info info" "actions actions" "notice notice";
-  column-gap: 20px; row-gap: 14px;
+  column-gap: 24px; row-gap: 0;
   align-items: center;
 }
 .ig__avatar { grid-area: avatar; }
-.ig__main { grid-area: main; display: grid; gap: 8px; min-width: 0; }
-.ig__info { grid-area: info; display: grid; gap: 6px; min-width: 0; }
-.ig__actions { grid-area: actions; }
-.ig__notice { grid-area: notice; }
+.ig__main { grid-area: main; display: grid; gap: 12px; min-width: 0; }
+.ig__info { grid-area: info; display: grid; gap: 8px; min-width: 0; margin-top: 20px; }
+.ig__actions { grid-area: actions; margin-top: 20px; }
+.ig__notice { grid-area: notice; margin-top: 12px; }
 
 .sigil--xl { --size: 86px; }
 
@@ -330,13 +331,13 @@
 
 /* Les chiffres : nombre en gras au-dessus, libellé discret dessous (comme « publications · followers ») */
 .ig__stats { display: flex; gap: 4px; padding: 0; list-style: none; }
-.ig__stats li { flex: 1; min-width: 0; }
-.ig__stats li > *, .ig__stats li { display: grid; align-content: start; }
+.ig__stats li { flex: 1; min-width: 0; text-align: center; }   /* chiffre centré sur son libellé, comme Instagram */
+.ig__stats li > *, .ig__stats li { display: grid; justify-items: center; align-content: start; gap: 2px; }
 .ig__stats strong { font: 700 17px/1.2 var(--font-body); font-variant-numeric: lining-nums tabular-nums; color: var(--parch); }
 .ig__stats span { font-size: 13px; line-height: 1.25; color: var(--muted); }
 .ig__stats a { border-radius: var(--r-1); }
 
-.ig__meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14px; line-height: 1.4; color: var(--parch-2); }
+.ig__meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; line-height: 1.4; color: var(--parch-2); }
 .ig__meta span { display: inline-flex; align-items: center; gap: 6px; }
 .ig__meta .pip { width: 16px; height: 16px; }
 .ig__meta .pip svg { width: 10px; height: 10px; }
@@ -344,18 +345,19 @@
 .ig__formats { font: 700 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
 
 /* Bio : même couleur et même corps que le reste du texte, avec son titre */
-.ig__bio { display: grid; gap: 2px; margin-top: 4px; }
+.ig__bio { display: grid; gap: 4px; margin-top: 8px; }
 .ig__label { font: 700 11px/1.4 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .ig__bio-text { max-width: 60ch; font-size: 15px; line-height: 1.5; color: var(--parch-2); white-space: pre-line; }
 .ig__bio-text--empty { color: var(--muted); font-style: italic; }
 
 /* Boutons Instagram : gris, arrondis 8 px, côte à côte et de même largeur */
 .ig__actions { display: flex; gap: 8px; }
-.ig__actions > * { flex: 1 1 0; }
+.ig__actions > * { flex: 1 1 0; min-width: 0; }   /* sinon les boutons débordent de l'écran */
 .ig-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  min-height: 34px; padding: 0 16px;
+  min-height: 34px; padding: 0 12px;
   border-radius: 8px;
+  overflow: hidden; text-overflow: ellipsis;
   background: rgb(239 227 200 / 0.11);
   color: var(--parch);
   font: 600 14px/1 var(--font-body);
@@ -391,7 +393,7 @@
   .ig {
     grid-template-columns: 150px minmax(0, 1fr);
     grid-template-areas: "avatar main" "avatar info" "avatar actions" ". notice";
-    column-gap: clamp(28px, 6vw, 80px); row-gap: 14px;
+    column-gap: clamp(28px, 6vw, 80px); row-gap: 0;
     align-items: start;
   }
   .ig__avatar { align-self: center; justify-self: center; }
@@ -399,32 +401,35 @@
   .ig__name { font-size: 24px; }
   .ig__stats { gap: 36px; }
   .ig__stats li { flex: 0 0 auto; }
+  .ig__stats li { text-align: left; }
   .ig__stats li > *, .ig__stats li { display: flex; align-items: baseline; gap: 6px; }
+  .ig__info { margin-top: 16px; }
   .ig__stats span { font-size: 15px; }
   .ig__actions { max-width: 420px; }
 }
 
 /* ---------- Onglets des parties (la grille de publications d'Instagram) ---------- */
+/* Barre d'onglets : un trait fin dessous, l'onglet actif souligné (Instagram actuel) */
 .ig-tabs__bar {
   display: flex; justify-content: center;
-  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 .ig-tabs__tab {
   flex: 1 1 0;
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   min-height: 46px;
-  margin-top: -1px;
-  border-top: 1px solid transparent;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
   color: var(--muted);
   font: 700 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
   transition: color 150ms ease;
 }
 .ig-tabs__tab svg { width: 18px; height: 18px; }
-.ig-tabs__tab[aria-selected="true"] { color: var(--parch); border-top-color: var(--parch); }
+.ig-tabs__tab[aria-selected="true"] { color: var(--parch); border-bottom-color: var(--parch); }
 @media (min-width: 720px) { .ig-tabs__tab { flex: 0 0 auto; padding-inline: 28px; } }
 @media (max-width: 379px) { .ig-tabs__tab span { display: none; } .ig-tabs__tab svg { width: 22px; height: 22px; } }
 @media (hover: hover) and (pointer: fine) { .ig-tabs__tab:not([aria-selected="true"]):hover { color: var(--parch-2); } }
-.ig-tabs__panel { padding-top: var(--space-4); }
+.ig-tabs__panel { padding-top: var(--space-5); }
 
 .ig-empty { display: grid; justify-items: center; gap: 12px; padding: 40px 16px; text-align: center; color: var(--muted); }
 .ig-empty__icon { width: 44px; height: 44px; padding: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--parch-2); color: var(--parch-2); }
@@ -476,7 +481,7 @@
 .social__guest p { max-width: 34ch; font-size: 15px; color: var(--muted); }
 .social__guest-ctas { display: flex; gap: 8px; margin-top: 4px; }
 
-.mini-list { display: grid; gap: 10px; }
+.mini-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }   /* titres longs : coupés, jamais hors de l'écran */
 .mini {
   display: flex; align-items: center; gap: 14px;
   padding: 12px 14px;
