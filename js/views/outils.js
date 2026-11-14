@@ -7,13 +7,16 @@
    Le compteur s'ouvre sur #/outils?jeu=1 : le bouton « retour » du
    téléphone le referme naturellement.
    ===================================================================== */
-import { $, html, icon, mount, prefersReducedMotion } from "../lib/dom.js?v=202611141827";
-import { mountDice, roll } from "../ui/dice.js?v=202611141827";
+import { $, html, icon, mount, prefersReducedMotion } from "../lib/dom.js?v=202611141848";
+import { mountDice, roll } from "../ui/dice.js?v=202611141848";
 
 const KEY = "gathirl:vie:v1";
 const PREFS = "gathirl:vie:prefs";
 const LIVES = [20, 30, 40];
 const COLORS = ["#b3202f", "#2b5f93", "#3f7d3a", "#6c3f93", "#b0812a", "#3d4b5c"];
+// une illustration par joueur, voilée de sa couleur (adresse absolue : une url() dans une
+// variable CSS se résout par rapport à la feuille de style, pas à la page)
+const ARTS = ["02", "06", "10", "14", "17", "20"].map((n) => new URL(`assets/img/art-${n}.webp`, document.baseURI).href);
 // orientation de chaque panneau : les joueurs sont assis autour du téléphone posé à plat
 const ROTATIONS = {
   1: [0],
@@ -108,7 +111,7 @@ function openCounter(game) {
 
   mount(root, html`
     ${game.players.map((p, i) => html`
-      <section class="lc__cell" style="grid-area:p${i};--pc:${p.color}" data-cell="${i}">
+      <section class="lc__cell" style="grid-area:p${i};--pc:${p.color};--pimg:url('${ARTS[i]}')" data-cell="${i}">
         <div class="lc__face lc__face--r${rots[i]}">
           <button type="button" class="lc__half lc__half--minus" data-p="${i}" data-d="-1" aria-label="Joueur ${i + 1} : retirer un point de vie"><span aria-hidden="true">−</span></button>
           <button type="button" class="lc__half lc__half--plus" data-p="${i}" data-d="1" aria-label="Joueur ${i + 1} : ajouter un point de vie"><span aria-hidden="true">+</span></button>

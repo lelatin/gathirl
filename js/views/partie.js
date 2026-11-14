@@ -1,13 +1,13 @@
 /* =====================================================================
    LA PARTIE — le billet au centre, et seulement ce qu'il ne dit pas
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611141827";
-import { fmtDateLong, fmtTime, initial, plural, sigil } from "../lib/format.js?v=202611141827";
-import { osmLink } from "../lib/geo.js?v=202611141827";
-import { db } from "../data/index.js?v=202611141827";
-import { toast } from "../ui/toast.js?v=202611141827";
-import { downloadIcs } from "../lib/calendar.js?v=202611141827";
-import { ticketFor, saveTicket, ticketTilt, lastTicket } from "../ui/ticket.js?v=202611141827";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611141848";
+import { fmtDateLong, fmtTime, initial, plural, sigil } from "../lib/format.js?v=202611141848";
+import { osmLink } from "../lib/geo.js?v=202611141848";
+import { db } from "../data/index.js?v=202611141848";
+import { toast } from "../ui/toast.js?v=202611141848";
+import { downloadIcs } from "../lib/calendar.js?v=202611141848";
+import { ticketFor, saveTicket, ticketTilt, lastTicket } from "../ui/ticket.js?v=202611141848";
 
 
 export async function render(el, ctx) {

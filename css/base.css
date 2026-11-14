@@ -82,6 +82,7 @@
   /* Titres : Fraunces, sérif « soft » des années 70 (Souvenir, Windsor), cousine libre de la Benguiat
      de la charte, bien plus lisible que le gothique. Le gothique reste réservé au mot-logo. */
   --font-display: "Fraunces", "Souvenir", Georgia, serif;
+  --font-gothic: "New Rocker", "Fraunces", Georgia, serif;   /* chiffres des outils : gothique, mais lisible */
   --font-logo: "Grenze Gotisch", "UnifrakturCook", Georgia, serif;
   --font-body: "Spectral", Georgia, "Times New Roman", serif;
   --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;

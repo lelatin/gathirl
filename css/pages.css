@@ -858,7 +858,7 @@
   border-radius: 12px;
   background: rgb(0 0 0 / 0.28);
 }
-.dice__value { font: 800 60px/1 var(--font-display); color: var(--parch); font-variant-numeric: lining-nums tabular-nums; }
+.dice__value { font: 400 64px/1 var(--font-gothic); color: var(--parch); font-variant-numeric: lining-nums tabular-nums; }
 .dice__idle { width: 52px; height: 52px; color: var(--muted); }
 .dice__label { font: 700 11px/1.3 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .dice.is-done .dice__value { animation: dice-land 260ms var(--ease-out); color: var(--or-text, var(--gold)); }
@@ -899,9 +899,7 @@ html.lc-open, html.lc-open body { overflow: hidden; }
   position: relative; overflow: hidden;
   container-type: size;
   border-radius: 18px;
-  background:
-    radial-gradient(120% 90% at 50% 50%, rgb(255 255 255 / 0.12), transparent 60%),
-    var(--pc);
+  background: var(--pc);
   transition: filter 200ms ease, box-shadow 200ms ease;
 }
 .lc__cell.is-out { filter: grayscale(0.85) brightness(0.55); }
@@ -915,6 +913,12 @@ html.lc-open, html.lc-open body { overflow: hidden; }
   translate: -50% -50%;
   container-type: size;
   color: #fff8ef;
+  /* Illustration en fond, dans le sens du joueur, voilée de sa couleur (lisibilité du total) */
+  background:
+    radial-gradient(80% 60% at 50% 50%, rgb(0 0 0 / 0.38), transparent 80%),
+    linear-gradient(color-mix(in srgb, var(--pc) 55%, transparent), color-mix(in srgb, var(--pc) 55%, transparent)),
+    var(--pimg, none) center / cover no-repeat,
+    var(--pc);
 }
 .lc__face--r180 { rotate: 180deg; }
 .lc__face--r90 { width: 100cqh; height: 100cqw; rotate: 90deg; }
@@ -943,14 +947,14 @@ html.lc-open, html.lc-open body { overflow: hidden; }
 }
 .lc__name { font: 700 max(11px, min(5cqh, 3.6cqw))/1 var(--font-mono); letter-spacing: 0.14em; opacity: 0.75; }
 .lc__life {
-  font: 800 min(52cqh, 34cqw)/1 var(--font-display);
-  letter-spacing: -0.02em;
-  font-variant-numeric: lining-nums tabular-nums;
-  text-shadow: 0 2px 0 rgb(0 0 0 / 0.25);
+  font: 400 min(54cqh, 36cqw)/1 var(--font-gothic);
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 0 rgb(0 0 0 / 0.45), 0 0 24px rgb(0 0 0 / 0.55);
 }
 .lc__delta {
   position: absolute; top: 12%; left: 50%; translate: -50% 0;
-  font: 700 max(14px, min(9cqh, 6cqw))/1 var(--font-mono);
+  font: 400 max(16px, min(11cqh, 7cqw))/1 var(--font-gothic);
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.5);
   opacity: 0; transition: opacity 160ms ease;
 }
 .lc__delta.is-on { opacity: 0.95; }
@@ -982,7 +986,7 @@ html.lc-open, html.lc-open body { overflow: hidden; }
 .lc__ctr-label { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 14px; white-space: nowrap; }
 .lc__ctr-btn { height: 34px; border-radius: 8px; background: rgb(255 255 255 / 0.12); font: 600 20px/1 var(--font-body); color: #fff8ef; }
 .lc__ctr-btn:active { background: rgb(255 255 255 / 0.22); }
-.lc__ctr-val { text-align: center; font: 800 18px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.lc__ctr-val { text-align: center; font: 400 20px/1 var(--font-gothic); font-variant-numeric: tabular-nums; }
 .lc__sub { margin-top: 2px; font: 700 10.5px/1.2 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: rgb(255 248 239 / 0.65); }
 .lc__cmds { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 14px; }
 .lc__dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1.5px rgb(255 255 255 / 0.6); }

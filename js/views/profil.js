@@ -2,12 +2,12 @@
    PROFIL — gabarit Instagram : avatar + chiffres, nom, bio, boutons,
    puis les parties en onglets (à venir · historique · organisées)
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611141827";
-import { fmtDay, fmtMonth, fmtTime, levelPip, sigil } from "../lib/format.js?v=202611141827";
-import { db } from "../data/index.js?v=202611141827";
-import { openEditProfile } from "../ui/forms.js?v=202611141827";
-import { toast } from "../ui/toast.js?v=202611141827";
-import { holdToConfirm } from "../ui/hold.js?v=202611141827";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611141848";
+import { fmtDay, fmtMonth, fmtTime, levelPip, sigil } from "../lib/format.js?v=202611141848";
+import { db } from "../data/index.js?v=202611141848";
+import { openEditProfile } from "../ui/forms.js?v=202611141848";
+import { toast } from "../ui/toast.js?v=202611141848";
+import { holdToConfirm } from "../ui/hold.js?v=202611141848";
 
 export async function render(el, ctx) {
   const me = db.auth.user();

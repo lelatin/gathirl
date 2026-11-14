@@ -2,8 +2,8 @@
    Export calendrier (.ics, RFC 5545) — compatible Apple Calendrier,
    Google Agenda, Outlook, Samsung Calendar…
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611141827";
-import { isNative, shareFile } from "./native.js?v=202611141827";
+import { CONFIG } from "../config.js?v=202611141848";
+import { isNative, shareFile } from "./native.js?v=202611141848";
 
 const pad = (n) => String(n).padStart(2, "0");
 /** Date → 20261113T190000Z (UTC) */

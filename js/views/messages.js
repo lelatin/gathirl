@@ -1,10 +1,10 @@
 /* =====================================================================
    MISSIVES — liste des conversations + fil de discussion
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611141827";
-import { fmtRelative, fmtTime, sigil } from "../lib/format.js?v=202611141827";
-import { db } from "../data/index.js?v=202611141827";
-import { toast } from "../ui/toast.js?v=202611141827";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611141848";
+import { fmtRelative, fmtTime, sigil } from "../lib/format.js?v=202611141848";
+import { db } from "../data/index.js?v=202611141848";
+import { toast } from "../ui/toast.js?v=202611141848";
 
 function guard() {
   if (db.auth.user()) return true;
