@@ -1,14 +1,14 @@
 /* =====================================================================
    PARTIES — la page dédiée : filtres (format, niveau, distance) + grille
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611141802";
-import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611141802";
-import { distanceKm } from "../lib/geo.js?v=202611141802";
-import { db } from "../data/index.js?v=202611141802";
-import { CONFIG } from "../config.js?v=202611141802";
-import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611141802";
-import { openCreatePartie } from "../ui/forms.js?v=202611141802";
-import { toast } from "../ui/toast.js?v=202611141802";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611141805";
+import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611141805";
+import { distanceKm } from "../lib/geo.js?v=202611141805";
+import { db } from "../data/index.js?v=202611141805";
+import { CONFIG } from "../config.js?v=202611141805";
+import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611141805";
+import { openCreatePartie } from "../ui/forms.js?v=202611141805";
+import { toast } from "../ui/toast.js?v=202611141805";
 
 const state = { format: null, level: null, near: false };   // les filtres survivent à un aller-retour
 

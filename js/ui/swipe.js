@@ -7,9 +7,9 @@
    - ignoré : bords de l'écran (gestes « retour » du système), champs de
      saisie, fenêtres, et toute zone qui défile déjà horizontalement
    ===================================================================== */
-import { prefersReducedMotion } from "../lib/dom.js?v=202611141802";
+import { prefersReducedMotion } from "../lib/dom.js?v=202611141805";
 
-const EDGE = 16;          // px réservés aux gestes système, de chaque côté
+const EDGE = 40;          // px réservés aux gestes système (« retour »), de chaque côté
 const LOCK = 8;           // px avant de décider si le geste est horizontal ou vertical
 const RATIO = 1.1;        // horizontal dès que |dx| > 1,1 × |dy|
 const DISTANCE = 0.16;    // part de la largeur à parcourir pour valider (≈ 60 px sur téléphone)
