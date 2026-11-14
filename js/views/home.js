@@ -4,13 +4,13 @@
    2. Les joueurs près de chez vous
    Les parties ont leur propre page (js/views/parties.js).
    ===================================================================== */
-import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611141747";
-import { levelPip, plural, sigil } from "../lib/format.js?v=202611141747";
-import { distanceKm } from "../lib/geo.js?v=202611141747";
-import { db } from "../data/index.js?v=202611141747";
-import { enableFoil } from "../ui/card.js?v=202611141747";
-import { openCreatePartie } from "../ui/forms.js?v=202611141747";
-import { toast } from "../ui/toast.js?v=202611141747";
+import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611141753";
+import { levelPip, plural, sigil } from "../lib/format.js?v=202611141753";
+import { distanceKm } from "../lib/geo.js?v=202611141753";
+import { db } from "../data/index.js?v=202611141753";
+import { enableFoil } from "../ui/card.js?v=202611141753";
+import { openCreatePartie } from "../ui/forms.js?v=202611141753";
+import { toast } from "../ui/toast.js?v=202611141753";
 
 export async function render(el, ctx) {
   const me = db.auth.user();
@@ -26,6 +26,7 @@ export async function render(el, ctx) {
             <a class="btn" href="#/parties">${icon("swords")} Voir les parties</a>
             <button type="button" class="btn btn--ghost" data-roll title="Le dé choisit une partie au hasard">${icon("d20", "d20")} Lancer le d20</button>
           </div>
+          <button type="button" class="hero__more" data-scroll-down aria-label="Voir la suite">${icon("back")}</button>
         </div>
 
         <div class="oracle-wrap">
@@ -64,6 +65,11 @@ export async function render(el, ctx) {
     let parties = [];
     try { parties = await db.parties.listUpcoming(); } catch (ex) { toast.error("Le grimoire est illisible", ex.message); return; }
     rollD20(btn, parties);
+  });
+
+  // la petite flèche sous les boutons : descend jusqu'à la carte de l'Oracle
+  $("[data-scroll-down]", el).addEventListener("click", () => {
+    $(".oracle-wrap", el)?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth", block: "start" });
   });
 
   if (ctx.query.get("organiser")) openCreatePartie();

@@ -5,7 +5,7 @@
    - ignoré : bords de l'écran (gestes « retour » du système), champs de
      saisie, fenêtres, et toute zone qui défile déjà horizontalement
    ===================================================================== */
-import { prefersReducedMotion } from "../lib/dom.js?v=202611141747";
+import { prefersReducedMotion } from "../lib/dom.js?v=202611141753";
 
 const EDGE = 22;          // px réservés aux gestes système, de chaque côté
 const LOCK = 10;          // px avant de décider si le geste est horizontal ou vertical
