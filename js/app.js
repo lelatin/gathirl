@@ -3,29 +3,29 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount, prefersReducedMotion } from "./lib/dom.js?v=202611142332";
-import { sigil } from "./lib/format.js?v=202611142332";
-import { db, initData } from "./data/index.js?v=202611142332";
-import { openCreatePartie } from "./ui/forms.js?v=202611142332";
+import { $, $$, html, icon, mount, prefersReducedMotion } from "./lib/dom.js?v=202611142335";
+import { sigil } from "./lib/format.js?v=202611142335";
+import { db, initData } from "./data/index.js?v=202611142335";
+import { openCreatePartie } from "./ui/forms.js?v=202611142335";
 
-import * as Home from "./views/home.js?v=202611142332";
-import { isNative, setupNative } from "./lib/native.js?v=202611142332";
-import { enableSwipeNav } from "./ui/swipe.js?v=202611142332";
+import * as Home from "./views/home.js?v=202611142335";
+import { isNative, setupNative } from "./lib/native.js?v=202611142335";
+import { enableSwipeNav } from "./ui/swipe.js?v=202611142335";
 
 /* ---------------- Routes ----------------
    Seul l'accueil est chargé au démarrage. Les autres pages (et leurs
    dépendances, comme le générateur de QR code du billet) ne sont
    téléchargées qu'à la première visite : l'application s'ouvre plus vite. */
 const lazy = (load, name = "render") => async (...a) => (await load())[name](...a);
-const Parties = () => import("./views/parties.js?v=202611142332");
-const Outils = () => import("./views/outils.js?v=202611142332");
-const Partie = () => import("./views/partie.js?v=202611142332");
-const Profil = () => import("./views/profil.js?v=202611142332");
-const Social = () => import("./views/social.js?v=202611142332");
-const Auth = () => import("./views/auth.js?v=202611142332");
-const Messages = () => import("./views/messages.js?v=202611142332");
-const Lore = () => import("./views/lore.js?v=202611142332");
-const Legal = () => import("./views/legal.js?v=202611142332");
+const Parties = () => import("./views/parties.js?v=202611142335");
+const Outils = () => import("./views/outils.js?v=202611142335");
+const Partie = () => import("./views/partie.js?v=202611142335");
+const Profil = () => import("./views/profil.js?v=202611142335");
+const Social = () => import("./views/social.js?v=202611142335");
+const Auth = () => import("./views/auth.js?v=202611142335");
+const Messages = () => import("./views/messages.js?v=202611142335");
+const Lore = () => import("./views/lore.js?v=202611142335");
+const Legal = () => import("./views/legal.js?v=202611142335");
 
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
@@ -182,6 +182,19 @@ async function refreshUnread() {
 document.addEventListener("click", (e) => {
   const b = e.target.closest('[data-action="create-partie"]');
   if (b) { e.preventDefault(); openCreatePartie(); }
+});
+
+/* Croix des barres de recherche : vide le champ, relance la recherche (événement « input »)
+   et garde le clavier ouvert pour retaper aussitôt */
+document.addEventListener("click", (e) => {
+  const x = e.target.closest("[data-search-clear]");
+  if (!x) return;
+  e.preventDefault();
+  const input = x.closest(".search")?.querySelector("input");
+  if (!input) return;
+  input.value = "";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  input.focus();
 });
 
 /* Onglets (barre du bas, menu du haut, avatar) : on arrive toujours en haut de la page.

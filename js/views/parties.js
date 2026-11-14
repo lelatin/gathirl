@@ -2,13 +2,13 @@
    PARTIES — la page dédiée : recherche (ville, format, niveau…),
    filtres (format, niveau) + grille
    ===================================================================== */
-import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611142332";
-import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611142332";
-import { distanceKm } from "../lib/geo.js?v=202611142332";
-import { db } from "../data/index.js?v=202611142332";
-import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611142332";
-import { openCreatePartie } from "../ui/forms.js?v=202611142332";
-import { toast } from "../ui/toast.js?v=202611142332";
+import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611142335";
+import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611142335";
+import { distanceKm } from "../lib/geo.js?v=202611142335";
+import { db } from "../data/index.js?v=202611142335";
+import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611142335";
+import { openCreatePartie } from "../ui/forms.js?v=202611142335";
+import { toast } from "../ui/toast.js?v=202611142335";
 
 const state = { format: null, level: null, q: "" };   // recherche et filtres survivent à un aller-retour
 
@@ -30,6 +30,7 @@ export async function render(el, ctx) {
           <span class="sr-only">Rechercher une partie</span>
           <input type="search" data-q role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="finder-list"
                  placeholder="Ville, format, niveau…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" value="${state.q}" />
+          <button type="button" class="search__clear" data-search-clear aria-label="Effacer la recherche">${icon("x")}</button>
         </label>
         <ul class="finder__list" id="finder-list" role="listbox" aria-label="Suggestions" data-suggestions hidden></ul>
       </div>

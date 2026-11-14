@@ -457,6 +457,22 @@
 .search svg { width: 18px; height: 18px; }
 .search input { flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; outline: none; color: var(--parch); }
 .search input::placeholder { color: var(--muted); }
+/* Croix pour vider la barre : visible seulement quand quelque chose est tapé
+   (la croix native, absente de Safari, est masquée pour un rendu identique partout) */
+.search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.search__clear {
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  width: 30px; height: 30px; margin-right: -8px;
+  border-radius: 50%;
+  color: var(--muted);
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.search__clear svg { width: 16px; height: 16px; }
+.search__clear:active { background: rgb(239 227 200 / 0.12); }
+.search:has(input:placeholder-shown) .search__clear { display: none; }
+@media (hover: hover) and (pointer: fine) { .search__clear:hover { color: var(--parch); background: rgb(239 227 200 / 0.1); } }
+@media (pointer: coarse) { .search__clear { width: 36px; height: 36px; } }
 
 .social__block { display: grid; gap: 4px; margin-top: var(--space-2); }
 .social__h { display: flex; align-items: center; gap: 8px; font: 600 16px/1.3 var(--font-body); color: var(--parch); }

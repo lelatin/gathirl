@@ -3,10 +3,10 @@
    Gabarit Instagram : barre de recherche en haut, puis des lignes
    « avatar · nom · sous-titre · bouton » (demandes, contacts, suggestions).
    ===================================================================== */
-import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611142332";
-import { levelPip, plural, sigil } from "../lib/format.js?v=202611142332";
-import { db } from "../data/index.js?v=202611142332";
-import { toast } from "../ui/toast.js?v=202611142332";
+import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611142335";
+import { levelPip, plural, sigil } from "../lib/format.js?v=202611142335";
+import { db } from "../data/index.js?v=202611142335";
+import { toast } from "../ui/toast.js?v=202611142335";
 
 let lastQuery = "";   // la recherche survit à un aller-retour vers un profil
 
@@ -21,6 +21,7 @@ export async function render(el) {
         ${icon("search")}
         <span class="sr-only">Rechercher un compte</span>
         <input type="search" data-q placeholder="Rechercher un joueur ou une ville" autocomplete="off" enterkeyhint="search" value="${lastQuery}" />
+        <button type="button" class="search__clear" data-search-clear aria-label="Effacer la recherche">${icon("x")}</button>
       </label>
       <div data-body><div class="skeleton" style="height:180px;border-radius:14px"></div></div>
     </div>`);
