@@ -808,18 +808,20 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
 /* =====================================================================
    Formulaires
    ===================================================================== */
-.field { display: grid; gap: 6px; }
+.field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; min-width: 0; }
 .field > span, .field legend {
   font-family: var(--font-mono);
   font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--parch-2);
 }
 .field .req { color: var(--blood); }
-.field-row { display: grid; gap: var(--space-4); }
-@media (min-width: 560px) { .field-row--2 { grid-template-columns: 1fr 1fr; } }
+.field-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); min-width: 0; }
+@media (min-width: 560px) { .field-row--2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 
+/* Les champs prennent la largeur disponible, jamais plus : ils s'adaptent à chaque téléphone */
 .input, .select, .textarea {
-  width: 100%;
+  display: block;
+  width: 100%; max-width: 100%; min-width: 0;
   min-height: 46px;
   padding: 10px 14px;
   border-radius: var(--r-2);
@@ -840,8 +842,16 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
 }
 .input[aria-invalid="true"] { border-color: var(--blood); }
 .input::-webkit-calendar-picker-indicator { filter: invert(0.85) sepia(0.4); cursor: pointer; }
+/* iPhone : Safari impose une largeur minimale aux champs date/heure, qui sortaient de l'écran.
+   Sans apparence native, ils suivent la largeur du formulaire (le sélecteur reste celui du téléphone). */
+.input[type="datetime-local"], .input[type="date"], .input[type="time"] {
+  -webkit-appearance: none; appearance: none;
+  text-align: left;
+}
+.input::-webkit-date-and-time-value { text-align: left; min-width: 0; }
+.input[type="number"] { -moz-appearance: textfield; }
 
-.form { display: grid; gap: var(--space-4); }
+.form { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); min-width: 0; }
 .form-actions { display: flex; justify-content: flex-end; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-2); }
 .form-error {
   padding: 10px 14px;
@@ -916,7 +926,8 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
   border-bottom: 1px solid var(--line);
 }
 .modal__head h2 { font-family: var(--font-display); font-size: var(--step-2); line-height: 1; }
-.modal__body { padding: 20px; overflow-y: auto; overscroll-behavior: contain; }
+.modal__body { padding: 20px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; }
+@media (max-width: 379px) { .modal__body { padding: 16px; } .modal__head { padding-inline: 16px; } }   /* petits téléphones : un peu plus de place */
 
 @media (max-width: 599px) {
   .modal {
