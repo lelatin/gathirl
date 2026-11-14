@@ -3,17 +3,20 @@
    Gabarit Instagram : barre de recherche en haut, puis des lignes
    « avatar · nom · sous-titre · bouton » (demandes, contacts, suggestions).
    ===================================================================== */
-import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611141734";
-import { levelPip, plural, sigil } from "../lib/format.js?v=202611141734";
-import { db } from "../data/index.js?v=202611141734";
-import { toast } from "../ui/toast.js?v=202611141734";
+import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611141747";
+import { levelPip, plural, sigil } from "../lib/format.js?v=202611141747";
+import { db } from "../data/index.js?v=202611141747";
+import { toast } from "../ui/toast.js?v=202611141747";
 
 let lastQuery = "";   // la recherche survit à un aller-retour vers un profil
 
 export async function render(el) {
   mount(el, html`
     <div class="wrap social">
-      <h1 class="social__title">Social</h1>
+      <div class="social__top">
+        <h1 class="social__title">Social</h1>
+        ${db.auth.user() ? html`<a class="social__dm" href="#/messages" aria-label="Missives">${icon("send")}<span class="dot" data-dm-unread hidden></span></a>` : ""}
+      </div>
       <label class="search">
         ${icon("search")}
         <span class="sr-only">Rechercher un compte</span>
@@ -133,9 +136,17 @@ export async function render(el) {
 
   const draw = () => (lastQuery.trim() ? drawResults(lastQuery.trim()) : drawHome());
 
+  // pastille rouge sur l'icône des missives, comme celle de l'onglet
+  const markUnread = async () => {
+    const me = db.auth.user(), dot = $("[data-dm-unread]", el);
+    if (!me || !dot) return;
+    try { dot.hidden = !(await db.messages.mine()).some((m) => m.receiver_id === me.id && !m.read); } catch {}
+  };
+
   await loadFriends();
   if (!el.isConnected) return;
   draw();
+  markUnread();
 
   input.addEventListener("input", debounce(() => { lastQuery = input.value; draw(); }, 200));
 
@@ -153,7 +164,7 @@ export async function render(el) {
   });
 
   // une demande reçue pendant qu'on est sur la page
-  return db.on(async () => { if (!el.isConnected) return; await loadFriends(); draw(); });
+  return db.on(async () => { if (!el.isConnected) return; await loadFriends(); draw(); markUnread(); });
 }
 
 function subtitle(u) {

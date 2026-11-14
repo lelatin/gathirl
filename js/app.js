@@ -3,36 +3,40 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611141734";
-import { sigil } from "./lib/format.js?v=202611141734";
-import { db, initData } from "./data/index.js?v=202611141734";
-import { openCreatePartie } from "./ui/forms.js?v=202611141734";
+import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611141747";
+import { sigil } from "./lib/format.js?v=202611141747";
+import { db, initData } from "./data/index.js?v=202611141747";
+import { openCreatePartie } from "./ui/forms.js?v=202611141747";
 
-import * as Home from "./views/home.js?v=202611141734";
-import { isNative, setupNative } from "./lib/native.js?v=202611141734";
+import * as Home from "./views/home.js?v=202611141747";
+import { isNative, setupNative } from "./lib/native.js?v=202611141747";
+import { enableSwipeNav } from "./ui/swipe.js?v=202611141747";
 
 /* ---------------- Routes ----------------
    Seul l'accueil est chargé au démarrage. Les autres pages (et leurs
    dépendances, comme le générateur de QR code du billet) ne sont
    téléchargées qu'à la première visite : l'application s'ouvre plus vite. */
 const lazy = (load, name = "render") => async (...a) => (await load())[name](...a);
-const Partie = () => import("./views/partie.js?v=202611141734");
-const Profil = () => import("./views/profil.js?v=202611141734");
-const Social = () => import("./views/social.js?v=202611141734");
-const Auth = () => import("./views/auth.js?v=202611141734");
-const Messages = () => import("./views/messages.js?v=202611141734");
-const Lore = () => import("./views/lore.js?v=202611141734");
-const Legal = () => import("./views/legal.js?v=202611141734");
+const Parties = () => import("./views/parties.js?v=202611141747");
+const Outils = () => import("./views/outils.js?v=202611141747");
+const Partie = () => import("./views/partie.js?v=202611141747");
+const Profil = () => import("./views/profil.js?v=202611141747");
+const Social = () => import("./views/social.js?v=202611141747");
+const Auth = () => import("./views/auth.js?v=202611141747");
+const Messages = () => import("./views/messages.js?v=202611141747");
+const Lore = () => import("./views/lore.js?v=202611141747");
+const Legal = () => import("./views/legal.js?v=202611141747");
 
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
-  { re: /^\/parties$/, nav: "parties", title: "Parties", view: Home.render },
+  { re: /^\/parties$/, nav: "parties", title: "Parties", view: lazy(Parties) },
+  { re: /^\/outils$/, nav: "outils", title: "Outils", view: lazy(Outils) },
   { re: /^\/partie\/([\w-]+)$/, keys: ["id"], nav: "parties", title: "Partie", view: lazy(Partie) },
   { re: /^\/profil$/, nav: "profil", title: "Mon profil", view: lazy(Profil) },
   { re: /^\/profil\/([\w-]+)$/, keys: ["id"], nav: "social", title: "Profil", view: lazy(Profil) },
   { re: /^\/social$/, nav: "social", title: "Social", view: lazy(Social) },
-  { re: /^\/messages$/, nav: "messages", title: "Missives", view: lazy(Messages, "renderInbox") },
-  { re: /^\/messages\/([\w-]+)$/, keys: ["id"], nav: "messages", title: "Missive", view: lazy(Messages, "renderThread") },
+  { re: /^\/messages$/, nav: "social", title: "Missives", view: lazy(Messages, "renderInbox") },
+  { re: /^\/messages\/([\w-]+)$/, keys: ["id"], nav: "social", title: "Missive", view: lazy(Messages, "renderThread") },
   { re: /^\/connexion$/, nav: "profil", title: "Connexion", view: lazy(Auth) },
   { re: /^\/inscription$/, nav: "profil", title: "Inscription", view: lazy(Auth) },
   { re: /^\/lore$/, nav: null, title: "Le lore", view: lazy(Lore) },
@@ -42,9 +46,9 @@ const routes = [
 ];
 
 /* Une fois l'accueil affiché, on précharge en tâche de fond les pages de la barre
-   d'onglets : le premier tap sur Social, Missives ou une partie est alors immédiat. */
+   d'onglets : le premier tap (ou glissement) vers une autre page est alors immédiat. */
 function prefetchViews() {
-  const go = () => [Partie, Social, Messages, Profil].forEach((f) => f().catch(() => {}));
+  const go = () => [Parties, Outils, Social, Partie, Messages, Profil].forEach((f) => f().catch(() => {}));
   if ("requestIdleCallback" in window) requestIdleCallback(go, { timeout: 4000 });
   else setTimeout(go, 2500);
 }
@@ -78,6 +82,10 @@ async function checkForUpdate() {
 const app = document.getElementById("app");
 let cleanup = null;
 let lastPath = null;
+let enterFrom = null;   // "left" | "right" : la page arrive en glissant (navigation au doigt)
+
+/* Les onglets, dans l'ordre de la barre du bas : on passe de l'un à l'autre en glissant */
+const TAB_ORDER = ["/", "/parties", "/outils", "/social"];
 
 function parseHash() {
   const raw = location.hash.replace(/^#/, "") || "/";
@@ -99,6 +107,7 @@ async function router() {
   // Chaque vue reçoit un conteneur neuf : pas de fuite d'écouteurs
   const view = document.createElement("div");
   view.className = "view";
+  if (enterFrom) { view.classList.add(`view--from-${enterFrom}`); enterFrom = null; }
   app.replaceChildren(view);
 
   setActiveNav(match?.nav);
@@ -164,12 +173,12 @@ document.addEventListener("click", (e) => {
   if (b) { e.preventDefault(); openCreatePartie(); }
 });
 
-/* Raccourcis : 1-4 pour naviguer, N pour organiser (jamais animés) */
+/* Raccourcis : 1-4 pour naviguer (dans l'ordre des onglets), N pour organiser (jamais animés) */
 document.addEventListener("keydown", (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
   const t = e.target;
   if (t.closest?.("input, textarea, select, [contenteditable], dialog")) return;
-  const map = { "1": "#/", "2": "#/parties", "3": "#/messages", "4": "#/social" };
+  const map = { "1": "#/", "2": "#/parties", "3": "#/outils", "4": "#/social" };
   if (map[e.key]) { location.hash = map[e.key]; }
   // Ouverte au clavier = instantanée : on n'anime jamais une action clavier
   else if (e.key === "n" || e.key === "N") { e.preventDefault(); openCreatePartie({ instant: true }); }
@@ -192,6 +201,7 @@ document.addEventListener("keydown", (e) => {
   });
 
   window.addEventListener("hashchange", router);
+  enableSwipeNav(app, TAB_ORDER, () => parseHash().path, (path, from) => { enterFrom = from; location.hash = "#" + path; });
   await router();
 
   // le « ?v=… » ajouté par une mise à jour n'a pas à rester dans la barre d'adresse

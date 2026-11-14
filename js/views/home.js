@@ -1,19 +1,16 @@
 /* =====================================================================
    ACCUEIL — l'essentiel, dans l'ordre où on en a besoin :
-   1. Héros (titre, actions) + carte de l'Oracle (ordinateur uniquement)
-   2. Les parties (filtres + grille)
-   3. Les joueurs près de chez vous
+   1. Héros (titre, actions) + carte de l'Oracle (le « lore » de la taverne)
+   2. Les joueurs près de chez vous
+   Les parties ont leur propre page (js/views/parties.js).
    ===================================================================== */
-import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611141734";
-import { FORMATS, LEVELS, artFor, fmtDate, fmtTime, levelPip, plural, sigil } from "../lib/format.js?v=202611141734";
-import { distanceKm } from "../lib/geo.js?v=202611141734";
-import { db } from "../data/index.js?v=202611141734";
-import { CONFIG } from "../config.js?v=202611141734";
-import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611141734";
-import { openCreatePartie } from "../ui/forms.js?v=202611141734";
-import { toast } from "../ui/toast.js?v=202611141734";
-
-const state = { format: null, level: null, near: false };
+import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611141747";
+import { levelPip, plural, sigil } from "../lib/format.js?v=202611141747";
+import { distanceKm } from "../lib/geo.js?v=202611141747";
+import { db } from "../data/index.js?v=202611141747";
+import { enableFoil } from "../ui/card.js?v=202611141747";
+import { openCreatePartie } from "../ui/forms.js?v=202611141747";
+import { toast } from "../ui/toast.js?v=202611141747";
 
 export async function render(el, ctx) {
   const me = db.auth.user();
@@ -50,55 +47,26 @@ export async function render(el, ctx) {
           </article>
         </div>
       </div>
-      <a class="hero__more" href="#/parties" aria-label="Descendre aux parties">${icon("back")}</a>
-    </section>
-
-    <section class="section wrap" id="parties" aria-labelledby="parties-title">
-      <div class="section-head">
-        <div><h2 id="parties-title">Les parties</h2></div>
-      </div>
-      <div class="filters" data-filters></div>
-      <div class="card-grid stagger" data-grid>${skeletonCards(3)}</div>
     </section>
 
     <section class="section wrap" data-players hidden aria-labelledby="players-title"></section>
   `);
 
-  /* ---------- Données ---------- */
-  let parties = [];
-  let byPartie = {};
-  try {
-    const [list, parts] = await Promise.all([db.parties.listUpcoming(), db.participations.all()]);
-    parties = list;
-    byPartie = {};
-    for (const p of parts) (byPartie[p.partie_id] ||= []).push(p);
-  } catch (e) {
-    toast.error("Le grimoire est illisible", e.message);
-  }
-  if (!el.isConnected) return;
-
-  renderFilters(el, me);
-  renderGrid(el, parties, byPartie, me);
   renderPlayers(el, me);
 
   /* ---------- Interactions ---------- */
   const offFoil = enableFoil(el);
   const offTilt = oracleTilt($("[data-oracle]", el));
 
-  $("[data-filters]", el).addEventListener("click", (e) => {
-    const b = e.target.closest("[data-f]");
-    if (!b) return;
-    const { f, v } = b.dataset;
-    if (f === "near") state.near = !state.near;
-    else state[f] = state[f] === v || v === "" ? null : v;
-    renderFilters(el, me);
-    renderGrid(el, parties, byPartie, me, { animate: false });   // filtre = action fréquente : aucun échelonnement
+  // le d20 tire au sort parmi les parties ouvertes : on les lit au premier lancer
+  $("[data-roll]", el).addEventListener("click", async (e) => {
+    const btn = e.currentTarget;
+    let parties = [];
+    try { parties = await db.parties.listUpcoming(); } catch (ex) { toast.error("Le grimoire est illisible", ex.message); return; }
+    rollD20(btn, parties);
   });
 
-  $("[data-roll]", el).addEventListener("click", (e) => rollD20(e.currentTarget, parties));
-
   if (ctx.query.get("organiser")) openCreatePartie();
-  if (ctx.path === "/parties") requestAnimationFrame(() => $("#parties", el)?.scrollIntoView({ block: "start" }));
 
   return () => { offFoil(); offTilt(); };
 }
@@ -137,45 +105,6 @@ async function renderPlayers(el, me) {
           </span>
         </a>`)}
     </div>`);
-}
-
-function renderFilters(el, me) {
-  const hasCoords = Boolean(me?.city_lat && me?.city_lng);
-  mount($("[data-filters]", el), html`
-    <div class="filters__row" role="group" aria-label="Filtrer par format">
-      <span class="filters__label">Format</span>
-      <button type="button" class="chip" data-f="format" data-v="" aria-pressed="${!state.format}">Tous</button>
-      ${FORMATS.map((f) => html`<button type="button" class="chip" data-f="format" data-v="${f}" aria-pressed="${state.format === f}">${f}</button>`)}
-    </div>
-    <div class="filters__row" role="group" aria-label="Filtrer par niveau">
-      <span class="filters__label">Niveau</span>
-      ${LEVELS.map((l) => html`<button type="button" class="chip" data-f="level" data-v="${l}" aria-pressed="${state.level === l}">${levelPip(l)}${l}</button>`)}
-      ${hasCoords ? html`<button type="button" class="chip" data-f="near" aria-pressed="${state.near}">${icon("pin")} À moins de ${CONFIG.NEARBY_RADIUS_KM} km</button>` : ""}
-    </div>`);
-}
-
-function renderGrid(el, parties, byPartie, me, { animate = true } = {}) {
-  const coords = me?.city_lat ? { lat: me.city_lat, lng: me.city_lng } : null;
-  const list = parties.filter((p) =>
-    (!state.format || p.format === state.format) &&
-    (!state.level || p.level === state.level) &&
-    (!state.near || (coords && p.location_lat && distanceKm(coords.lat, coords.lng, p.location_lat, p.location_lng) <= CONFIG.NEARBY_RADIUS_KM)));
-
-  const grid = $("[data-grid]", el);
-  if (!list.length) {
-    grid.classList.remove("card-grid");
-    mount(grid, html`
-      <div class="empty">
-        <svg class="empty__icon"><use href="#i-d20"/></svg>
-        <h3>${parties.length ? "Aucune partie ne correspond" : "Aucune partie à venir pour le moment."}</h3>
-        <p>${parties.length ? "Élargissez vos filtres, ou dressez vous-même la table que vous cherchez." : "Le tableau est vide… Soyez la première personne à planter un étendard."}</p>
-        <button type="button" class="btn btn--primary" data-action="create-partie">${icon("plus")} Organiser une partie</button>
-      </div>`);
-    return;
-  }
-  grid.classList.add("card-grid");
-  grid.classList.toggle("stagger", animate);
-  mount(grid, html`${list.map((p, i) => partieCard(p, { participants: byPartie[p.id] || [], index: Math.min(i, 8), distance: coords && p.location_lat ? distanceKm(coords.lat, coords.lng, p.location_lat, p.location_lng) : null }))}`);
 }
 
 /* ---------- Le d20 : le hasard choisit une table ---------- */

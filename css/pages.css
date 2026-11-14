@@ -38,72 +38,56 @@
   mask-image: linear-gradient(to top, black, transparent 85%);
 }
 
-/* Téléphone et tablette : le texte seul (la carte de l'Oracle alourdissait l'écran).
-   Ordinateur (dès 1025 px) : 2 colonnes, l'Oracle centré sur le bloc texte.
-   (Les chiffres sont passés dans la grille bento, juste en dessous.) */
+/* Téléphone : le texte, puis la carte de l'Oracle (le « lore » de la taverne).
+   Dès 720 px : 2 colonnes, l'Oracle centré sur le bloc texte. */
 .hero__grid {
   display: grid;
-  gap: clamp(36px, 6vw, 72px);
+  gap: clamp(48px, 8vw, 72px);
   align-items: center;
   grid-template-areas: "text" "oracle";
 }
 .hero__text { grid-area: text; }
 .oracle-wrap { grid-area: oracle; }
-@media (max-width: 1024px) {
-  .hero__grid { grid-template-areas: "text"; }
-  .oracle-wrap { display: none; }
-}
-@media (min-width: 1025px) {   /* 2 colonnes sur ordinateur */
+@media (min-width: 720px) {
   .hero__grid {
     grid-template-columns: 1.15fr 0.85fr;
     grid-template-areas: "text oracle";
   }
 }
 
-
 .hero__title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: var(--step-4);
-  line-height: 0.92;
+  font-size: clamp(2.15rem, 1.5rem + 3.2vw, 4.4rem);
+  line-height: 0.98;
   letter-spacing: -0.015em;
   text-wrap: balance;
 }
-.hero__title .chrome { display: inline-block; padding-right: 0.06em; font-size: 1.12em; }
+/* « Magic » en dégradé : le texte est découpé dans le fond de sa boîte, il faut donc
+   que la boîte descende assez bas pour contenir la jambe du « g » (sinon elle est coupée). */
+.hero__title .chrome {
+  display: inline-block;
+  padding: 0 0.06em 0.16em 0;
+  margin-bottom: -0.16em;
+  font-size: 1.12em;
+}
 
 .hero__lede {
-  margin-top: var(--space-5);
+  margin-top: var(--space-6);
   max-width: 52ch;
-  font-size: var(--step-1);
-  line-height: 1.5;
+  font-size: clamp(1.02rem, 0.96rem + 0.3vw, 1.2rem);
+  line-height: 1.6;
   color: var(--parch-2);
   text-wrap: pretty;
 }
 .hero__lede em { color: var(--parch); }
 
-/* Téléphone/tablette : le premier écran est entièrement consacré à l'accroche,
-   avec de l'air ; les parties commencent juste sous la ligne de flottaison. */
-@media (max-width: 1024px) {
-  .hero {
-    display: flex; flex-direction: column; justify-content: center;
-    min-height: calc(100svh - var(--hud-h) - var(--tabbar-h) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-    padding-block: var(--space-7) var(--space-8);
-  }
-  .hero__grid { width: 100%; }
-  .hero__title { line-height: 1; }
-  .hero__lede { margin-top: var(--space-6); line-height: 1.6; }
-  .hero__ctas { margin-top: var(--space-7); gap: var(--space-4); }
-  .hero__more {
-    position: absolute; left: 50%; bottom: var(--space-5); translate: -50% 0;
-    display: grid; place-items: center;
-    width: 44px; height: 44px;
-    color: var(--muted);
-  }
-  .hero__more svg { width: 22px; height: 22px; rotate: -90deg; }
-}
-@media (min-width: 1025px) { .hero__more { display: none; } }
-
 .hero__ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); }
+/* Téléphone/tablette : un premier écran aéré */
+@media (max-width: 1024px) {
+  .hero { padding-top: var(--space-7); }
+  .hero__ctas { margin-top: var(--space-7); gap: var(--space-4); }
+}
 /* Téléphone : l'action principale en pleine largeur, les deux autres côte à côte */
 @media (max-width: 559px) {
   .hero__ctas > * { flex: 1 1 calc(50% - var(--space-3)); }
@@ -150,6 +134,8 @@
   width: min(100%, 304px);
   perspective: 1000px;
 }
+/* Téléphone : la carte occupe la largeur des cartes de partie */
+@media (max-width: 719px) { .oracle-wrap { width: min(100%, 340px); } }
 .oracle {
   --frame: var(--blood);
   transform-style: preserve-3d;
@@ -421,6 +407,11 @@
    ===================================================================== */
 .social { max-width: 640px; padding-block: var(--space-5) var(--space-8); display: grid; gap: var(--space-4); }
 .social__title { font: 600 22px/1.2 var(--font-display); }
+.social__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+/* Missives : l'icône d'envoi en haut à droite, comme les messages privés d'Instagram */
+.social__dm { position: relative; display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; color: var(--parch); }
+.social__dm svg { width: 24px; height: 24px; }
+.social__dm .dot { top: 8px; right: 8px; width: 8px; height: 8px; box-shadow: 0 0 0 2px var(--ink-1); }
 
 .search {
   display: flex; align-items: center; gap: 10px;
@@ -790,3 +781,31 @@
 .legal__note { font-size: 14px !important; color: var(--muted) !important; }
 .legal__others { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--line); font-size: 15px; }
 .todo { padding: 1px 6px; border-radius: var(--r-1); background: rgb(227 40 58 / 0.15); color: var(--rouge-text, #ff4a57); font-family: var(--font-mono); font-size: 0.85em; }
+
+/* =====================================================================
+   PARTIES — page dédiée
+   ===================================================================== */
+.parties-page__head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+.parties-page__head h1 { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }
+.parties-page { padding-top: var(--space-6); }
+
+/* =====================================================================
+   OUTILS — page vierge pour l'instant
+   ===================================================================== */
+.outils { max-width: 640px; padding-block: var(--space-5) var(--space-8); display: grid; gap: var(--space-4); }
+.outils__title { font: 600 22px/1.2 var(--font-display); }
+
+/* =====================================================================
+   Navigation au doigt : la nouvelle page entre du côté d'où on l'a tirée
+   ===================================================================== */
+#app { overflow-x: clip; }
+.view--from-right { animation: view-from-right 240ms var(--ease-out); }
+.view--from-left { animation: view-from-left 240ms var(--ease-out); }
+@keyframes view-from-right { from { transform: translate3d(36%, 0, 0); opacity: 0; } }
+@keyframes view-from-left { from { transform: translate3d(-36%, 0, 0); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .view--from-right, .view--from-left { animation: none; } }
