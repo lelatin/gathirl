@@ -1016,6 +1016,15 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
 @media (prefers-reduced-motion: reduce) { .tabbar a:active, .tabbar__cta:active { transform: none; } }
 @media (min-width: 900px) { .tabbar { display: none; } }
 
+/* Téléphone/tablette : barres pleines, sans flou. Le flou d'arrière-plan est recalculé
+   à chaque image du défilement et rend le scroll saccadé sur mobile (Instagram aussi
+   utilise des barres opaques). */
+@media (pointer: coarse), (max-width: 899px) {
+  .hud, .tabbar { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .hud { background: rgb(14 10 19 / 0.97); }
+  .tabbar { background: rgb(14 10 19 / 0.98); }
+}
+
 /* =====================================================================
    États vides & chargement
    ===================================================================== */

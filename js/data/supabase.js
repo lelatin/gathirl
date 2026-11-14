@@ -3,8 +3,8 @@
    Remplace Base44. Activé dès que js/config.js contient une URL + clé.
    Le schéma correspondant se trouve dans supabase/schema.sql.
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611141710";
-import { isNative } from "../lib/native.js?v=202611141710";
+import { CONFIG } from "../config.js?v=202611141722";
+import { isNative } from "../lib/native.js?v=202611141722";
 
 // Lien des e-mails (confirmation, connexion) : le site public, même depuis l'app
 const returnUrl = () => (isNative() ? CONFIG.PUBLIC_URL : location.origin + location.pathname);
@@ -21,7 +21,8 @@ function listenForAppReturn() {
   });
 }
 
-const SUPABASE_ESM = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
+// (même adresse dans le <link rel="modulepreload"> de index.html : à changer aux deux endroits)
+const SUPABASE_ESM ="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
 
 let sb = null;
 let profile = null;

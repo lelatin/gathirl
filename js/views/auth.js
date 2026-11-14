@@ -1,10 +1,10 @@
 /* =====================================================================
    LE PACTE — connexion & inscription
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611141710";
-import { db } from "../data/index.js?v=202611141710";
-import { CONFIG } from "../config.js?v=202611141710";
-import { toast } from "../ui/toast.js?v=202611141710";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611141722";
+import { db } from "../data/index.js?v=202611141722";
+import { CONFIG } from "../config.js?v=202611141722";
+import { toast } from "../ui/toast.js?v=202611141722";
 
 const PROVIDER_NAMES = { google: "Google", github: "GitHub", apple: "Apple", discord: "Discord", twitch: "Twitch" };
 

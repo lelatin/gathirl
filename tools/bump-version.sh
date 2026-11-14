@@ -16,4 +16,6 @@ for f in $files; do
   # chemins relatifs uniquement : "./…", "../…", "js/…", "css/…" (jamais les URL externes)
   sed -E -i "s#([\"'])((\./|\.\./|js/|css/)[^\"'?]+\.(js|css))(\?v=[0-9]+)?([\"'])#\1\2?v=$V\6#g" "$f"
 done
+# Lu sans cache par js/app.js : un téléphone qui a gardé l'ancienne page se recharge tout seul
+printf '{ "v": "%s" }\n' "$V" > version.json
 echo "version $V"

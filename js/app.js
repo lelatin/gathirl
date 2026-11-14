@@ -3,38 +3,77 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611141710";
-import { sigil } from "./lib/format.js?v=202611141710";
-import { db, initData } from "./data/index.js?v=202611141710";
-import { openCreatePartie } from "./ui/forms.js?v=202611141710";
+import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611141722";
+import { sigil } from "./lib/format.js?v=202611141722";
+import { db, initData } from "./data/index.js?v=202611141722";
+import { openCreatePartie } from "./ui/forms.js?v=202611141722";
 
-import * as Home from "./views/home.js?v=202611141710";
-import * as Partie from "./views/partie.js?v=202611141710";
-import * as Profil from "./views/profil.js?v=202611141710";
-import * as Social from "./views/social.js?v=202611141710";
-import * as Auth from "./views/auth.js?v=202611141710";
-import { renderInbox, renderThread } from "./views/messages.js?v=202611141710";
-import * as Lore from "./views/lore.js?v=202611141710";
-import * as Legal from "./views/legal.js?v=202611141710";
-import { setupNative } from "./lib/native.js?v=202611141710";
+import * as Home from "./views/home.js?v=202611141722";
+import { isNative, setupNative } from "./lib/native.js?v=202611141722";
 
-/* ---------------- Routes ---------------- */
+/* ---------------- Routes ----------------
+   Seul l'accueil est chargé au démarrage. Les autres pages (et leurs
+   dépendances, comme le générateur de QR code du billet) ne sont
+   téléchargées qu'à la première visite : l'application s'ouvre plus vite. */
+const lazy = (load, name = "render") => async (...a) => (await load())[name](...a);
+const Partie = () => import("./views/partie.js?v=202611141722");
+const Profil = () => import("./views/profil.js?v=202611141722");
+const Social = () => import("./views/social.js?v=202611141722");
+const Auth = () => import("./views/auth.js?v=202611141722");
+const Messages = () => import("./views/messages.js?v=202611141722");
+const Lore = () => import("./views/lore.js?v=202611141722");
+const Legal = () => import("./views/legal.js?v=202611141722");
+
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
   { re: /^\/parties$/, nav: "parties", title: "Parties", view: Home.render },
-  { re: /^\/partie\/([\w-]+)$/, keys: ["id"], nav: "parties", title: "Partie", view: Partie.render },
-  { re: /^\/profil$/, nav: "profil", title: "Mon profil", view: Profil.render },
-  { re: /^\/profil\/([\w-]+)$/, keys: ["id"], nav: "social", title: "Profil", view: Profil.render },
-  { re: /^\/social$/, nav: "social", title: "Social", view: Social.render },
-  { re: /^\/messages$/, nav: "messages", title: "Missives", view: renderInbox },
-  { re: /^\/messages\/([\w-]+)$/, keys: ["id"], nav: "messages", title: "Missive", view: renderThread },
-  { re: /^\/connexion$/, nav: "profil", title: "Connexion", view: Auth.render },
-  { re: /^\/inscription$/, nav: "profil", title: "Inscription", view: Auth.render },
-  { re: /^\/lore$/, nav: null, title: "Le lore", view: Lore.render },
-  { re: /^\/confidentialite$/, nav: null, title: "Politique de confidentialité", view: Legal.renderConfidentialite },
-  { re: /^\/donnees-personnelles$/, nav: null, title: "Données personnelles", view: Legal.renderDonnees },
-  { re: /^\/mentions-legales$/, nav: null, title: "Mentions légales", view: Legal.renderMentions },
+  { re: /^\/partie\/([\w-]+)$/, keys: ["id"], nav: "parties", title: "Partie", view: lazy(Partie) },
+  { re: /^\/profil$/, nav: "profil", title: "Mon profil", view: lazy(Profil) },
+  { re: /^\/profil\/([\w-]+)$/, keys: ["id"], nav: "social", title: "Profil", view: lazy(Profil) },
+  { re: /^\/social$/, nav: "social", title: "Social", view: lazy(Social) },
+  { re: /^\/messages$/, nav: "messages", title: "Missives", view: lazy(Messages, "renderInbox") },
+  { re: /^\/messages\/([\w-]+)$/, keys: ["id"], nav: "messages", title: "Missive", view: lazy(Messages, "renderThread") },
+  { re: /^\/connexion$/, nav: "profil", title: "Connexion", view: lazy(Auth) },
+  { re: /^\/inscription$/, nav: "profil", title: "Inscription", view: lazy(Auth) },
+  { re: /^\/lore$/, nav: null, title: "Le lore", view: lazy(Lore) },
+  { re: /^\/confidentialite$/, nav: null, title: "Politique de confidentialité", view: lazy(Legal, "renderConfidentialite") },
+  { re: /^\/donnees-personnelles$/, nav: null, title: "Données personnelles", view: lazy(Legal, "renderDonnees") },
+  { re: /^\/mentions-legales$/, nav: null, title: "Mentions légales", view: lazy(Legal, "renderMentions") },
 ];
+
+/* Une fois l'accueil affiché, on précharge en tâche de fond les pages de la barre
+   d'onglets : le premier tap sur Social, Missives ou une partie est alors immédiat. */
+function prefetchViews() {
+  const go = () => [Partie, Social, Messages, Profil].forEach((f) => f().catch(() => {}));
+  if ("requestIdleCallback" in window) requestIdleCallback(go, { timeout: 4000 });
+  else setTimeout(go, 2500);
+}
+
+/* ---------------- Mises à jour du site ----------------
+   GitHub Pages laisse les navigateurs garder la page 10 minutes : sur téléphone,
+   une nouvelle version pouvait mettre longtemps à apparaître. On compare donc
+   la version chargée (le ?v= de ce fichier) à version.json, lu sans cache, à
+   l'ouverture et à chaque retour sur l'onglet ; si elle a changé, on recharge. */
+const VERSION = new URL(import.meta.url).searchParams.get("v");
+let lastCheck = 0;
+async function checkForUpdate() {
+  if (isNative() || !VERSION || Date.now() - lastCheck < 30000) return;
+  lastCheck = Date.now();
+  try {
+    const r = await fetch(`version.json?t=${Date.now()}`, { cache: "no-store" });
+    if (!r.ok) return;
+    const { v } = await r.json();
+    if (!v || v === VERSION) return;
+    // jamais pendant une saisie ou une fenêtre ouverte : on ne perd rien de ce qui est tapé
+    if (document.querySelector("dialog[open]")) return;
+    if ([...document.querySelectorAll("textarea, input:not([type=hidden])")].some((f) => f.value && f.type !== "search")) return;
+    // une seule tentative par version et par session (évite toute boucle si le CDN hésite)
+    const key = "gathirl:reloaded:" + v;
+    try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, "1"); } catch {}
+    // nouvelle adresse (?v=…) : le navigateur ne peut pas resservir l'ancienne page depuis son cache
+    location.replace(`${location.pathname}?v=${v}${location.hash}`);
+  } catch { /* hors ligne : on réessaiera */ }
+}
 
 const app = document.getElementById("app");
 let cleanup = null;
@@ -82,6 +121,8 @@ async function router() {
 
   try {
     const c = await match.view(view, { params, query, path });
+    // l'utilisateur est déjà sur une autre page (chargement lent) : on nettoie celle-ci sans écraser la suivante
+    if (app.firstElementChild !== view) { if (typeof c === "function") c(); return; }
     if (typeof c === "function") cleanup = c;
   } catch (err) {
     console.error(err);
@@ -151,5 +192,11 @@ document.addEventListener("keydown", (e) => {
   });
 
   window.addEventListener("hashchange", router);
-  router();
+  await router();
+
+  // le « ?v=… » ajouté par une mise à jour n'a pas à rester dans la barre d'adresse
+  if (/^\?v=\d+$/.test(location.search)) history.replaceState(null, "", location.pathname + location.hash);
+  prefetchViews();
+  checkForUpdate();
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkForUpdate(); });
 })();

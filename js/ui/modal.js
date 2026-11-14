@@ -2,7 +2,7 @@
    Modale accessible basée sur <dialog> (focus piégé, Échap, retour
    du focus). Animation d'entrée via @starting-style (CSS).
    ===================================================================== */
-import { create, html, icon } from "../lib/dom.js?v=202611141710";
+import { create, html, icon } from "../lib/dom.js?v=202611141722";
 
 export function openModal({ title, body, onMount, label, instant = false }) {
   const root = document.getElementById("modal-root");
