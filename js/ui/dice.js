@@ -2,7 +2,7 @@
    Lanceur de dés et de pièce — utilisé sur la page Outils et dans le
    menu du compteur de points de vie.
    ===================================================================== */
-import { html, icon, mount, prefersReducedMotion } from "../lib/dom.js?v=202611141848";
+import { html, icon, mount, prefersReducedMotion } from "../lib/dom.js?v=202611141851";
 
 const DICE = [4, 6, 8, 10, 12, 20];
 

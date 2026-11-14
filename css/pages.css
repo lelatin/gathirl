@@ -915,8 +915,8 @@ html.lc-open, html.lc-open body { overflow: hidden; }
   color: #fff8ef;
   /* Illustration en fond, dans le sens du joueur, voilée de sa couleur (lisibilité du total) */
   background:
-    radial-gradient(80% 60% at 50% 50%, rgb(0 0 0 / 0.38), transparent 80%),
-    linear-gradient(color-mix(in srgb, var(--pc) 55%, transparent), color-mix(in srgb, var(--pc) 55%, transparent)),
+    radial-gradient(70% 55% at 50% 50%, rgb(0 0 0 / 0.42), transparent 85%),
+    linear-gradient(color-mix(in srgb, var(--pc) 38%, transparent), color-mix(in srgb, var(--pc) 38%, transparent)),
     var(--pimg, none) center / cover no-repeat,
     var(--pc);
 }
