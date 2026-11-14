@@ -826,7 +826,28 @@
 }
 .parties-page__head h1 { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }
 .parties-page { padding-top: var(--space-6); }
-.parties-page__search { margin-bottom: var(--space-4); }
+/* Barre de recherche + suggestions (dès 3 lettres), posées par-dessus la page */
+.finder { position: relative; z-index: 5; margin-bottom: var(--space-4); }
+.finder__list {
+  position: absolute; left: 0; right: 0; top: calc(100% + 6px);
+  margin: 0; padding: 6px; list-style: none;
+  border-radius: 12px;
+  background: var(--card-raised);
+  box-shadow: var(--shadow-pop);
+}
+.finder__item {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 44px; padding: 0 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px; color: var(--parch-2);
+}
+.finder__item[aria-selected="true"] { background: rgb(239 227 200 / 0.1); color: var(--parch); }
+@media (hover: hover) and (pointer: fine) { .finder__item:hover { background: rgb(239 227 200 / 0.08); color: var(--parch); } }
+.finder__icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--muted); }
+.finder__value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.finder__value b { color: var(--parch); font-weight: 700; }
+.finder__type { flex-shrink: 0; font: 700 10.5px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 
 /* =====================================================================
    OUTILS — page vierge pour l'instant

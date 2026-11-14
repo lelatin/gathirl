@@ -2,13 +2,13 @@
    PARTIES — la page dédiée : recherche (ville, format, niveau…),
    filtres (format, niveau) + grille
    ===================================================================== */
-import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611142327";
-import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611142327";
-import { distanceKm } from "../lib/geo.js?v=202611142327";
-import { db } from "../data/index.js?v=202611142327";
-import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611142327";
-import { openCreatePartie } from "../ui/forms.js?v=202611142327";
-import { toast } from "../ui/toast.js?v=202611142327";
+import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611142332";
+import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611142332";
+import { distanceKm } from "../lib/geo.js?v=202611142332";
+import { db } from "../data/index.js?v=202611142332";
+import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611142332";
+import { openCreatePartie } from "../ui/forms.js?v=202611142332";
+import { toast } from "../ui/toast.js?v=202611142332";
 
 const state = { format: null, level: null, q: "" };   // recherche et filtres survivent à un aller-retour
 
@@ -24,12 +24,15 @@ export async function render(el, ctx) {
         <h1 id="parties-title">Parties</h1>
         <button type="button" class="btn btn--primary btn--sm" data-action="create-partie">${icon("plus")} Organiser</button>
       </div>
-      <label class="search parties-page__search">
-        ${icon("search")}
-        <span class="sr-only">Rechercher une partie</span>
-        <input type="search" data-q list="parties-suggestions" placeholder="Ville, format, niveau…" autocomplete="off" enterkeyhint="search" value="${state.q}" />
-      </label>
-      <datalist id="parties-suggestions" data-suggestions></datalist>
+      <div class="finder">
+        <label class="search parties-page__search">
+          ${icon("search")}
+          <span class="sr-only">Rechercher une partie</span>
+          <input type="search" data-q role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="finder-list"
+                 placeholder="Ville, format, niveau…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" value="${state.q}" />
+        </label>
+        <ul class="finder__list" id="finder-list" role="listbox" aria-label="Suggestions" data-suggestions hidden></ul>
+      </div>
       <div class="filters" data-filters></div>
       <div class="card-grid stagger" data-grid>${skeletonCards(3)}</div>
     </section>`);
@@ -45,9 +48,14 @@ export async function render(el, ctx) {
   }
   if (!el.isConnected) return;
 
-  // Suggestions de la barre de recherche : les villes où il y a des parties, puis formats et niveaux
-  const cities = [...new Map(parties.filter((p) => p.city).map((p) => [norm(p.city), p.city.trim()])).values()].sort((a, b) => a.localeCompare(b, "fr"));
-  mount($("[data-suggestions]", el), html`${[...cities, ...FORMATS, ...LEVELS].map((s) => html`<option value="${s}"></option>`)}`);
+  // Ce que la barre peut proposer : villes et lieux où il y a des parties, formats, niveaux
+  const uniq = (list) => [...new Map(list.filter(Boolean).map((s) => [norm(s.trim()), s.trim()])).values()].sort((a, b) => a.localeCompare(b, "fr"));
+  const pool = [
+    ...uniq(parties.map((p) => p.city)).map((v) => ({ v, type: "Ville", ic: "pin" })),
+    ...uniq(parties.map((p) => p.location)).map((v) => ({ v, type: "Lieu", ic: "map" })),
+    ...FORMATS.map((v) => ({ v, type: "Format", ic: "swords" })),
+    ...LEVELS.map((v) => ({ v, type: "Niveau", ic: "d20" })),
+  ];
 
   renderFilters(el);
   renderGrid(el, parties, byPartie, me);
@@ -63,10 +71,71 @@ export async function render(el, ctx) {
   });
 
   const input = $("[data-q]", el);
-  input.addEventListener("input", debounce(() => {
-    state.q = input.value;
-    renderGrid(el, parties, byPartie, me, { animate: false });
-  }, 120));
+  const listEl = $("[data-suggestions]", el);
+  const apply = () => { state.q = input.value; renderGrid(el, parties, byPartie, me, { animate: false }); };
+  input.addEventListener("input", debounce(apply, 120));
+
+  /* ---------- Suggestions dès 3 lettres ----------
+     On complète le dernier mot tapé (« lyon comm » → « lyon Commander ») ;
+     d'abord ce qui commence par ces lettres, puis ce qui les contient. */
+  let items = [], active = -1;
+  const lastWord = () => input.value.replace(/\s+$/, "").split(/\s+/).pop() || "";
+  const close = () => { listEl.hidden = true; input.setAttribute("aria-expanded", "false"); input.removeAttribute("aria-activedescendant"); active = -1; };
+  const suggest = () => {
+    const term = norm(lastWord());
+    if (term.length < 3 || document.activeElement !== input) return close();
+    const starts = [], contains = [];
+    for (const s of pool) {
+      const n = norm(s.v);
+      if (n === norm(input.value.trim())) continue;   // déjà tapé en entier
+      if (n.startsWith(term) || n.split(" ").some((w) => w.startsWith(term))) starts.push(s);
+      else if (n.includes(term)) contains.push(s);
+    }
+    items = [...starts, ...contains].slice(0, 6);
+    if (!items.length) return close();
+    active = -1;
+    mount(listEl, html`${items.map((s, i) => html`
+      <li class="finder__item" role="option" id="finder-opt-${i}" data-i="${i}" aria-selected="false">
+        ${icon(s.ic, "finder__icon")}
+        <span class="finder__value">${highlight(s.v, term)}</span>
+        <span class="finder__type">${s.type}</span>
+      </li>`)}`);
+    listEl.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  };
+  const choose = (i) => {
+    const s = items[i];
+    if (!s) return;
+    const words = input.value.replace(/\s+$/, "").split(/\s+/);
+    words[words.length - 1] = s.v;
+    input.value = words.join(" ") + " ";
+    close();
+    apply();
+    input.focus();
+  };
+  const move = (d) => {
+    if (listEl.hidden) return;
+    active = (active + d + items.length) % items.length;
+    listEl.querySelectorAll("[role=option]").forEach((o, i) => o.setAttribute("aria-selected", i === active));
+    input.setAttribute("aria-activedescendant", `finder-opt-${active}`);
+  };
+  input.addEventListener("input", suggest);
+  input.addEventListener("focus", suggest);
+  input.addEventListener("blur", () => setTimeout(close, 120));
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+    else if (e.key === "Enter" && !listEl.hidden && active >= 0) { e.preventDefault(); choose(active); }
+    else if (e.key === "Escape" && !listEl.hidden) { e.preventDefault(); close(); }
+    else if (e.key === "Enter") { input.blur(); }   // téléphone : « Rechercher » ferme le clavier
+  });
+  // pointerdown (et non click) : la suggestion est choisie avant que le champ perde le focus
+  listEl.addEventListener("pointerdown", (e) => {
+    const li = e.target.closest("[data-i]");
+    if (!li) return;
+    e.preventDefault();
+    choose(Number(li.dataset.i));
+  });
 
   if (ctx.query.get("organiser")) openCreatePartie();
   return offFoil;
@@ -83,6 +152,20 @@ function renderFilters(el) {
       <span class="filters__label">Niveau</span>
       ${LEVELS.map((l) => html`<button type="button" class="chip" data-f="level" data-v="${l}" aria-pressed="${state.level === l}">${levelPip(l)}${l}</button>`)}
     </div>`);
+}
+
+/** Met en gras les lettres tapées dans une suggestion (sans tenir compte des accents) */
+function highlight(value, term) {
+  const n = norm(value);
+  const at = n.indexOf(term);
+  if (at < 0) return value;
+  // norm() garde une lettre par lettre de base : les positions correspondent sur la chaîne décomposée
+  const base = value.normalize("NFD");
+  const map = [];
+  for (let i = 0; i < base.length; i++) if (!/\p{Diacritic}/u.test(base[i])) map.push(i);
+  const from = map[at], to = map[at + term.length - 1] + 1;
+  const part = (s) => s.normalize("NFC");
+  return html`${part(base.slice(0, from))}<b>${part(base.slice(from, to))}</b>${part(base.slice(to))}`;
 }
 
 /** Chaque mot tapé doit se retrouver quelque part : ville, lieu, format, niveau, titre ou organisateur */

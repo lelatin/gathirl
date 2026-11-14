@@ -12,7 +12,7 @@
      à jour discrète en arrière-plan.
    - Jamais mis en cache : les données (API Supabase) et version.json.
    ===================================================================== */
-const VERSION = "202611142327";   // remplacé par tools/bump-version.sh à chaque mise en ligne
+const VERSION = "202611142332";   // remplacé par tools/bump-version.sh à chaque mise en ligne
 const STATIC = `gathirl-${VERSION}`;
 const RUNTIME = "gathirl-runtime";
 const PAGE = "gathirl-page";
