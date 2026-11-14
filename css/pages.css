@@ -826,6 +826,7 @@
 }
 .parties-page__head h1 { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }
 .parties-page { padding-top: var(--space-6); }
+.parties-page__search { margin-bottom: var(--space-4); }
 
 /* =====================================================================
    OUTILS — page vierge pour l'instant
