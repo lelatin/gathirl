@@ -8,7 +8,7 @@
      sauf dans les champs de saisie, les fenêtres, les zones qui défilent déjà
      horizontalement et une fine marge au ras du bord (geste « retour » du système)
    ===================================================================== */
-import { prefersReducedMotion } from "../lib/dom.js?v=202611141815";
+import { prefersReducedMotion } from "../lib/dom.js?v=202611141827";
 
 const EDGE = 8;           // px au ras du bord laissés au geste « retour » du système
 const LOCK = 6;           // px avant de décider si le geste est horizontal ou vertical

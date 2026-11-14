@@ -1,7 +1,7 @@
 /* =====================================================================
    Constantes du jeu + formatage (dates, pluriels, couleurs de mana)
    ===================================================================== */
-import { html, icon } from "./dom.js?v=202611141815";
+import { html, icon } from "./dom.js?v=202611141827";
 
 export const FORMATS = ["Commander", "Standard", "Modern", "Pioneer", "Legacy", "Vintage", "Pauper", "Draft", "Sealed", "Cube"];
 export const LEVELS = ["Débutant", "Casual", "Compétitif"];

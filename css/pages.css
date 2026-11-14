@@ -828,3 +828,200 @@
    reviennent entièrement à la navigation au doigt (les zones qui défilent de côté,
    comme les rangées de filtres, gardent leur propre défilement). */
 @media (pointer: coarse) { body { touch-action: pan-y pinch-zoom; } }
+
+/* =====================================================================
+   OUTILS — cartes d'outils, sélecteurs, dés
+   ===================================================================== */
+.tool { display: grid; gap: var(--space-4); padding: 18px; border-radius: 14px; background: var(--card); box-shadow: var(--shadow-card); }
+.tool__title { display: flex; align-items: center; gap: 10px; font: 600 18px/1.25 var(--font-display); }
+.tool__title svg { width: 20px; height: 20px; color: var(--blood); }
+.tool__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+.tool__label { font-size: 15px; color: var(--parch-2); }
+.tool__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.tool__actions > * { flex: 1 1 140px; }
+
+/* Sélecteur segmenté */
+.seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 10px; background: rgb(239 227 200 / 0.08); }
+.seg__btn {
+  min-width: 40px; min-height: 36px; padding: 0 10px;
+  border-radius: 8px;
+  font: 700 15px/1 var(--font-body); color: var(--parch-2);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.seg__btn[aria-pressed="true"] { background: var(--parch); color: var(--ink-0); }
+
+/* Dés */
+.dice { display: grid; gap: var(--space-4); }
+.dice__result {
+  display: grid; justify-items: center; align-content: center; gap: 4px;
+  min-height: 132px; padding: 14px;
+  border-radius: 12px;
+  background: rgb(0 0 0 / 0.28);
+}
+.dice__value { font: 800 60px/1 var(--font-display); color: var(--parch); font-variant-numeric: lining-nums tabular-nums; }
+.dice__idle { width: 52px; height: 52px; color: var(--muted); }
+.dice__label { font: 700 11px/1.3 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.dice.is-done .dice__value { animation: dice-land 260ms var(--ease-out); color: var(--or-text, var(--gold)); }
+@keyframes dice-land { from { transform: scale(1.25); } }
+.dice__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.dice__btn {
+  min-height: 44px; border-radius: 10px;
+  background: rgb(239 227 200 / 0.08);
+  font: 700 15px/1 var(--font-mono); color: var(--parch);
+  transition: background-color 150ms ease, transform 120ms var(--ease-out);
+}
+.dice__btn:active { transform: scale(0.96); }
+.dice__btn--coin { grid-column: 1 / -1; font-family: var(--font-body); font-weight: 600; }
+@media (hover: hover) and (pointer: fine) { .dice__btn:hover { background: rgb(239 227 200 / 0.14); } }
+.dice__history { font-size: 13px; color: var(--muted); text-align: center; }
+
+/* =====================================================================
+   COMPTEUR DE POINTS DE VIE — plein écran, au-dessus de tout
+   ===================================================================== */
+html.lc-open, html.lc-open body { overflow: hidden; }
+.lc {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; gap: 6px;
+  padding: max(6px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+  background: #050304;
+  touch-action: none;           /* aucun zoom ni défilement pendant la partie */
+  user-select: none; -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.lc--n1 { grid-template-areas: "p0"; }
+.lc--n2 { grid-template-areas: "p0" "p1"; }
+.lc--n3 { grid-template-areas: "p0 p1" "p2 p2"; grid-template-rows: 2fr 1fr; grid-template-columns: 1fr 1fr; }
+.lc--n4 { grid-template-areas: "p0 p1" "p2 p3"; grid-template-columns: 1fr 1fr; }
+.lc--n5 { grid-template-areas: "p0 p1" "p2 p3" "p4 p4"; grid-template-rows: 1fr 1fr 0.8fr; grid-template-columns: 1fr 1fr; }
+.lc--n6 { grid-template-areas: "p0 p1" "p2 p3" "p4 p5"; grid-template-columns: 1fr 1fr; }
+
+.lc__cell {
+  position: relative; overflow: hidden;
+  container-type: size;
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 90% at 50% 50%, rgb(255 255 255 / 0.12), transparent 60%),
+    var(--pc);
+  transition: filter 200ms ease, box-shadow 200ms ease;
+}
+.lc__cell.is-out { filter: grayscale(0.85) brightness(0.55); }
+.lc__cell.is-picked { box-shadow: inset 0 0 0 4px #fff6ea; }
+.lc__cell.is-first { box-shadow: inset 0 0 0 6px #fff6ea, 0 0 30px rgb(255 246 234 / 0.5); }
+
+/* Le visage du panneau, tourné vers son joueur (les dimensions s'échangent à 90°) */
+.lc__face {
+  position: absolute; left: 50%; top: 50%;
+  width: 100cqw; height: 100cqh;
+  translate: -50% -50%;
+  container-type: size;
+  color: #fff8ef;
+}
+.lc__face--r180 { rotate: 180deg; }
+.lc__face--r90 { width: 100cqh; height: 100cqw; rotate: 90deg; }
+.lc__face--r-90 { width: 100cqh; height: 100cqw; rotate: -90deg; }
+
+/* Deux moitiés : gauche = moins, droite = plus (dans le sens du joueur) */
+.lc__half {
+  position: absolute; top: 0; bottom: 0; width: 50%;
+  display: flex; align-items: center;
+  padding: 0 7cqw;
+  color: rgb(255 248 239 / 0.55);
+  font: 300 min(16cqh, 12cqw)/1 var(--font-body);
+  touch-action: none;
+  transition: background-color 120ms ease;
+}
+.lc__half--minus { left: 0; justify-content: flex-start; }
+.lc__half--plus { right: 0; justify-content: flex-end; }
+.lc__half.is-pressed { background: rgb(255 255 255 / 0.10); }
+.lc__half:focus-visible { outline-offset: -4px; }
+
+.lc__center {
+  position: absolute; inset: 0;
+  display: grid; place-content: center; justify-items: center;
+  pointer-events: none;
+  text-align: center;
+}
+.lc__name { font: 700 max(11px, min(5cqh, 3.6cqw))/1 var(--font-mono); letter-spacing: 0.14em; opacity: 0.75; }
+.lc__life {
+  font: 800 min(52cqh, 34cqw)/1 var(--font-display);
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+  text-shadow: 0 2px 0 rgb(0 0 0 / 0.25);
+}
+.lc__delta {
+  position: absolute; top: 12%; left: 50%; translate: -50% 0;
+  font: 700 max(14px, min(9cqh, 6cqw))/1 var(--font-mono);
+  opacity: 0; transition: opacity 160ms ease;
+}
+.lc__delta.is-on { opacity: 0.95; }
+.lc__badges { min-height: 1em; font: 700 max(11px, min(5cqh, 3.4cqw))/1.2 var(--font-mono); opacity: 0.9; }
+
+.lc__more {
+  position: absolute; left: 50%; bottom: 4cqh; translate: -50% 0;
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgb(0 0 0 / 0.22);
+  color: #fff8ef;
+}
+.lc__more svg { width: 20px; height: 20px; }
+
+/* Fiche poison / commandant, dans le panneau et donc lisible par son joueur.
+   Compacte : elle doit tenir dans un panneau de 4 joueurs posé de côté (~180 px de haut). */
+.lc__sheet {
+  position: absolute; inset: 0; z-index: 2;
+  display: grid; align-content: start; gap: 4px;
+  padding: 4px 12px 8px;
+  overflow: auto;
+  background: rgb(10 6 8 / 0.94);
+  touch-action: pan-x pan-y;
+}
+.lc__sheet-head { display: flex; align-items: center; justify-content: space-between; min-height: 32px; font: 700 12px/1.2 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.lc__sheet-close { display: grid; place-items: center; width: 40px; height: 36px; margin-right: -10px; color: #fff8ef; }
+.lc__sheet-close svg { width: 20px; height: 20px; }
+.lc__ctr { display: grid; grid-template-columns: minmax(0, 1fr) 36px 34px 36px; align-items: center; gap: 4px; }
+.lc__ctr-label { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 14px; white-space: nowrap; }
+.lc__ctr-btn { height: 34px; border-radius: 8px; background: rgb(255 255 255 / 0.12); font: 600 20px/1 var(--font-body); color: #fff8ef; }
+.lc__ctr-btn:active { background: rgb(255 255 255 / 0.22); }
+.lc__ctr-val { text-align: center; font: 800 18px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.lc__sub { margin-top: 2px; font: 700 10.5px/1.2 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: rgb(255 248 239 / 0.65); }
+.lc__cmds { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 14px; }
+.lc__dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1.5px rgb(255 255 255 / 0.6); }
+.lc__hint { font-size: 12px; line-height: 1.35; color: rgb(255 248 239 / 0.6); }
+@container (max-height: 240px) { .lc__hint { display: none; } }
+
+/* Bouton du menu, au centre de la table */
+.lc__menu-btn {
+  position: fixed; left: 50%; top: 50%; translate: -50% -50%; z-index: 3;
+  display: grid; place-items: center;
+  width: 54px; height: 54px; border-radius: 50%;
+  background: #120c0e;
+  box-shadow: 0 0 0 4px #050304, 0 6px 20px rgb(0 0 0 / 0.6);
+  color: #fff8ef;
+}
+.lc--n3 .lc__menu-btn { top: calc(200% / 3); }
+.lc--n5 .lc__menu-btn { top: calc(200% / 2.8); }
+.lc__menu-btn svg { width: 28px; height: 28px; }
+.lc.has-sheet .lc__menu-btn { opacity: 0; pointer-events: none; }
+.lc__menu-btn:active { transform: scale(0.94); }
+
+.lc__menu {
+  position: fixed; inset: 0; z-index: 4;
+  display: grid; place-items: center;
+  padding: 16px;
+  background: rgb(5 3 4 / 0.72);
+  touch-action: pan-y;
+}
+.lc__menu-card {
+  position: relative;
+  display: grid; gap: var(--space-4);
+  width: min(100%, 380px); max-height: 100%; overflow: auto;
+  padding: 18px; padding-top: 48px;
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow-pop);
+}
+.lc__menu-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lc__menu-actions [data-first] { grid-column: 1 / -1; }
+.lc__menu-close { position: absolute; top: 4px; right: 4px; display: grid; place-items: center; width: 44px; height: 44px; color: var(--parch); }
+.lc__menu-close svg { width: 20px; height: 20px; }
+.lc__menu .dice__result { min-height: 104px; }
