@@ -4,13 +4,13 @@
    2. Les joueurs près de chez vous
    Les parties ont leur propre page (js/views/parties.js).
    ===================================================================== */
-import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611142300";
-import { levelPip, plural, sigil } from "../lib/format.js?v=202611142300";
-import { distanceKm } from "../lib/geo.js?v=202611142300";
-import { db } from "../data/index.js?v=202611142300";
-import { enableFoil } from "../ui/card.js?v=202611142300";
-import { openCreatePartie } from "../ui/forms.js?v=202611142300";
-import { toast } from "../ui/toast.js?v=202611142300";
+import { $, $$, html, icon, mount, canHover, prefersReducedMotion } from "../lib/dom.js?v=202611142308";
+import { levelPip, plural, sigil } from "../lib/format.js?v=202611142308";
+import { distanceKm } from "../lib/geo.js?v=202611142308";
+import { db } from "../data/index.js?v=202611142308";
+import { enableFoil } from "../ui/card.js?v=202611142308";
+import { openCreatePartie } from "../ui/forms.js?v=202611142308";
+import { toast } from "../ui/toast.js?v=202611142308";
 
 export async function render(el, ctx) {
   const me = db.auth.user();

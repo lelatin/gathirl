@@ -213,6 +213,7 @@ export const localAdapter = {
   /* ---------------- Participations ---------------- */
   participations: {
     async all() { return [...db().participations]; },
+    async forParties(ids) { const s = new Set(ids); return db().participations.filter((p) => s.has(p.partie_id)); },
     async forPartie(id) { return db().participations.filter((p) => p.partie_id === id); },
     async forUser(uid_) { return db().participations.filter((p) => p.user_id === uid_); },
     async join(partieId) {
@@ -275,6 +276,10 @@ export const localAdapter = {
       const u = me();
       if (!u) return [];
       return db().messages.filter((m) => m.sender_id === u.id || m.receiver_id === u.id);
+    },
+    async unreadCount() {
+      const u = me();
+      return u ? db().messages.filter((m) => m.receiver_id === u.id && !m.read).length : 0;
     },
     async thread(otherId) {
       const u = requireMe();

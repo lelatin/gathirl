@@ -3,29 +3,29 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount, prefersReducedMotion } from "./lib/dom.js?v=202611142300";
-import { sigil } from "./lib/format.js?v=202611142300";
-import { db, initData } from "./data/index.js?v=202611142300";
-import { openCreatePartie } from "./ui/forms.js?v=202611142300";
+import { $, $$, html, icon, mount, prefersReducedMotion } from "./lib/dom.js?v=202611142308";
+import { sigil } from "./lib/format.js?v=202611142308";
+import { db, initData } from "./data/index.js?v=202611142308";
+import { openCreatePartie } from "./ui/forms.js?v=202611142308";
 
-import * as Home from "./views/home.js?v=202611142300";
-import { isNative, setupNative } from "./lib/native.js?v=202611142300";
-import { enableSwipeNav } from "./ui/swipe.js?v=202611142300";
+import * as Home from "./views/home.js?v=202611142308";
+import { isNative, setupNative } from "./lib/native.js?v=202611142308";
+import { enableSwipeNav } from "./ui/swipe.js?v=202611142308";
 
 /* ---------------- Routes ----------------
    Seul l'accueil est chargé au démarrage. Les autres pages (et leurs
    dépendances, comme le générateur de QR code du billet) ne sont
    téléchargées qu'à la première visite : l'application s'ouvre plus vite. */
 const lazy = (load, name = "render") => async (...a) => (await load())[name](...a);
-const Parties = () => import("./views/parties.js?v=202611142300");
-const Outils = () => import("./views/outils.js?v=202611142300");
-const Partie = () => import("./views/partie.js?v=202611142300");
-const Profil = () => import("./views/profil.js?v=202611142300");
-const Social = () => import("./views/social.js?v=202611142300");
-const Auth = () => import("./views/auth.js?v=202611142300");
-const Messages = () => import("./views/messages.js?v=202611142300");
-const Lore = () => import("./views/lore.js?v=202611142300");
-const Legal = () => import("./views/legal.js?v=202611142300");
+const Parties = () => import("./views/parties.js?v=202611142308");
+const Outils = () => import("./views/outils.js?v=202611142308");
+const Partie = () => import("./views/partie.js?v=202611142308");
+const Profil = () => import("./views/profil.js?v=202611142308");
+const Social = () => import("./views/social.js?v=202611142308");
+const Auth = () => import("./views/auth.js?v=202611142308");
+const Messages = () => import("./views/messages.js?v=202611142308");
+const Lore = () => import("./views/lore.js?v=202611142308");
+const Legal = () => import("./views/legal.js?v=202611142308");
 
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
@@ -48,7 +48,18 @@ const routes = [
 /* Une fois l'accueil affiché, on précharge en tâche de fond les pages de la barre
    d'onglets : le premier tap (ou glissement) vers une autre page est alors immédiat. */
 function prefetchViews() {
-  const go = () => [Parties, Outils, Social, Partie, Messages, Profil].forEach((f) => f().catch(() => {}));
+  const go = () => {
+    [Parties, Outils, Social, Partie, Messages, Profil].forEach((f) => f().catch(() => {}));
+    // …et leurs données : elles attendent dans le cache, la page s'affiche sans attendre le réseau
+    const me = db.auth.user();
+    db.parties.listUpcoming().then((l) => db.participations.forParties(l.map((p) => p.id))).catch(() => {});
+    db.profiles.list({ limit: 24 }).catch(() => {});
+    if (me) {
+      db.friendships.forUser(me.id).catch(() => {});
+      db.parties.forHost(me.id).catch(() => {});
+      db.participations.forUser(me.id).catch(() => {});
+    }
+  };
   if ("requestIdleCallback" in window) requestIdleCallback(go, { timeout: 4000 });
   else setTimeout(go, 2500);
 }
@@ -162,7 +173,7 @@ async function refreshUnread() {
   const me = db.auth.user();
   let n = 0;
   if (me) {
-    try { n = (await db.messages.mine()).filter((m) => m.receiver_id === me.id && !m.read).length; } catch {}
+    try { n = await db.messages.unreadCount(); } catch {}
   }
   $$("[data-unread]").forEach((d) => (d.hidden = n === 0));
 }
@@ -221,4 +232,10 @@ document.addEventListener("keydown", (e) => {
   prefetchViews();
   checkForUpdate();
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkForUpdate(); });
+
+  // Fichiers gardés sur l'appareil (sw.js) : ouverture quasi instantanée depuis l'écran d'accueil.
+  // Seulement sur le site en ligne (https) : l'app native embarque déjà ses fichiers.
+  if ("serviceWorker" in navigator && location.protocol === "https:" && !isNative()) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
 })();

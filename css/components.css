@@ -11,9 +11,9 @@
 .hud {
   position: sticky; top: 0; z-index: 50;
   padding-top: env(safe-area-inset-top, 0px);
-  background: rgb(14 10 19 / 0.82);
-  backdrop-filter: blur(10px) saturate(1.2);
-  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  /* barre pleine, sans flou d'arrière-plan : le flou était recalculé à chaque image
+     du défilement (saccades, surtout sur grand écran) */
+  background: rgb(14 10 19 / 0.97);
   border-bottom: 1px solid var(--line);
 }
 .hud__inner {
@@ -296,8 +296,7 @@
 .print::before {
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: var(--halftone);
-  mix-blend-mode: soft-light;
-  opacity: 0.5;
+  opacity: 0.3;   /* simple transparence (un mode de fusion par carte coûtait cher au défilement) */
 }
 .print::after {
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
@@ -916,8 +915,7 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
 .modal--instant, .modal--instant::backdrop { transition: none !important; }
 
 .modal::backdrop {
-  background: rgb(5 3 8 / 0.72);
-  backdrop-filter: blur(3px);
+  background: rgb(5 3 8 / 0.8);
   transition: opacity 200ms ease, overlay 200ms allow-discrete, display 200ms allow-discrete;
 }
 @starting-style { .modal[open]::backdrop { opacity: 0; } }
@@ -994,9 +992,7 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
   height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
   display: grid; grid-template-columns: repeat(5, 1fr); align-items: center;
-  background: rgb(14 10 19 / 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgb(14 10 19 / 0.98);
   border-top: 1px solid var(--line);
 }
 /* Gabarit Instagram : 5 onglets égaux, icônes seules de 24 pt, aucune étiquette,
@@ -1030,14 +1026,6 @@ a.bcard:active, button.bcard:active { transform: scale(0.985); }
 @media (prefers-reduced-motion: reduce) { .tabbar a:active, .tabbar__cta:active { transform: none; } }
 @media (min-width: 900px) { .tabbar { display: none; } }
 
-/* Téléphone/tablette : barres pleines, sans flou. Le flou d'arrière-plan est recalculé
-   à chaque image du défilement et rend le scroll saccadé sur mobile (Instagram aussi
-   utilise des barres opaques). */
-@media (pointer: coarse), (max-width: 899px) {
-  .hud, .tabbar { -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .hud { background: rgb(14 10 19 / 0.97); }
-  .tabbar { background: rgb(14 10 19 / 0.98); }
-}
 
 /* =====================================================================
    États vides & chargement

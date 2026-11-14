@@ -18,4 +18,6 @@ for f in $files; do
 done
 # Lu sans cache par js/app.js : un téléphone qui a gardé l'ancienne page se recharge tout seul
 printf '{ "v": "%s" }\n' "$V" > version.json
+# Le service worker change d'empreinte à chaque version : il se réinstalle et vide les anciens fichiers
+sed -i -E "s/^const VERSION = \"[0-9]+\";/const VERSION = \"$V\";/" sw.js
 echo "version $V"

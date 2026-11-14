@@ -3,10 +3,10 @@
    Gabarit Instagram : barre de recherche en haut, puis des lignes
    « avatar · nom · sous-titre · bouton » (demandes, contacts, suggestions).
    ===================================================================== */
-import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611142300";
-import { levelPip, plural, sigil } from "../lib/format.js?v=202611142300";
-import { db } from "../data/index.js?v=202611142300";
-import { toast } from "../ui/toast.js?v=202611142300";
+import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611142308";
+import { levelPip, plural, sigil } from "../lib/format.js?v=202611142308";
+import { db } from "../data/index.js?v=202611142308";
+import { toast } from "../ui/toast.js?v=202611142308";
 
 let lastQuery = "";   // la recherche survit à un aller-retour vers un profil
 
@@ -140,7 +140,7 @@ export async function render(el) {
   const markUnread = async () => {
     const me = db.auth.user(), dot = $("[data-dm-unread]", el);
     if (!me || !dot) return;
-    try { dot.hidden = !(await db.messages.mine()).some((m) => m.receiver_id === me.id && !m.read); } catch {}
+    try { dot.hidden = !(await db.messages.unreadCount()); } catch {}
   };
 
   await loadFriends();

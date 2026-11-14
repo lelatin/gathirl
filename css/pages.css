@@ -23,7 +23,6 @@
     repeating-linear-gradient(180deg, transparent 0 14px, var(--ink-1) 14px 20px) bottom / 100% 48% no-repeat,
     linear-gradient(180deg, #ffcf7a 0%, #ff7438 40%, #e3283a 70%, #5a1d86 100%);
   opacity: 0.22;
-  filter: blur(1px);
   mask-image: radial-gradient(circle, black 60%, transparent 71%);
 }
 /* Sol en grille synthwave */

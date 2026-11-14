@@ -3,8 +3,8 @@
    Remplace Base44. Activé dès que js/config.js contient une URL + clé.
    Le schéma correspondant se trouve dans supabase/schema.sql.
    ===================================================================== */
-import { CONFIG } from "../config.js?v=202611142300";
-import { isNative } from "../lib/native.js?v=202611142300";
+import { CONFIG } from "../config.js?v=202611142308";
+import { isNative } from "../lib/native.js?v=202611142308";
 
 // Lien des e-mails (confirmation, connexion) : le site public, même depuis l'app
 const returnUrl = () => (isNative() ? CONFIG.PUBLIC_URL : location.origin + location.pathname);
@@ -28,6 +28,31 @@ let sb = null;
 let profile = null;
 const listeners = new Set();
 const emit = () => listeners.forEach((fn) => { try { fn(); } catch {} });
+// Les alertes temps réel arrivent souvent en rafale : un seul rafraîchissement des vues
+let emitTimer = 0;
+const emitSoon = () => { clearTimeout(emitTimer); emitTimer = setTimeout(emit, 300); };
+
+/* ---------------- Cache des lectures ----------------
+   Chaque page relisait tout sur le serveur à chaque visite : désormais une
+   lecture identique faite il y a moins d'une minute est resservie aussitôt
+   (et deux lectures simultanées identiques ne partent qu'une fois). Le cache
+   est vidé à chaque écriture et à chaque changement signalé en temps réel. */
+const TTL = 60_000;
+const cache = new Map();   // clé → { t, p }
+function cached(key, fn, ttl = TTL) {
+  const hit = cache.get(key);
+  if (!hit || Date.now() - hit.t > ttl) {
+    const p = fn();
+    p.catch(() => cache.delete(key));
+    cache.set(key, { t: Date.now(), p });
+  }
+  // une copie : une vue qui trie ou modifie sa liste ne touche pas au cache
+  return cache.get(key).p.then((d) => (d && typeof d === "object" ? structuredClone(d) : d));
+}
+const invalidate = (...prefixes) => {
+  for (const k of [...cache.keys()]) if (!prefixes.length || prefixes.some((x) => k.startsWith(x))) cache.delete(k);
+};
+const q = async (builder) => check(await builder);
 
 function check({ data, error }) {
   if (error) throw new Error(translate(error.message));
@@ -44,10 +69,27 @@ function translate(msg = "") {
   return msg || "Une erreur est survenue.";
 }
 
-async function loadProfile(userId) {
-  if (!userId) { profile = null; return null; }
+const PROFILE_KEY = "gathirl:profil";
+const saveProfile = () => { try { profile ? localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)) : localStorage.removeItem(PROFILE_KEY); } catch {} };
+async function fetchProfile(userId) {
   const { data } = await sb.from("profiles").select("*").eq("id", userId).maybeSingle();
-  profile = data || null;
+  return data || null;
+}
+/** Au démarrage, le profil gardé sur l'appareil s'affiche tout de suite ; la version
+    du serveur arrive ensuite en arrière-plan (plus d'attente réseau avant la 1re page). */
+async function loadProfile(userId, { background = false } = {}) {
+  if (!userId) { profile = null; saveProfile(); return null; }
+  let local = null;
+  try { local = JSON.parse(localStorage.getItem(PROFILE_KEY)); } catch {}
+  if (background && local?.id === userId) {
+    profile = local;
+    fetchProfile(userId).then((fresh) => {
+      if (fresh && JSON.stringify(fresh) !== JSON.stringify(profile)) { profile = fresh; saveProfile(); emit(); }
+    }).catch(() => {});
+    return profile;
+  }
+  profile = await fetchProfile(userId);
+  saveProfile();
   return profile;
 }
 
@@ -70,18 +112,25 @@ export const supabaseAdapter = {
     // Retour d'un fournisseur (Google, GitHub, Apple) : on retire le code de l'adresse
     if (/[?&](code|error)=/.test(location.search)) history.replaceState(null, "", location.pathname + location.hash);
     if (isNative()) listenForAppReturn();
-    await loadProfile(session?.user?.id);
+    await loadProfile(session?.user?.id, { background: true });
 
+    // Seul un changement de compte compte (le renouvellement automatique du jeton
+    // relançait jusqu'ici le chargement complet de la page)
     sb.auth.onAuthStateChange(async (_evt, s) => {
-      await loadProfile(s?.user?.id);
+      const id = s?.user?.id || null;
+      if (id === (profile?.id || null)) return;
+      invalidate();
+      await loadProfile(id);
       emit();
     });
 
-    // Temps réel : nouveaux messages, parties, participations
+    // Temps réel : on vide seulement le cache concerné, puis un seul rafraîchissement groupé
+    const live = (...prefixes) => () => { invalidate(...prefixes); emitSoon(); };
     sb.channel("gathirl-live")
-      .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, emit)
-      .on("postgres_changes", { event: "*", schema: "public", table: "participations" }, emit)
-      .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, emit)
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, live("messages"))
+      .on("postgres_changes", { event: "*", schema: "public", table: "participations" }, live("participations", "parties"))
+      .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, live("friendships"))
+      .on("postgres_changes", { event: "*", schema: "public", table: "parties" }, live("parties"))
       .subscribe();
   },
 
@@ -93,6 +142,7 @@ export const supabaseAdapter = {
 
     async signIn({ email, password }) {
       const data = check(await sb.auth.signInWithPassword({ email: email.trim(), password }));
+      invalidate();
       return loadProfile(data.user.id);
     },
 
@@ -136,7 +186,7 @@ export const supabaseAdapter = {
       check(await sb.auth.resetPasswordForEmail(email.trim(), { redirectTo: location.origin + location.pathname + "#/connexion" }));
     },
 
-    async signOut() { await sb.auth.signOut(); profile = null; emit(); },
+    async signOut() { await sb.auth.signOut(); profile = null; saveProfile(); invalidate(); emit(); },
 
     /** Supprime définitivement le compte et tout ce qui s'y rattache (fonction SQL delete_my_account) */
     async deleteAccount() {
@@ -144,20 +194,23 @@ export const supabaseAdapter = {
       check(await sb.rpc("delete_my_account"));
       await sb.auth.signOut({ scope: "local" }).catch(() => {});
       profile = null;
+      saveProfile();
+      invalidate();
       emit();
     },
   },
 
   /* ---------------- Profils ---------------- */
   profiles: {
-    async get(id) { return check(await sb.from("profiles").select("*").eq("id", id).maybeSingle()); },
+    get(id) { return cached(`profiles:get:${id}`, () => q(sb.from("profiles").select("*").eq("id", id).maybeSingle())); },
     async many(ids) {
       if (!ids.length) return [];
-      return check(await sb.from("profiles").select("*").in("id", ids));
+      const key = [...new Set(ids)].sort().join(",");
+      return cached(`profiles:many:${key}`, () => q(sb.from("profiles").select("*").in("id", ids)));
     },
     /** Les joueurs inscrits (annuaire « Joueurs près de chez vous ») */
-    async list({ limit = 24 } = {}) {
-      return check(await sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(limit));
+    list({ limit = 24 } = {}) {
+      return cached(`profiles:list:${limit}`, () => q(sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(limit)));
     },
     /** Recherche de comptes par nom ou par ville (page Social) */
     async search(q, { limit = 30 } = {}) {
@@ -171,6 +224,8 @@ export const supabaseAdapter = {
       const { id, email, created_at, ...clean } = patch;
       const data = check(await sb.from("profiles").update(clean).eq("id", me.id).select().single());
       profile = data;
+      saveProfile();
+      invalidate("profiles", "parties", "participations");   // le nom est recopié dans les parties et inscriptions
       emit();
       return data;
     },
@@ -178,60 +233,92 @@ export const supabaseAdapter = {
 
   /* ---------------- Parties ---------------- */
   parties: {
-    async listUpcoming() {
-      const since = new Date(Date.now() - 3 * 3600000).toISOString();
-      return check(await sb.from("parties").select("*").gte("date", since).not("status", "in", "(annulé,terminé)").order("date", { ascending: true }).limit(200));
+    listUpcoming() {
+      return cached("parties:upcoming", () => {
+        const since = new Date(Date.now() - 3 * 3600000).toISOString();
+        return q(sb.from("parties").select("*").gte("date", since).not("status", "in", "(annulé,terminé)").order("date", { ascending: true }).limit(200));
+      });
     },
-    async get(id) { return check(await sb.from("parties").select("*").eq("id", id).maybeSingle()); },
+    get(id) { return cached(`parties:get:${id}`, () => q(sb.from("parties").select("*").eq("id", id).maybeSingle())); },
     async byIds(ids) {
       if (!ids.length) return [];
-      return check(await sb.from("parties").select("*").in("id", ids));
+      return cached(`parties:ids:${[...ids].sort().join(",")}`, () => q(sb.from("parties").select("*").in("id", ids)));
     },
-    async forHost(uid) { return check(await sb.from("parties").select("*").eq("host_id", uid)); },
+    forHost(uid) { return cached(`parties:host:${uid}`, () => q(sb.from("parties").select("*").eq("host_id", uid))); },
     async create(data) {
       const me = requireMe();
       const row = { ...data, host_id: me.id, host_name: me.full_name || "Joueur" };
-      return check(await sb.from("parties").insert(row).select().single());
+      const r = check(await sb.from("parties").insert(row).select().single());
+      invalidate("parties", "participations");
+      return r;
     },
     async cancel(id) {
-      return check(await sb.from("parties").update({ status: "annulé" }).eq("id", id).select().single());
+      const r = check(await sb.from("parties").update({ status: "annulé" }).eq("id", id).select().single());
+      invalidate("parties");
+      return r;
     },
   },
 
   /* ---------------- Participations ---------------- */
   participations: {
-    async all() { return check(await sb.from("participations").select("*").limit(2000)); },
-    async forPartie(id) { return check(await sb.from("participations").select("*").eq("partie_id", id)); },
-    async forUser(uid) { return check(await sb.from("participations").select("*").eq("user_id", uid)); },
+    all() { return cached("participations:all", () => q(sb.from("participations").select("*").limit(2000))); },
+    /** Seulement les inscriptions des parties affichées (au lieu de toutes) */
+    async forParties(ids) {
+      if (!ids.length) return [];
+      return cached(`participations:parties:${[...ids].sort().join(",")}`, async () => {
+        const chunks = [];
+        for (let i = 0; i < ids.length; i += 60) chunks.push(ids.slice(i, i + 60));   // adresses courtes
+        const parts = await Promise.all(chunks.map((c) => q(sb.from("participations").select("*").in("partie_id", c))));
+        return parts.flat();
+      });
+    },
+    forPartie(id) { return cached(`participations:partie:${id}`, () => q(sb.from("participations").select("*").eq("partie_id", id))); },
+    forUser(uid) { return cached(`participations:user:${uid}`, () => q(sb.from("participations").select("*").eq("user_id", uid))); },
     async join(partieId) {
       requireMe();
-      return check(await sb.rpc("join_partie", { p_partie: partieId }));
+      const r = check(await sb.rpc("join_partie", { p_partie: partieId }));
+      invalidate("participations", "parties");
+      return r;
     },
     async leave(partieId) {
       requireMe();
-      return check(await sb.rpc("leave_partie", { p_partie: partieId }));
+      const r = check(await sb.rpc("leave_partie", { p_partie: partieId }));
+      invalidate("participations", "parties");
+      return r;
     },
   },
 
   /* ---------------- Amitiés ---------------- */
   friendships: {
-    async forUser(id) {
-      return check(await sb.from("friendships").select("*").or(`requester_id.eq.${id},receiver_id.eq.${id}`));
+    forUser(id) {
+      return cached(`friendships:${id}`, () => q(sb.from("friendships").select("*").or(`requester_id.eq.${id},receiver_id.eq.${id}`)));
     },
     async request(toId) {
       const me = requireMe();
       const to = await supabaseAdapter.profiles.get(toId);
       check(await sb.from("friendships").insert({ requester_id: me.id, requester_name: me.full_name, receiver_id: toId, receiver_name: to?.full_name || "Joueur", status: "pending" }));
+      invalidate("friendships");
     },
-    async accept(id) { check(await sb.from("friendships").update({ status: "accepted" }).eq("id", id)); },
-    async remove(id) { check(await sb.from("friendships").delete().eq("id", id)); },
+    async accept(id) { check(await sb.from("friendships").update({ status: "accepted" }).eq("id", id)); invalidate("friendships"); },
+    async remove(id) { check(await sb.from("friendships").delete().eq("id", id)); invalidate("friendships"); },
   },
 
   /* ---------------- Messages ---------------- */
   messages: {
     async mine() {
       if (!profile) return [];
-      return check(await sb.from("messages").select("*").or(`sender_id.eq.${profile.id},receiver_id.eq.${profile.id}`).order("created_at", { ascending: false }).limit(1000));
+      const id = profile.id;
+      return cached(`messages:mine:${id}`, () => q(sb.from("messages").select("*").or(`sender_id.eq.${id},receiver_id.eq.${id}`).order("created_at", { ascending: false }).limit(1000)));
+    },
+    /** Nombre de missives non lues : une simple requête de comptage (pastille rouge) */
+    async unreadCount() {
+      if (!profile) return 0;
+      const id = profile.id;
+      return cached(`messages:unread:${id}`, async () => {
+        const { count, error } = await sb.from("messages").select("id", { count: "exact", head: true }).eq("receiver_id", id).eq("read", false);
+        if (error) throw new Error(translate(error.message));
+        return count || 0;
+      });
     },
     async thread(otherId) {
       const me = requireMe();
@@ -242,11 +329,14 @@ export const supabaseAdapter = {
     async send(otherId, content) {
       const me = requireMe();
       const other = await supabaseAdapter.profiles.get(otherId);
-      return check(await sb.from("messages").insert({ sender_id: me.id, sender_name: me.full_name, receiver_id: otherId, receiver_name: other?.full_name || "Joueur", content }).select().single());
+      const r = check(await sb.from("messages").insert({ sender_id: me.id, sender_name: me.full_name, receiver_id: otherId, receiver_name: other?.full_name || "Joueur", content }).select().single());
+      invalidate("messages");
+      return r;
     },
     async markRead(otherId) {
       if (!profile) return;
       await sb.from("messages").update({ read: true }).eq("receiver_id", profile.id).eq("sender_id", otherId).eq("read", false);
+      invalidate("messages");
     },
     subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
   },

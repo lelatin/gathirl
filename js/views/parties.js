@@ -1,14 +1,14 @@
 /* =====================================================================
    PARTIES — la page dédiée : filtres (format, niveau, distance) + grille
    ===================================================================== */
-import { $, html, icon, mount } from "../lib/dom.js?v=202611142300";
-import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611142300";
-import { distanceKm } from "../lib/geo.js?v=202611142300";
-import { db } from "../data/index.js?v=202611142300";
-import { CONFIG } from "../config.js?v=202611142300";
-import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611142300";
-import { openCreatePartie } from "../ui/forms.js?v=202611142300";
-import { toast } from "../ui/toast.js?v=202611142300";
+import { $, html, icon, mount } from "../lib/dom.js?v=202611142308";
+import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611142308";
+import { distanceKm } from "../lib/geo.js?v=202611142308";
+import { db } from "../data/index.js?v=202611142308";
+import { CONFIG } from "../config.js?v=202611142308";
+import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611142308";
+import { openCreatePartie } from "../ui/forms.js?v=202611142308";
+import { toast } from "../ui/toast.js?v=202611142308";
 
 const state = { format: null, level: null, near: false };   // les filtres survivent à un aller-retour
 
@@ -28,8 +28,8 @@ export async function render(el, ctx) {
   let parties = [];
   let byPartie = {};
   try {
-    const [list, parts] = await Promise.all([db.parties.listUpcoming(), db.participations.all()]);
-    parties = list;
+    parties = await db.parties.listUpcoming();
+    const parts = await db.participations.forParties(parties.map((p) => p.id));
     for (const p of parts) (byPartie[p.partie_id] ||= []).push(p);
   } catch (e) {
     toast.error("Le grimoire est illisible", e.message);
