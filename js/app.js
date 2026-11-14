@@ -3,29 +3,29 @@
    Routeur par hash (compatible GitHub Pages sans configuration),
    HUD, raccourcis clavier, actions globales.
    ===================================================================== */
-import { $, $$, html, icon, mount } from "./lib/dom.js?v=202611141753";
-import { sigil } from "./lib/format.js?v=202611141753";
-import { db, initData } from "./data/index.js?v=202611141753";
-import { openCreatePartie } from "./ui/forms.js?v=202611141753";
+import { $, $$, html, icon, mount, prefersReducedMotion } from "./lib/dom.js?v=202611141757";
+import { sigil } from "./lib/format.js?v=202611141757";
+import { db, initData } from "./data/index.js?v=202611141757";
+import { openCreatePartie } from "./ui/forms.js?v=202611141757";
 
-import * as Home from "./views/home.js?v=202611141753";
-import { isNative, setupNative } from "./lib/native.js?v=202611141753";
-import { enableSwipeNav } from "./ui/swipe.js?v=202611141753";
+import * as Home from "./views/home.js?v=202611141757";
+import { isNative, setupNative } from "./lib/native.js?v=202611141757";
+import { enableSwipeNav } from "./ui/swipe.js?v=202611141757";
 
 /* ---------------- Routes ----------------
    Seul l'accueil est chargé au démarrage. Les autres pages (et leurs
    dépendances, comme le générateur de QR code du billet) ne sont
    téléchargées qu'à la première visite : l'application s'ouvre plus vite. */
 const lazy = (load, name = "render") => async (...a) => (await load())[name](...a);
-const Parties = () => import("./views/parties.js?v=202611141753");
-const Outils = () => import("./views/outils.js?v=202611141753");
-const Partie = () => import("./views/partie.js?v=202611141753");
-const Profil = () => import("./views/profil.js?v=202611141753");
-const Social = () => import("./views/social.js?v=202611141753");
-const Auth = () => import("./views/auth.js?v=202611141753");
-const Messages = () => import("./views/messages.js?v=202611141753");
-const Lore = () => import("./views/lore.js?v=202611141753");
-const Legal = () => import("./views/legal.js?v=202611141753");
+const Parties = () => import("./views/parties.js?v=202611141757");
+const Outils = () => import("./views/outils.js?v=202611141757");
+const Partie = () => import("./views/partie.js?v=202611141757");
+const Profil = () => import("./views/profil.js?v=202611141757");
+const Social = () => import("./views/social.js?v=202611141757");
+const Auth = () => import("./views/auth.js?v=202611141757");
+const Messages = () => import("./views/messages.js?v=202611141757");
+const Lore = () => import("./views/lore.js?v=202611141757");
+const Legal = () => import("./views/legal.js?v=202611141757");
 
 const routes = [
   { re: /^\/$/, nav: "home", title: "Taverne", view: Home.render },
@@ -171,6 +171,18 @@ async function refreshUnread() {
 document.addEventListener("click", (e) => {
   const b = e.target.closest('[data-action="create-partie"]');
   if (b) { e.preventDefault(); openCreatePartie(); }
+});
+
+/* Onglets (barre du bas, menu du haut, avatar) : on arrive toujours en haut de la page.
+   Changer de page remonte déjà en haut (routeur) ; retaper l'onglet de la page où
+   l'on est fait remonter en douceur, comme sur Instagram. */
+document.addEventListener("click", (e) => {
+  const a = e.target.closest(".tabbar a[href], .hud__nav a[href], .sigil-link[href]");
+  if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+  const path = a.getAttribute("href").replace(/^#/, "") || "/";
+  if (path !== parseHash().path) return;   // autre page : le routeur s'en charge
+  e.preventDefault();
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "instant" : "smooth" });
 });
 
 /* Raccourcis : 1-4 pour naviguer (dans l'ordre des onglets), N pour organiser (jamais animés) */
