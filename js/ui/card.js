@@ -6,8 +6,8 @@
    - Pied : « Pour N aventuriers », date, lieu, sièges pris / places
    - Tampon « Complet » quand la table est pleine
    ===================================================================== */
-import { html, icon } from "../lib/dom.js?v=202611142317";
-import { artFor, fmtDate, fmtTime, frameClass, fmtCountdown, hash } from "../lib/format.js?v=202611142317";
+import { html, icon } from "../lib/dom.js?v=202611142322";
+import { artFor, fmtDate, fmtTime, frameClass, fmtCountdown, hash } from "../lib/format.js?v=202611142322";
 
 /* Niveau → mention de couverture (« pour personnages de niveau… ») */
 const LEVEL_LINE = { "Débutant": "aventuriers débutants", "Casual": "aventuriers de tous niveaux", "Compétitif": "aventuriers aguerris" };
@@ -35,7 +35,6 @@ export function partieCard(p, { participants = [], index = 0, distance = null } 
 
         <div class="module__art print">
           <img src="${artFor(p.id)}" alt="" loading="lazy" decoding="async" width="720" height="540" />
-          <span class="module__ribbon" aria-hidden="true">Une partie dont <b>vous</b> êtes le héros !</span>
           ${full ? html`<span class="module__stamp">Complet</span>` : ""}
         </div>
 

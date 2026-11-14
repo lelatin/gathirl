@@ -488,17 +488,6 @@
 .module .print img { filter: saturate(1.05) contrast(1.04); }
 .module .print::before { opacity: 0.2; }
 .module.is-full .module__art img { filter: grayscale(0.75) brightness(0.75); }
-/* Ruban d'accroche façon livre-jeu, posé sur l'illustration (n'ajoute aucune hauteur) */
-.module__ribbon {
-  position: absolute; z-index: 2; left: 0; right: 0; top: 0;
-  padding: 4px 8px 5px;
-  background: linear-gradient(180deg, rgb(20 12 14 / 0.88), rgb(20 12 14 / 0.6));
-  color: var(--cream);
-  font: italic 600 12px/1.2 var(--font-body);
-  text-align: center;
-  letter-spacing: 0.02em;
-}
-.module__ribbon b { font-style: normal; font-weight: 700; color: #e7c77a; text-transform: uppercase; letter-spacing: 0.06em; }
 /* Tampon « Complet » */
 .module__stamp {
   position: absolute; z-index: 2; left: 50%; top: 50%;
