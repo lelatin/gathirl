@@ -824,3 +824,7 @@
 @keyframes view-from-right { from { transform: translate3d(36%, 0, 0); opacity: 0; } }
 @keyframes view-from-left { from { transform: translate3d(-36%, 0, 0); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .view--from-right, .view--from-left { animation: none; } }
+/* Le navigateur ne gère que le défilement vertical et le zoom : les gestes horizontaux
+   reviennent entièrement à la navigation au doigt (les zones qui défilent de côté,
+   comme les rangées de filtres, gardent leur propre défilement). */
+@media (pointer: coarse) { body { touch-action: pan-y pinch-zoom; } }

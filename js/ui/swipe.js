@@ -4,17 +4,18 @@
      ouvre l'onglet de droite, glisser vers la gauche ouvre celui de gauche
    - pendant le geste, la page s'efface vers le côté opposé (on « avance »
      vers la page voisine), puis la nouvelle arrive du côté visé
-   - ignoré : bords de l'écran (gestes « retour » du système), champs de
-     saisie, fenêtres, et toute zone qui défile déjà horizontalement
+   - fonctionne n'importe où sur l'écran (contenu, pied de page, zones vides),
+     sauf dans les champs de saisie, les fenêtres, les zones qui défilent déjà
+     horizontalement et une fine marge au ras du bord (geste « retour » du système)
    ===================================================================== */
-import { prefersReducedMotion } from "../lib/dom.js?v=202611141805";
+import { prefersReducedMotion } from "../lib/dom.js?v=202611141815";
 
-const EDGE = 40;          // px réservés aux gestes système (« retour »), de chaque côté
-const LOCK = 8;           // px avant de décider si le geste est horizontal ou vertical
-const RATIO = 1.1;        // horizontal dès que |dx| > 1,1 × |dy|
-const DISTANCE = 0.16;    // part de la largeur à parcourir pour valider (≈ 60 px sur téléphone)
-const FLICK = 0.25;       // ou vitesse (px/ms) d'un petit geste vif…
-const FLICK_MIN = 24;     // …sur au moins cette distance
+const EDGE = 8;           // px au ras du bord laissés au geste « retour » du système
+const LOCK = 6;           // px avant de décider si le geste est horizontal ou vertical
+const RATIO = 1;          // horizontal dès que le geste va plus de côté que vers le bas
+const DISTANCE = 0.1;     // part de la largeur à parcourir pour valider (≈ 38 px sur téléphone)
+const FLICK = 0.18;       // ou vitesse (px/ms) d'un petit geste…
+const FLICK_MIN = 14;     // …sur au moins cette distance
 const FOLLOW = 0.35;      // la page bouge d'un tiers du geste (repère visuel, sans gêner)
 
 /**
@@ -27,13 +28,13 @@ export function enableSwipeNav(root, order, current, go) {
   let g = null;   // geste en cours
 
   const scrollsSideways = (el) => {
-    for (; el && el !== root; el = el.parentElement) {
+    for (; el && el !== document.body; el = el.parentElement) {
       if (el.scrollWidth > el.clientWidth + 1 && /(auto|scroll)/.test(getComputedStyle(el).overflowX)) return true;
     }
     return false;
   };
 
-  root.addEventListener("touchstart", (e) => {
+  document.addEventListener("touchstart", (e) => {
     g = null;
     if (e.touches.length !== 1) return;
     const idx = order.indexOf(current());
@@ -45,7 +46,7 @@ export function enableSwipeNav(root, order, current, go) {
     g = { idx, x: t.clientX, y: t.clientY, t: performance.now(), dx: 0, axis: null, v: 0, lx: t.clientX, lt: performance.now(), view: root.firstElementChild, w: root.clientWidth || window.innerWidth };
   }, { passive: true });
 
-  root.addEventListener("touchmove", (e) => {
+  document.addEventListener("touchmove", (e) => {
     if (!g) return;
     const t = e.touches[0];
     const dx = t.clientX - g.x, dy = t.clientY - g.y;
@@ -94,6 +95,6 @@ export function enableSwipeNav(root, order, current, go) {
       go(order[target], from);
     }
   };
-  root.addEventListener("touchend", end);
-  root.addEventListener("touchcancel", () => { if (g) g.dx = 0; end(); });   // geste interrompu : retour en place
+  document.addEventListener("touchend", end);
+  document.addEventListener("touchcancel", () => { if (g) g.dx = 0; end(); });   // geste interrompu : retour en place
 }

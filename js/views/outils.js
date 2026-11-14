@@ -2,7 +2,7 @@
    OUTILS — les outils pendant les parties (à venir : points de vie, dés…)
    Page vierge pour l'instant.
    ===================================================================== */
-import { html, icon, mount } from "../lib/dom.js?v=202611141805";
+import { html, icon, mount } from "../lib/dom.js?v=202611141815";
 
 export function render(el) {
   mount(el, html`
