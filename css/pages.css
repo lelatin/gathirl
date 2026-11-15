@@ -439,7 +439,7 @@
    SOCIAL — recherche de comptes + contacts (lignes façon Instagram)
    ===================================================================== */
 .social { max-width: 640px; padding-block: var(--space-5) var(--space-8); display: grid; gap: var(--space-4); }
-.social__title { font: 600 22px/1.2 var(--font-display); }
+.social__title { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }   /* même titre que la page Parties */
 .social__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
 /* Missives : l'icône d'envoi en haut à droite, comme les messages privés d'Instagram */
 .social__dm { position: relative; display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; color: var(--parch); }
@@ -869,7 +869,7 @@
    OUTILS — page vierge pour l'instant
    ===================================================================== */
 .outils { max-width: 640px; padding-block: var(--space-5) var(--space-8); display: grid; gap: var(--space-4); }
-.outils__title { font: 600 22px/1.2 var(--font-display); }
+.outils__title { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }   /* même titre que la page Parties */
 
 /* =====================================================================
    Navigation au doigt : la nouvelle page entre du côté d'où on l'a tirée
