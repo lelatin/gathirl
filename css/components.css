@@ -71,7 +71,7 @@
 /* --- Logo --- */
 .logo { display: inline-flex; align-items: center; gap: 10px; color: var(--blood); flex-shrink: 0; }
 /* Le pictogramme officiel (charte) devant le mot-logo */
-.logo__mark { width: 30px; height: 30px; flex-shrink: 0; filter: drop-shadow(0 0 6px rgb(226 94 93 / 0.45)); }
+.logo__mark { width: 30px; height: 30px; flex-shrink: 0; filter: drop-shadow(0 0 6px rgb(255 74 87 / 0.45)); }
 @media (max-width: 899px) {
   .logo { gap: 8px; }
   .logo__mark { width: 24px; height: 24px; }
@@ -122,8 +122,9 @@
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn--primary {
-  --btn-bg: var(--blood);
-  --btn-fg: #fff6ea;
+  /* Fond rouge-deep (et non blood) : le texte on-rouge y tient 5,4:1 (4,2:1 seulement sur blood) */
+  --btn-bg: var(--rouge-deep);
+  --btn-fg: var(--on-rouge);
   --btn-edge: var(--blood-deep);
   border-color: rgb(255 180 170 / 0.35);
   text-shadow: 0 1px 0 rgb(0 0 0 / 0.35);

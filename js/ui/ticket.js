@@ -5,10 +5,10 @@
    en V au niveau de la perforation, talon avec le QR code.
    Format post Instagram : 1080 × 1350 px (4:5).
    ===================================================================== */
-import qrcode from "../vendor/qrcode.js?v=202611150145";
-import { artFor, fmtTime, hash, plural } from "../lib/format.js?v=202611150145";
-import { partieUrl, slug, downloadBlob } from "../lib/calendar.js?v=202611150145";
-import { isNative, shareFile } from "../lib/native.js?v=202611150145";
+import qrcode from "../vendor/qrcode.js?v=202611160255";
+import { artFor, fmtTime, hash, plural } from "../lib/format.js?v=202611160255";
+import { partieUrl, slug, downloadBlob } from "../lib/calendar.js?v=202611160255";
+import { isNative, shareFile } from "../lib/native.js?v=202611160255";
 
 /* Teintes « Magic » par format : les mêmes que les cartouches de parties */
 // Une seule teinte pour tous les formats : le rouge de la marque (texte crème dessus, 5,2:1)
@@ -169,7 +169,7 @@ export async function renderTicket(p, { scale = 3 } = {}) {
   ctx.save();
   const markSize = 24;
   if (mark) {
-    ctx.shadowColor = "rgba(226,94,93,.5)";
+    ctx.shadowColor = "rgba(255,74,87,.5)";
     ctx.shadowBlur = 6 * scale;
     ctx.drawImage(mark, M, 13, markSize, markSize);
   }

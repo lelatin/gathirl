@@ -2,13 +2,13 @@
    PARTIES — la page dédiée : recherche (ville, format, niveau…),
    filtres (format, niveau) + grille
    ===================================================================== */
-import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611150145";
-import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611150145";
-import { distanceKm } from "../lib/geo.js?v=202611150145";
-import { db } from "../data/index.js?v=202611150145";
-import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611150145";
-import { openCreatePartie } from "../ui/forms.js?v=202611150145";
-import { toast } from "../ui/toast.js?v=202611150145";
+import { $, html, icon, mount, debounce } from "../lib/dom.js?v=202611160255";
+import { FORMATS, LEVELS, levelPip } from "../lib/format.js?v=202611160255";
+import { distanceKm } from "../lib/geo.js?v=202611160255";
+import { db } from "../data/index.js?v=202611160255";
+import { partieCard, skeletonCards, enableFoil } from "../ui/card.js?v=202611160255";
+import { openCreatePartie } from "../ui/forms.js?v=202611160255";
+import { toast } from "../ui/toast.js?v=202611160255";
 
 const state = { format: null, level: null, q: "" };   // recherche et filtres survivent à un aller-retour
 

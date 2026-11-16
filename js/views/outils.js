@@ -7,8 +7,8 @@
    Le compteur s'ouvre sur #/outils?jeu=1 : le bouton « retour » du
    téléphone le referme naturellement.
    ===================================================================== */
-import { $, html, icon, mount, prefersReducedMotion } from "../lib/dom.js?v=202611150145";
-import { mountDice, roll } from "../ui/dice.js?v=202611150145";
+import { $, html, icon, mount, prefersReducedMotion } from "../lib/dom.js?v=202611160255";
+import { mountDice, roll } from "../ui/dice.js?v=202611160255";
 
 const KEY = "gathirl:vie:v1";
 const PREFS = "gathirl:vie:prefs";

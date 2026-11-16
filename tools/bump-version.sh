@@ -11,13 +11,15 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 V=$(date +%Y%m%d%H%M)
+# « sed -i » n'a pas la même syntaxe sous Linux (GNU) et macOS (BSD)
+sedi() { if sed --version >/dev/null 2>&1; then sed -i "$@"; else sed -i '' "$@"; fi; }
 files=$(ls index.html; find js -name '*.js' -not -path 'js/vendor/*')
 for f in $files; do
   # chemins relatifs uniquement : "./…", "../…", "js/…", "css/…" (jamais les URL externes)
-  sed -E -i "s#([\"'])((\./|\.\./|js/|css/)[^\"'?]+\.(js|css))(\?v=[0-9]+)?([\"'])#\1\2?v=$V\6#g" "$f"
+  sedi -E "s#([\"'])((\./|\.\./|js/|css/)[^\"'?]+\.(js|css))(\?v=[0-9]+)?([\"'])#\1\2?v=$V\6#g" "$f"
 done
 # Lu sans cache par js/app.js : un téléphone qui a gardé l'ancienne page se recharge tout seul
 printf '{ "v": "%s" }\n' "$V" > version.json
 # Le service worker change d'empreinte à chaque version : il se réinstalle et vide les anciens fichiers
-sed -i -E "s/^const VERSION = \"[0-9]+\";/const VERSION = \"$V\";/" sw.js
+sedi -E "s/^const VERSION = \"[0-9]+\";/const VERSION = \"$V\";/" sw.js
 echo "version $V"
