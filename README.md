@@ -1,4 +1,4 @@
-# Gathirl — le grimoire des rencontres
+# Gathirl - le lieux de tous les lieux
 
 Trouvez votre prochaine partie de **Magic: The Gathering** près de chez vous : rejoignez une table, organisez la vôtre, échangez des missives avec les autres joueurs.
 
